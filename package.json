@@ -8,7 +8,6 @@
   "private": true,
   "dependencies": {
     "@fogine/sequelize": "^3.23.5",
-    "bi-config": "git+ssh://git@webdev-git.czupc.bistudio.com:juraj/config.git#master",
     "bi-logger": "git+ssh://git@webdev-git.czupc.bistudio.com:juraj/logger.git#master",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
