@@ -5,7 +5,7 @@ exports.App          = require('./lib/app.js');
 exports.Router       = require('./lib/router.js');
 exports.Route        = require('./lib/route.js');
 exports.RequestType  = require('./lib/requestType.js');
-exports.modelLoader  = require('./lib/modelLoader.js');
+exports.moduleLoader = require('./lib/moduleLoader.js');
 exports.database    = {
     CouchbaseCluster: require('./lib/database/couchbase.js'),
     sequelizeBuilder: require('./lib/database/sequelize.js')
