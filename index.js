@@ -1,10 +1,10 @@
 exports.Express      = require('express');
-exports.AppManager   = require('./lib/appManager.js');
 exports.CouchbaseODM = require('kouchbase-odm');
-exports.App          = require('./lib/app.js');
-exports.Router       = require('./lib/router.js');
-exports.Route        = require('./lib/route.js');
-exports.RequestType  = require('./lib/requestType.js');
+exports.AppManager   = require('./lib/express/appManager.js');
+exports.App          = require('./lib/express/app.js');
+exports.Router       = require('./lib/express/router.js');
+exports.Route        = require('./lib/express/route.js');
+exports.RequestType  = require('./lib/express/requestType.js');
 exports.moduleLoader = require('./lib/moduleLoader.js');
 exports.database    = {
     CouchbaseCluster: require('./lib/database/couchbase.js'),
