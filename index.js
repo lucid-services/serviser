@@ -1,5 +1,6 @@
 exports.Express      = require('express');
 exports.CouchbaseODM = require('kouchbase-odm');
+exports.Couchbase    = require('couchbase');
 exports.AppManager   = require('./lib/express/appManager.js');
 exports.App          = require('./lib/express/app.js');
 exports.Router       = require('./lib/express/router.js');
