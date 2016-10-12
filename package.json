@@ -6,13 +6,15 @@
   "testFramework": "mocha",
   "author": "Bohemia Interactive",
   "private": true,
+  "peerDependencies": {
+    "couchbase": "^2.1.6"
+  },
   "dependencies": {
     "@fogine/sequelize": "^3.23.5",
     "bi-logger": "git+ssh://git@webdev-git.czupc.bistudio.com:juraj/logger.git#master",
     "bluebird": "^3.4.6",
     "async": "^2.0.1",
     "body-parser": "^1.15.2",
-    "couchbase": "^2.1.6",
     "memcached": "2.2.*",
     "raw-body": "2.1.*",
     "pg": "4.4.*",
