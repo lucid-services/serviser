@@ -8,6 +8,8 @@ exports.Router          = require('./lib/express/router.js');
 exports.Route           = require('./lib/express/route.js');
 exports.RequestType     = require('./lib/express/requestType.js');
 exports.moduleLoader    = require('./lib/moduleLoader.js');
+exports.objectFilter    = require('./lib/objectFilter.js');
+
 exports.models          = {
     odm: {
         Client: require('./lib/models/odm/client.js')
