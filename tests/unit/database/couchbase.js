@@ -101,6 +101,9 @@ describe('CouchbaseCluster', function() {
                     },
                     cache: {
                         bucket: 'cache'
+                    },
+                    storage: {
+                        bucket: 'storage'
                     }
                 }
             };
@@ -126,6 +129,19 @@ describe('CouchbaseCluster', function() {
             }
 
             expect(test).to.throw(ServiceError);
+        });
+
+        it("should register `error` event listener on created bucket which redirect the event to ours custom CouchbaseCluster object", function() {
+            var spy = sinon.spy();
+            var err = new Error;
+
+            var bucket = this.couchbaseCluster.openBucketSync('main');
+            this.couchbaseCluster.on('error', spy);
+
+            bucket.emit('error', err);
+
+            spy.should.have.been.calledOnce;
+            spy.should.have.been.calledWithExactly(err);
         });
     });
 

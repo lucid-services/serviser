@@ -410,4 +410,17 @@ describe('moduleLoader', function() {
             this.requireSpy.should.have.callCount(5);
         });
     });
+
+    describe('getCachedModels', function() {
+
+        before(function() {
+            this.models = {};
+            moduleLoader.__set__('models', this.models);
+        });
+
+        it('should return value of internal `models` dictionary', function() {
+            var models = moduleLoader.getCachedModels();
+            models.should.be.equal(this.models);
+        });
+    });
 });
