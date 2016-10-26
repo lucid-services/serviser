@@ -1,10 +1,9 @@
 var _         = require('lodash');
-var rewire    = require('rewire');
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 
-var objectFilter = rewire('../../lib/objectFilter.js');
+var objectFilter = require('../../lib/objectFilter.js');
 var assertions = objectFilter.assertions;
 
 var expect = chai.expect;
