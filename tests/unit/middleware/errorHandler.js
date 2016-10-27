@@ -1,7 +1,7 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var sinonChai      = require("sinon-chai");
-var logger         = require('bi-logger');
+var sinon     = require('sinon');
+var chai      = require('chai');
+var sinonChai = require("sinon-chai");
+var logger    = require('bi-logger');
 
 var errorHandler = require('../../../lib/middleware/errorHandler.js');
 var AppManager   = require('../../../lib/express/appManager.js');
