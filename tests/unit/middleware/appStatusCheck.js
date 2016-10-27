@@ -14,7 +14,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 chai.should();
 
-describe.only('appStatusCheck middleware', function() {
+describe('appStatusCheck middleware', function() {
 
     before(function() {
         this.models = {};
