@@ -34,7 +34,8 @@
     "connect-memcached": "0.2.*",
     "http-status-codes": "^1.0.6",
     "json-inspector": "^1.0.0-beta",
-    "lodash": "^4.16.2"
+    "lodash": "^4.16.2",
+    "semver": "^5.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
