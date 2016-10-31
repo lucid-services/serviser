@@ -1,3 +1,4 @@
+var Promise        = require('bluebird');
 var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
@@ -22,7 +23,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe.only('serviceIntegrity', function() {
+describe('serviceIntegrity', function() {
     before(function() {
         this.models = {};
         this.config = new Config();
@@ -177,8 +178,10 @@ describe.only('serviceIntegrity', function() {
         describe('couchbase driver IS set', function() {
             before(function() {
 
+                var self = this;
+
                 this.clusterStub = sinon.stub(couchbase, 'Cluster', function(host) {
-                    return new couchbase.Mock.Cluster('localhost');
+                    return new couchbase.Mock.Cluster(host);
                 });
 
                 this.buckets = {
@@ -191,6 +194,7 @@ describe.only('serviceIntegrity', function() {
                 };
 
                 this.couchbaseCluster = new CouchbaseCluster({
+                    host: 'localhost',
                     buckets: this.buckets
                 });
 
@@ -200,15 +204,7 @@ describe.only('serviceIntegrity', function() {
                 this.couchbaseCluster.openBucketSync('main');
                 this.couchbaseCluster.openBucketSync('cache');
 
-                // we must get it this way because couchbase-sdk does not export
-                // the Storage object from the module
-                var MockStoragePrototype = Object.getPrototypeOf(
-                    this.couchbaseCluster.buckets.main.storage
-                );
-
-                this.couchbaseGetStub = sinon.stub(MockStoragePrototype, 'get', function() {
-                    return MockStoragePrototype.get.apply(MockStoragePrototype, arguments);
-                });
+                this.couchbaseGetStub = sinon.stub(BucketMock.prototype, 'get');
             });
 
             beforeEach(function() {
@@ -223,27 +219,88 @@ describe.only('serviceIntegrity', function() {
             it('should make a select query for each of the two opened buckets', function() {
                 var self = this;
 
+                this.couchbaseGetStub.yields(null, {
+                    cas: '123456',
+                    value: {}
+                });
+
                 return serviceIntegrity.inspectCouchbase(this.app).then(function(result) {
-                    self.couchbaseGetSpy.should.have.been.calledTwice;
+                    self.couchbaseGetStub.should.have.been.calledTwice;
                 });
             });
 
             it('should return resolved promise when we get the `keyNotFound` error', function() {
+                var self = this;
+                var error = new Error;
+                error.code = couchbase.errors.keyNotFound;
 
+                this.couchbaseGetStub.yields(error);
+
+
+                return serviceIntegrity.inspectCouchbase(this.app).should.be.fulfilled;
             });
 
             it('should return resolved promise when a document we search for is found', function() {
+                var self = this;
+                var key = serviceIntegrity.$couchbaseDocumentKey;
+                var data = {};
 
+                this.couchbaseGetStub.yields(null, {
+                    cas: '123456',
+                    value: {}
+                });
+
+                return serviceIntegrity.inspectCouchbase(self.app).should.be.fulfilled;
             });
 
             it('should return rejected promise when there occurs any other error than the `keyNotFound` error', function() {
+                var self = this;
+                var error = new Error;
+                error.code = couchbase.errors.connectError;
 
+                this.couchbaseGetStub.yields(error);
+
+                return serviceIntegrity.inspectCouchbase(this.app).should.be.rejectedWith(sinon.match(function(err) {
+                    return err instanceof Error && err.code === couchbase.errors.connectError;
+                }));
+            });
+
+            it('should return resolved promise with `true` if all checks pass', function() {
+                this.couchbaseGetStub.yields(null, {
+                    cas: '123456',
+                    value: {}
+                });
+
+                return serviceIntegrity.inspectCouchbase(this.app).should.be.fulfilled.then(function(result) {
+                    result.should.be.equal(true);
+                });
             });
         });
     });
 
     describe('inspectNode', function() {
+        it("should return false when there is no expected version set in the app's config", function() {
+            this.configGetStub.returns(undefined);
 
+            serviceIntegrity.inspectNode(this.app).should.be.equal(false);
+        });
+
+        it('should return true when the node version is successfully validated', function() {
+            this.configGetStub.returns('0.10.1');
+
+            serviceIntegrity.inspectNode(this.app).should.be.equal(true);
+        });
+
+        it('should throw an Error when there is node version mismatch', function() {
+            var self = this;
+            this.configGetStub.returns('120.1.1');
+
+            function test() {
+                serviceIntegrity.inspectNode(self.app);
+            }
+
+            expect(test).to.throw(Error);
+        });
     });
 
 });
