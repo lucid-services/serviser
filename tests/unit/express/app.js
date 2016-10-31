@@ -5,6 +5,7 @@ var sinonChai      = require("sinon-chai");
 var http           = require('http');
 var https          = require('https');
 var Express        = require('express');
+var logger         = require('bi-logger');
 var Session        = require('express-session');
 var Flash          = require('connect-flash');
 var CouchbaseODM   = require('kouchbase-odm');
@@ -392,10 +393,14 @@ describe('App', function() {
         });
 
         it('should emit the `error` event on server error', function(done) {
+            var loggerStub = sinon.stub(logger, 'err');
+
             var server = this.app.listen('0.0.0.0');
 
             server.on('error', function(err) {
                 err.should.be.an.instanceof(Error);
+                server.close();
+                loggerStub.restore();
                 return done();
             });
 

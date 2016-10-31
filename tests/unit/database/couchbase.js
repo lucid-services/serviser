@@ -179,11 +179,18 @@ describe('CouchbaseCluster', function() {
             });
         });
 
+        it('should return promisified bucket', function() {
+
+            return this.couchbaseCluster.openBucket('main').then(function(bucket) {
+                bucket.should.have.property('getAsync').that.is.a('function');
+                bucket.should.have.property('insertAsync').that.is.a('function');
+                bucket.should.have.property('appendAsync').that.is.a('function');
+                bucket.should.have.property('getMultiAsync').that.is.a('function');
+            });
+        });
+
         it('should throw a ServiceError if we try to establish new connection to a bucket which has not been listed in config ', function() {
-            var self = this;
-
-            return self.couchbaseCluster.openBucket('rubish').should.be.rejectedWith(ServiceError);
-
+            return this.couchbaseCluster.openBucket('rubish').should.be.rejectedWith(ServiceError);
         });
     });
 
