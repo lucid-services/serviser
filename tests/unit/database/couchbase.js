@@ -8,7 +8,6 @@ var BucketMock     = require('couchbase/lib/mock/bucket');
 var events         = require('events');
 
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
-var ServiceError = require('../../../lib/error/serviceError.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -74,14 +73,14 @@ describe('CouchbaseCluster', function() {
             this.couchbaseCluster = new CouchbaseCluster(this.options);
         });
 
-        it('should throw a ServiceError when there is no such bucket connection', function() {
+        it('should throw an Error when there is no such bucket connection', function() {
             var self = this;
 
             function test() {
                 self.couchbaseCluster.get('non-existing-bucket-name');
             }
 
-            expect(test).to.throw(ServiceError);
+            expect(test).to.throw(Error);
         });
 
         it('should return connection to the main bucket', function() {
@@ -121,14 +120,14 @@ describe('CouchbaseCluster', function() {
             this.couchbaseCluster.openBucketSync('main').should.be.equal(bucket);
         });
 
-        it('should throw a ServiceError if we try to establish new connection to a bucket which has not been listed in config ', function() {
+        it('should throw an Error if we try to establish new connection to a bucket which has not been listed in config ', function() {
             var self = this;
 
             function test() {
                 self.couchbaseCluster.openBucketSync('rubish');
             }
 
-            expect(test).to.throw(ServiceError);
+            expect(test).to.throw(Error);
         });
 
         it("should register `error` event listener on created bucket which redirect the event to ours custom CouchbaseCluster object", function() {
@@ -189,8 +188,8 @@ describe('CouchbaseCluster', function() {
             });
         });
 
-        it('should throw a ServiceError if we try to establish new connection to a bucket which has not been listed in config ', function() {
-            return this.couchbaseCluster.openBucket('rubish').should.be.rejectedWith(ServiceError);
+        it('should throw an Error if we try to establish new connection to a bucket which has not been listed in config ', function() {
+            return this.couchbaseCluster.openBucket('rubish').should.be.rejectedWith(Error);
         });
     });
 
