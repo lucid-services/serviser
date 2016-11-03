@@ -20,7 +20,7 @@ chai.use(chaiAsPromised);
 chai.should();
 
 
-describe.only('static data', function() {
+describe('static data', function() {
     describe('loadSync', function() {
         before(function() {
             this.spawnSyncStub = sinon.stub(childProcess, 'spawnSync');
