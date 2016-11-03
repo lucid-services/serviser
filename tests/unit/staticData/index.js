@@ -20,7 +20,7 @@ chai.use(chaiAsPromised);
 chai.should();
 
 
-describe('static data', function() {
+describe.only('static data', function() {
     describe('loadSync', function() {
         before(function() {
             this.spawnSyncStub = sinon.stub(childProcess, 'spawnSync');
@@ -91,13 +91,15 @@ describe('static data', function() {
     describe('load', function() {
         before(function() {
             this.spawnStub = sinon.stub(childProcess, 'spawn');
+        });
+
+        beforeEach(function() {
+            delete this.process;
 
             this.process = new EventEmitter;
             this.process.stdout = new EventEmitter;
             this.process.stderr = new EventEmitter;
-        });
 
-        beforeEach(function() {
             this.spawnStub.reset();
             this.spawnStub.returns(this.process);
         });
@@ -121,41 +123,29 @@ describe('static data', function() {
             );
         });
 
-        //it('should return rejected promise with an Error when we get exit status code that is NOT equal 0', function() {
-            //var self = this;
+        it('should return rejected promise with an Error when we get exit status code that is NOT equal 0', function() {
+            var self = this;
 
-            //process.nextTick(function() {
-                //self.process.emit('close', 1);
-            //});
+            process.nextTick(function() {
+                self.process.emit('close', 1);
+            });
 
-            //return staticData.load('/path/to/file').catch(function(e) {
-                //console.log(e);
-                //return null;
-            //});
-                ////.to.throw(Error).that.have.property('stderr', resolved.stderr);
-        //});
+            return staticData.load('/path/to/file')
+                .should.be.rejectedWith(sinon.match(function(err) {
+                    return err instanceof Error && err.hasOwnProperty('stderr');
+                }));
+        });
 
-        //it('should throw an Error when the error occurs while attempting to spawn a new process', function() {
-            //var resolved = {
-                //error: new Error
-            //};
+        it('should return parsed stdout json data', function() {
+            var self = this;
 
-            //this.spawnStub.returns(resolved);
+            process.nextTick(function() {
+                self.process.stdout.emit('data', '{"some": "data"}');
+                self.process.emit('close', 0);
+            });
 
-            //expect(staticData.load.bind(undefined, '/path/to/file'))
-                //.to.throw(resolved.error);
-        //});
-
-        //it('should return parsed stdout json data', function() {
-            //this.spawnStub.returns({
-                //status: 0,
-                //stdout: '{"some": "data"}'
-            //});
-
-            //var result = staticData.load('/path/to/file');
-
-            //result.should.be.eql({some: 'data'});
-        //});
+            return staticData.load('/path/to/file').should.become({some: 'data'});
+        });
     });
 
     describe('get', function() {
