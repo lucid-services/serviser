@@ -10,6 +10,7 @@ exports.RequestType      = require('./lib/express/requestType.js');
 exports.moduleLoader     = require('./lib/moduleLoader.js');
 exports.objectFilter     = require('./lib/objectFilter.js');
 exports.serviceIntegrity = require('./lib/serviceIntegrity.js');
+exports.staticData       = require('./lib/staticData');
 
 exports.models          = {
     odm: {
