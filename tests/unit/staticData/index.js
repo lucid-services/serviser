@@ -45,10 +45,13 @@ describe('static data', function() {
 
             this.spawnSyncStub.should.have.been.calledOnce;
             this.spawnSyncStub.should.have.been.calledWith(
-                'node ' + cmd,
+                'node',
                 [
-                    '--path /path/to/file',
-                    '--path /path/to/dir/'
+                    cmd,
+                    '--path',
+                    '/path/to/file',
+                    '--path',
+                    '/path/to/dir/'
                 ]
             );
         });
@@ -115,10 +118,13 @@ describe('static data', function() {
 
             this.spawnStub.should.have.been.calledOnce;
             this.spawnStub.should.have.been.calledWith(
-                'node ' + cmd,
+                'node',
                 [
-                    '--path /path/to/file',
-                    '--path /path/to/dir/'
+                    cmd,
+                    '--path',
+                    '/path/to/file',
+                    '--path',
+                    '/path/to/dir/'
                 ]
             );
         });
@@ -198,8 +204,12 @@ describe('static data', function() {
             var output = this.getCommandArgs(input);
 
             output.should.be.an.instanceof(Array);
-            output.should.include('--path ' + input[0]);
-            output.should.include('--path ' + input[1]);
+            output.should.be.eql([
+                '--path',
+                input[0],
+                '--path',
+                input[1]
+            ]);
         });
     });
 });
