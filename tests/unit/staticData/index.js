@@ -89,6 +89,21 @@ describe('static data', function() {
 
             result.should.be.eql({some: 'data'});
         });
+
+        it('should throw an Error when stdout data are not valid JSON', function() {
+            this.spawnSyncStub.returns({
+                status: 0,
+                stdout: 'some": "data"}'
+            });
+
+            function test() {
+                staticData.loadSync('/path/to/file');
+            }
+
+            expect(test).to.throw(Error)
+                .that.have.property('message')
+                .that.include('Expected application static data in valid JSON format: ');
+        });
     });
 
     describe('load', function() {
@@ -136,10 +151,25 @@ describe('static data', function() {
                 self.process.emit('close', 1);
             });
 
-            return staticData.load('/path/to/file')
-                .should.be.rejectedWith(sinon.match(function(err) {
-                    return err instanceof Error && err.hasOwnProperty('stderr');
-                }));
+            return staticData.load('/path/to/file').should.be.rejected.then(function(err) {
+                err.should.be.an.instanceof(Error);
+                err.should.have.property('stderr');
+            });
+        });
+
+        it('should return rejected promise with an Error when stdout data are not valid JSON', function() {
+            var self = this;
+
+            process.nextTick(function() {
+                self.process.stdout.emit('invalid": "data"}', 1);
+                self.process.emit('close', 0);
+            });
+
+            return staticData.load('/path/to/file').should.be.rejected.then(function(err) {
+                err.should.be.an.instanceof(Error);
+                err.should.have.property('message')
+                    .that.include('Expected application static data in valid JSON format:');
+            });
         });
 
         it('should return parsed stdout json data', function() {
