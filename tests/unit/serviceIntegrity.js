@@ -6,6 +6,7 @@ var sinonChai      = require("sinon-chai");
 var couchbase      = require('couchbase');
 var BucketMock     = require('couchbase/lib/mock/bucket');
 
+var ServiceError     = require('../../lib/error/serviceError.js');
 var serviceIntegrity = require('../../lib/serviceIntegrity.js');
 var CouchbaseCluster = require('../../lib/database/couchbase.js');
 var sequelizeBuilder = require('../../lib/database/sequelize.js');
@@ -23,7 +24,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('serviceIntegrity', function() {
+describe.only('serviceIntegrity', function() {
     before(function() {
         this.models = {};
         this.config = new Config();
@@ -40,51 +41,83 @@ describe('serviceIntegrity', function() {
 
     describe('inspect', function() {
         before(function() {
-            this.inspectNodeSpy = sinon.spy(serviceIntegrity, 'inspectNode');
-            this.inspectPostgresSpy = sinon.spy(serviceIntegrity, 'inspectPostgres');
-            this.inspectCouchbaseSpy = sinon.spy(serviceIntegrity, 'inspectCouchbase');
+            this.inspectNodeStub = sinon.stub(serviceIntegrity, 'inspectNode');
+            this.inspectPostgresStub = sinon.stub(serviceIntegrity, 'inspectPostgres');
+            this.inspectCouchbaseStub = sinon.stub(serviceIntegrity, 'inspectCouchbase');
         });
 
         beforeEach(function() {
-            this.inspectNodeSpy.reset();
-            this.inspectPostgresSpy.reset();
-            this.inspectCouchbaseSpy.reset();
+            this.inspectNodeStub.reset();
+            this.inspectPostgresStub.reset();
+            this.inspectCouchbaseStub.reset();
         });
 
         after(function() {
-            this.inspectNodeSpy.restore();
-            this.inspectPostgresSpy.restore();
-            this.inspectCouchbaseSpy.restore();
+            this.inspectNodeStub.restore();
+            this.inspectPostgresStub.restore();
+            this.inspectCouchbaseStub.restore();
         });
 
-        it('should return resolved promise', function() {
-            return serviceIntegrity.inspect(this.app).should.be.fulfilled;
-        });
-
-        it('should call inspectNode method', function() {
-
-            return serviceIntegrity.inspect(this.app).bind(this).then(function() {
-                this.inspectNodeSpy.should.have.been.calledOnce;
+        describe('all checks are resolved', function() {
+            beforeEach(function() {
+                this.inspectNodeStub.returns(true);
+                this.inspectPostgresStub.returns(Promise.resolve(true));
+                this.inspectCouchbaseStub.returns(Promise.resolve(true));
             });
 
-        });
+            it('should return resolved promise', function() {
 
-        it('should call inspectPostgres method', function() {
-
-            return serviceIntegrity.inspect(this.app).bind(this).then(function() {
-                this.inspectPostgresSpy.should.have.been.calledOnce;
-                this.inspectPostgresSpy.should.have.been.calledWithExactly(this.app);
+                return serviceIntegrity.inspect(this.app).should.become({
+                    node: true,
+                    postgres: true,
+                    couchbase: true
+                });
             });
 
-        });
+            it('should call inspectNode method', function() {
 
-        it('should call inspectCouchbase method', function() {
+                return serviceIntegrity.inspect(this.app).bind(this).then(function() {
+                    this.inspectNodeStub.should.have.been.calledOnce;
+                });
 
-            return serviceIntegrity.inspect(this.app).bind(this).then(function() {
-                this.inspectCouchbaseSpy.should.have.been.calledOnce;
-                this.inspectCouchbaseSpy.should.have.been.calledWithExactly(this.app);
             });
 
+            it('should call inspectPostgres method', function() {
+
+                return serviceIntegrity.inspect(this.app).bind(this).then(function() {
+                    this.inspectPostgresStub.should.have.been.calledOnce;
+                    this.inspectPostgresStub.should.have.been.calledWithExactly(this.app);
+                });
+
+            });
+
+            it('should call inspectCouchbase method', function() {
+
+                return serviceIntegrity.inspect(this.app).bind(this).then(function() {
+                    this.inspectCouchbaseStub.should.have.been.calledOnce;
+                    this.inspectCouchbaseStub.should.have.been.calledWithExactly(this.app);
+                });
+
+            });
+        });
+
+        it('should return rejected promise with rejection reason', function() {
+            var nodeError = new Error('Inspect node test');
+            var postgresError = new Error('Inspect postgres test');
+
+            this.inspectNodeStub.throws(nodeError);
+            this.inspectPostgresStub.returns(Promise.reject(postgresError));
+            this.inspectCouchbaseStub.returns(Promise.resolve(true));
+
+            return serviceIntegrity.inspect(this.app).should.be.rejected
+                .then(function(err) {
+                    err.should.be.instanceof(ServiceError);
+                    err.should.have.property('context').that.is.eql({
+                        node: nodeError,
+                        postgres: postgresError,
+                        couchbase: true
+                    });
+                });
         });
     });
 
