@@ -305,7 +305,7 @@ describe('App', function() {
         });
     });
 
-    describe.only('clone', function() {
+    describe('clone', function() {
         before(function() {
             this.shouldHaveSameListeners = function(app, app2, event) {
                 app.listeners(event).should.be.eql(app2.listeners(event));
