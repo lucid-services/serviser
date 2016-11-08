@@ -305,7 +305,7 @@ describe('App', function() {
         });
     });
 
-    describe('clone', function() {
+    describe.only('clone', function() {
         before(function() {
             this.shouldHaveSameListeners = function(app, app2, event) {
                 app.listeners(event).should.be.eql(app2.listeners(event));
@@ -324,6 +324,16 @@ describe('App', function() {
             app.config.should.be.equal(this.app.config);
             app.models.should.be.equal(this.app.models);
             app.options.should.be.eql(this.app.options);
+        });
+
+        it('should correctly copy one-time listeners (app.once())', function() {
+            var appOnSpy = sinon.spy(App.prototype, 'on');
+            var oneTimeListenerSpy = sinon.spy();
+
+            this.app.once('pre-build', oneTimeListenerSpy);
+
+            var app = this.app.clone();
+            appOnSpy.should.have.been.calledWithExactly('pre-build', oneTimeListenerSpy);
         });
 
         it('(cloned app) should have copy of `pre-init` event listeners', function() {
