@@ -24,7 +24,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe.only('serviceIntegrity', function() {
+describe('serviceIntegrity', function() {
     before(function() {
         this.models = {};
         this.config = new Config();
