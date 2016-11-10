@@ -1,3 +1,4 @@
+exports.CLI              = require('./lib/cli');
 exports.Express          = require('express');
 exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
 exports.CouchbaseODM     = require('kouchbase-odm');
