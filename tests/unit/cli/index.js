@@ -1,7 +1,8 @@
-var sinon     = require('sinon');
-var chai      = require('chai');
-var sinonChai = require("sinon-chai");
-var Vantage   = require('vantage');
+var sinon          = require('sinon');
+var chai           = require('chai');
+var sinonChai      = require("sinon-chai");
+var chaiAsPromised = require('chai-as-promised');
+var Vantage        = require('vantage');
 
 var AppManager = require('../../../lib/express/appManager.js');
 var App        = require('../../../lib/express/app.js');
@@ -15,6 +16,7 @@ require('sinon-as-promised');
 var expect = chai.expect;
 
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 chai.should();
 
 describe('CLI', function() {
@@ -48,6 +50,7 @@ describe('CLI', function() {
             cmdSpies.forEach(function(spy) {
                 spy.should.have.been.calledOnce;
                 spy.should.have.been.calledWith(cli);
+                spy.restore();
             });
         });
 
@@ -72,6 +75,41 @@ describe('CLI', function() {
         });
     });
 
+    describe('close', function() {
+        before(function() {
+            this.cli = new CLI({
+                apps: []
+            });
+
+            //causes the npm run coverage to print [ERROR]
+            //event though all tests pass
+            this.cli.listen(3100);
+
+            this.cliServerCloseStub = sinon.stub(this.cli.server.server.server, 'close');
+        });
+
+        beforeEach(function() {
+            this.cliServerCloseStub.reset();
+        });
+
+        after(function() {
+            this.cliServerCloseStub.restore();
+        });
+
+        it('should return fulfilled promise', function() {
+            this.cliServerCloseStub.yields();
+
+            return this.cli.close().should.be.become(this.cli);
+        });
+
+        it('should return rejected promise', function() {
+            var error = new Error('server.close test');
+            this.cliServerCloseStub.yields(error);
+
+            return this.cli.close().should.be.rejectedWith(error);
+        });
+    });
+
     describe('listen', function() {
         before(function() {
             this.cli = new CLI({
@@ -81,25 +119,43 @@ describe('CLI', function() {
             this.cliServerListenSpy = sinon.spy(this.cli.server, 'listen');
         });
 
-        it('should call cli.server.listen with provided options', function() {
+        beforeEach(function() {
+            this.cliServerListenSpy.reset();
+        });
+
+        after(function() {
+            this.cliServerListenSpy.restore();
+            return this.cli.close();
+        });
+
+        it('should call cli.server.listen with provided options', function(done) {
+            var self = this;
             var options = {
                 ssl: false
             };
 
-            this.cli.listen(0, options);
+            //causes the npm run coverage to print [ERROR]
+            //event though all tests pass
+            this.cli.on('listening', function listening() {
+                self.cliServerListenSpy.should.have.been.calledOnce;
+                self.cliServerListenSpy.should.have.been.calledWith(
+                    sinon.match.func,
+                    sinon.match(function(options) {
+                        options.port = 3101;
+                        return options.should.be.eql(options);
+                    })
+                );
+                self.cli.removeListener('listening', listening);
+                done();
+            });
+            this.cli.listen(3101, options);
 
-            this.cliServerListenSpy.should.have.been.calledOnce;
-            this.cliServerListenSpy.should.have.been.calledWith(
-                sinon.match.func,
-                sinon.match(function(options) {
-                    options.port = 0;
-                    return options.should.be.eql(options);
-                })
-            );
         });
 
         it('should return self (cli)', function() {
-            this.cli.listen(0).should.be.equal(this.cli);
+            //causes the npm run coverage to print [ERROR]
+            //event though all tests pass
+            this.cli.listen(3102).should.be.equal(this.cli);
         });
     });
 
@@ -110,6 +166,10 @@ describe('CLI', function() {
             });
 
             this.cliServerShowStub = sinon.stub(this.cli.server, 'show');
+        });
+
+        after(function() {
+            this.cliServerShowStub.restore();
         });
 
         it('should call cli.server.show method', function() {

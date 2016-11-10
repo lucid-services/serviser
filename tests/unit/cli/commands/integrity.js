@@ -37,7 +37,7 @@ describe('`integrity` command', function() {
             this.logStub = sinon.stub();
             this.logErrStub = sinon.stub();
 
-            integrityCmd.__set__({
+            this.consoleStubRevert = integrityCmd.__set__({
                 console: {
                     log: this.logStub,
                     error: this.logErrStub
@@ -49,6 +49,7 @@ describe('`integrity` command', function() {
 
         after(function() {
             this.serviceIntegrityInspectStub.restore();
+            this.consoleStubRevert();
         });
 
         beforeEach(function() {

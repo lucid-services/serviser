@@ -56,7 +56,7 @@ describe('`ls` command', function() {
         this.logStub = sinon.stub();
         this.logErrStub = sinon.stub();
 
-        lsCmd.__set__({
+        this.consoleStubRevert = lsCmd.__set__({
             console: {
                 log: this.logStub,
                 error: this.logErrStub
@@ -69,6 +69,10 @@ describe('`ls` command', function() {
     beforeEach(function() {
         this.logStub.reset();
         this.logErrStub.reset();
+    });
+
+    after(function() {
+        this.consoleStubRevert();
     });
 
     describe('action', function() {

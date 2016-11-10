@@ -37,7 +37,7 @@ describe('`use` command', function() {
         this.logStub = sinon.stub();
         this.logErrStub = sinon.stub();
 
-        useCmd.__set__({
+        this.consoleStubRevert = useCmd.__set__({
             console: {
                 log: this.logStub,
                 error: this.logErrStub
@@ -52,6 +52,10 @@ describe('`use` command', function() {
         this.logErrStub.reset();
 
         this.cli.apps = [];
+    });
+
+    after(function() {
+        this.consoleStubRevert();
     });
 
     describe('action', function() {

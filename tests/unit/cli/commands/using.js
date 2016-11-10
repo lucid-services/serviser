@@ -39,7 +39,7 @@ describe('`using` command', function() {
         this.logErrStub = sinon.stub();
         this.printAppsSpy = sinon.spy(lsCmd, 'printApps');
 
-        usingCmd.__set__({
+        this.consoleStubRevert = usingCmd.__set__({
             console: {
                 log: this.logStub,
                 error: this.logErrStub
@@ -59,6 +59,7 @@ describe('`using` command', function() {
 
     after(function() {
         this.printAppsSpy.restore();
+        this.consoleStubRevert();
     });
 
     describe('action', function() {
