@@ -81,7 +81,7 @@ describe('CLI', function() {
                 apps: []
             });
 
-            //causes the npm run coverage to print [ERROR]
+            //TODO causes the npm run coverage to print [ERROR]
             //event though all tests pass
             this.cli.listen(3100);
 
@@ -134,7 +134,7 @@ describe('CLI', function() {
                 ssl: false
             };
 
-            //causes the npm run coverage to print [ERROR]
+            //TODO causes the npm run coverage to print [ERROR]
             //event though all tests pass
             this.cli.on('listening', function listening() {
                 self.cliServerListenSpy.should.have.been.calledOnce;
@@ -153,7 +153,7 @@ describe('CLI', function() {
         });
 
         it('should return self (cli)', function() {
-            //causes the npm run coverage to print [ERROR]
+            //TODO causes the npm run coverage to print [ERROR]
             //event though all tests pass
             this.cli.listen(3102).should.be.equal(this.cli);
         });
