@@ -62,7 +62,9 @@ describe('static data loader', function() {
         this.couchbaseConfig = {
             host: 'localhost',
             buckets: {
-                main: 'test'
+                main: {
+                    bucket: 'test'
+                }
             }
         };
 
