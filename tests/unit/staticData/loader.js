@@ -23,7 +23,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe.only('static data loader', function() {
+describe('static data loader', function() {
     before(function() {
         var self = this;
         var loaderSrc = fs.readFileSync(loaderPath);
