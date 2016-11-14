@@ -6,9 +6,13 @@ var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Promise        = require('bluebird');
+var couchbase      = require('couchbase');
+var CouchbaseODM   = require('kouchbase-odm');
+var BucketMock     = require('couchbase/lib/mock/bucket');
 
 var loaderPath = path.normalize(__dirname + '/../../../lib/staticData/loader.js');
 var ConfigMock = require('../mocks/config.js');
+var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -19,7 +23,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('static data loader', function() {
+describe.only('static data loader', function() {
     before(function() {
         var self = this;
         var loaderSrc = fs.readFileSync(loaderPath);
@@ -55,12 +59,24 @@ describe('static data loader', function() {
             host: 'localhost'
         };
 
+        this.couchbaseConfig = {
+            host: 'localhost',
+            buckets: {
+                main: 'test'
+            }
+        };
+
         this.minimistStub = sinon.stub();
         this.moduleLoaderStub = {
-            loadORMmodels: sinon.stub()
+            loadORMmodels: sinon.stub(),
+            loadODMmodels: sinon.stub(),
+            getCachedModels: sinon.stub()
         };
         this.sequelizeBuilderStub = sinon.stub();
         this.sequelizeStub = sinon.stub();
+        this.clusterStub = sinon.stub(couchbase, 'Cluster', function(host) {
+            return new couchbase.Mock.Cluster(host);
+        });
 
         vm.createContext(this.context);
 
@@ -71,10 +87,16 @@ describe('static data loader', function() {
         };
     });
 
+    after(function() {
+        this.clusterStub.restore();
+    });
+
     beforeEach(function() {
         this.configGetStub.reset();
         this.minimistStub.reset();
         this.moduleLoaderStub.loadORMmodels.reset();
+        this.moduleLoaderStub.loadODMmodels.reset();
+        this.moduleLoaderStub.getCachedModels.reset();
         this.sequelizeBuilderStub.reset();
         this.sequelizeStub.reset();
         this.context.require.reset();
@@ -85,15 +107,22 @@ describe('static data loader', function() {
         this.context.require.withArgs('bluebird').returns(Promise);
         this.context.require.withArgs('bi-config').returns(this.config);
         this.context.require.withArgs('minimist').returns(this.minimistStub);
+        this.context.require.withArgs('kouchbase-odm').returns(CouchbaseODM);
         this.context.require.withArgs('../moduleLoader.js').returns(this.moduleLoaderStub);
         this.context.require.withArgs('../database/sequelize.js').returns(this.sequelizeBuilderStub);
+        this.context.require.withArgs('../database/couchbase.js').returns(CouchbaseCluster);
 
         this.sequelizeBuilderStub.returns(this.sequelizeStub);
-        this.configGetStub.returns(this.postgresConfig);
+        //this.configGetStub.returns();
+        this.configGetStub.withArgs('sequelize').returns(this.postgresConfig);
+        this.configGetStub.withArgs('couchbase').returns(this.couchbaseConfig);
     });
 
-    it("should exit with status code (1) when we don't provide orm module destination", function() {
-        this.moduleLoaderStub.loadORMmodels.returns({});
+    it("should exit with status code (1) when we don't provide module destination", function() {
+        this.moduleLoaderStub.getCachedModels.returns({
+            odm: {},
+            orm: {}
+        });
         this.minimistStub.returns({});
 
         this.runLoader();
@@ -102,8 +131,11 @@ describe('static data loader', function() {
         this.context.process.exit.should.have.been.calledWithExactly(1);
     });
 
-    it("should return an Error when we don't provide orm module destination", function() {
-        this.moduleLoaderStub.loadORMmodels.returns({});
+    it("should return an Error when we don't provide module destination", function() {
+        this.moduleLoaderStub.getCachedModels.returns({
+            odm: {},
+            orm: {}
+        });
         this.minimistStub.returns({});
 
         this.runLoader();
@@ -112,7 +144,7 @@ describe('static data loader', function() {
         this.context.console.error.should.have.been.calledWith(sinon.match.instanceOf(Error));
     });
 
-    it('should load orm models from given destinations', function() {
+    it('should load orm && odm models from given destinations', function() {
         var destinations = [
             './path/to/some/dir/',
             '../path/to/some/file.js',
@@ -129,25 +161,42 @@ describe('static data loader', function() {
             destinations,
             this.sequelizeStub
         );
+        this.moduleLoaderStub.loadODMmodels.should.have.been.calledOnce;
+        this.moduleLoaderStub.loadODMmodels.should.have.been.calledWithExactly(
+            destinations,
+            sinon.match(function(cluster) {
+                return cluster instanceof CouchbaseCluster;
+            }),
+            sinon.match(function(odm) {
+                return odm instanceof CouchbaseODM;
+            })
+        );
     });
 
     it('should call the `initStaticData` method on each model if the model has the method', function() {
         var initStaticDataSpy = sinon.spy();
 
         var models = {
-            Group: {},
-            GroupType: {
-                initStaticData: initStaticDataSpy
+            orm: {
+                Group: {},
+                GroupType: {
+                    initStaticData: initStaticDataSpy
+                },
+                Apps: {
+                    initStaticData: initStaticDataSpy
+                }
             },
-            Apps: {
-                initStaticData: initStaticDataSpy
+            odm: {
+                User: {
+                    initStaticData: initStaticDataSpy
+                }
             }
         };
-        this.moduleLoaderStub.loadORMmodels.returns(models);
+        this.moduleLoaderStub.getCachedModels.returns(models);
 
         this.runLoader();
 
-        initStaticDataSpy.should.have.been.calledTwice;
+        initStaticDataSpy.should.have.been.calledThrice;
     });
 
     it('should await all pending Promise operations and write stringified json result data to the stdout ', function(done) {
@@ -163,19 +212,26 @@ describe('static data loader', function() {
         });
 
         var models = {
-            Role: {
-                initStaticData: initStaticDataSpy
+            orm: {
+                Role: {
+                    initStaticData: initStaticDataSpy
+                },
+                GroupType: {
+                    initStaticData: initStaticDataSpy
+                },
+                Apps: {
+                    initStaticData: initStaticDataSpy
+                }
             },
-            GroupType: {
-                initStaticData: initStaticDataSpy
-            },
-            Apps: {
-                initStaticData: initStaticDataSpy
+            odm: {
+                User: {
+                    initStaticData: initStaticDataSpy
+                }
             }
         };
 
         this.minimistStub.returns({path: ['/some/path/to/dir/']});
-        this.moduleLoaderStub.loadORMmodels.returns(models);
+        this.moduleLoaderStub.getCachedModels.returns(models);
 
         this.runLoader();
 
@@ -185,9 +241,14 @@ describe('static data loader', function() {
             self.context.process.stdout.write.should.have.been.calledOnce;
             self.context.process.stdout.write.should.have.been.calledWith(
                 `${JSON.stringify({
-                    Role: data,
-                    GroupType: data,
-                    Apps: data
+                    orm: {
+                        Role: data,
+                        GroupType: data,
+                        Apps: data
+                    },
+                    odm: {
+                        User: data
+                    }
                 })}\n`
             );
 
@@ -208,16 +269,23 @@ describe('static data loader', function() {
         });
 
         var models = {
-            Role: {
-                initStaticData: initStaticDataSpy
+            orm: {
+                Role: {
+                    initStaticData: initStaticDataSpy
+                },
+                GroupType: {
+                    initStaticData: initStaticDataSpy
+                }
             },
-            GroupType: {
-                initStaticData: initStaticDataSpy
+            odm: {
+                User: {
+                    initStaticData: initStaticDataSpy
+                }
             }
         };
 
         this.minimistStub.returns({path: ['/some/path/to/dir/']});
-        this.moduleLoaderStub.loadORMmodels.returns(models);
+        this.moduleLoaderStub.getCachedModels.returns(models);
 
         this.runLoader();
 
