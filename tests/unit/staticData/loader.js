@@ -178,6 +178,38 @@ describe('static data loader', function() {
         );
     });
 
+    it('should NOT load orm models if NOT provided', function() {
+        var destinations = {
+            odm: [
+                './path/to/some/other/dir/',
+            ]
+        };
+
+        this.minimistStub.returns({
+            'odm-path': destinations.odm,
+        });
+
+        this.runLoader();
+
+        this.moduleLoaderStub.loadORMmodels.should.have.callCount(0);
+    });
+
+    it('should NOT load orm models if NOT provided', function() {
+        var destinations = {
+            orm: [
+                './path/to/some/other/dir/',
+            ]
+        };
+
+        this.minimistStub.returns({
+            'orm-path': destinations.orm,
+        });
+
+        this.runLoader();
+
+        this.moduleLoaderStub.loadODMmodels.should.have.callCount(0);
+    });
+
     it('should call the `initStaticData` method on each model if the model has the method', function() {
         var initStaticDataSpy = sinon.spy();
 

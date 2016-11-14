@@ -204,12 +204,6 @@ describe('static data', function() {
             staticData.__set__('staticData', undefined);
         });
 
-        it('should convert provided model name to camel case notation', function() {
-            staticData.__set__('staticData', {GroupType: {}});
-
-            expect(staticData.get.bind(undefined, 'group_type')).to.not.throw(Error);
-        });
-
         it("should return model's static data", function() {
             var data = {
                 some: 'data'
@@ -217,7 +211,7 @@ describe('static data', function() {
 
             staticData.__set__('staticData', {GroupType: data});
 
-            staticData.get('GroupType').should.be.equal(data);
+            staticData.get('GroupType.some').should.be.equal(data.some);
         });
 
         it('should throw an Error when data are not found for the specified model name', function() {
