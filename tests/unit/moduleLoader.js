@@ -1,10 +1,8 @@
-var _            = require('lodash');
 var rewire       = require('rewire');
 var sinon        = require('sinon');
 var chai         = require('chai');
 var sinonChai    = require("sinon-chai");
 var tmp          = require('tmp');
-var fs           = require('fs');
 var CouchbaseODM = require('kouchbase-odm');
 
 var moduleLoader = rewire('../../lib/moduleLoader.js');
@@ -23,35 +21,12 @@ describe('moduleLoader', function() {
             require(path);
             return self.moduleStub;
         });
-        this.createFileTree = createFileTree;
 
         moduleLoader.__set__('require', this.requireSpy);
 
         tmp.setGracefulCleanup();
         var tmpDir = this.tmpDir = tmp.dirSync({unsafeCleanup: true});
 
-        /*
-         * createFileTree
-         *
-         * helper function which will create directory & file tree ctructure
-         * on the filesystem according to received tree schema
-         *
-         * @param {Object} tree
-         * @param {String} dir - path to temporary directory
-         */
-        function createFileTree(tree, dir) {
-            Object.keys(tree).forEach(function(name) {
-                var value = tree[name];
-                var path = dir + '/' + name;
-
-                if (_.isPlainObject(value)) {
-                    fs.mkdirSync(path);
-                    return createFileTree(value, path);
-                } else if(value === null) {
-                    return fs.writeFileSync(path, '');
-                }
-            });
-        }
     });
 
     beforeEach(function() {
