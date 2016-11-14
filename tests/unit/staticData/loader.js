@@ -147,30 +147,33 @@ describe('static data loader', function() {
     });
 
     it('should load orm && odm models from given destinations', function() {
-        var destinations = [
-            './path/to/some/dir/',
-            '../path/to/some/file.js',
-        ];
+        var destinations = {
+            odm: [
+                './path/to/some/other/dir/',
+            ],
+            orm: [
+                './path/to/some/dir/',
+                '../path/to/some/file.js',
+            ]
+        };
 
         this.minimistStub.returns({
-            path: destinations
+            'orm-path': destinations.orm,
+            'odm-path': destinations.odm,
         });
 
         this.runLoader();
 
         this.moduleLoaderStub.loadORMmodels.should.have.been.calledOnce;
         this.moduleLoaderStub.loadORMmodels.should.have.been.calledWithExactly(
-            destinations,
+            destinations.orm,
             this.sequelizeStub
         );
         this.moduleLoaderStub.loadODMmodels.should.have.been.calledOnce;
         this.moduleLoaderStub.loadODMmodels.should.have.been.calledWithExactly(
-            destinations,
-            sinon.match(function(cluster) {
-                return cluster instanceof CouchbaseCluster;
-            }),
-            sinon.match(function(odm) {
-                return odm instanceof CouchbaseODM;
+            destinations.odm,
+            sinon.match(function(args) {
+                return args[0] instanceof CouchbaseCluster && args[1] instanceof CouchbaseODM;
             })
         );
     });
@@ -232,7 +235,10 @@ describe('static data loader', function() {
             }
         };
 
-        this.minimistStub.returns({path: ['/some/path/to/dir/']});
+        this.minimistStub.returns({
+            'orm-path': ['/some/path/to/dir/'],
+            'odm-path': ['/other/path/to/dir/']
+        });
         this.moduleLoaderStub.getCachedModels.returns(models);
 
         this.runLoader();
@@ -286,7 +292,10 @@ describe('static data loader', function() {
             }
         };
 
-        this.minimistStub.returns({path: ['/some/path/to/dir/']});
+        this.minimistStub.returns({
+            'orm-path': ['/some/path/to/dir/'],
+            'odm-path': ['/other/path/to/dir/'],
+        });
         this.moduleLoaderStub.getCachedModels.returns(models);
 
         this.runLoader();

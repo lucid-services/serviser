@@ -41,17 +41,20 @@ describe('static data', function() {
             });
             var cmd = require.resolve('../../../lib/staticData/loader.js');
 
-            staticData.loadSync(['/path/to/file', '/path/to/dir/']);
+            staticData.loadSync({
+                odm: ['/path/to/file'],
+                orm: ['/path/to/dir/']
+            });
 
             this.spawnSyncStub.should.have.been.calledOnce;
             this.spawnSyncStub.should.have.been.calledWith(
                 'node',
                 [
                     cmd,
-                    '--path',
-                    '/path/to/file',
-                    '--path',
-                    '/path/to/dir/'
+                    '--orm-path',
+                    '/path/to/dir/',
+                    '--odm-path',
+                    '/path/to/file'
                 ]
             );
         });
@@ -64,8 +67,9 @@ describe('static data', function() {
 
             this.spawnSyncStub.returns(resolved);
 
-            expect(staticData.loadSync.bind(undefined, '/path/to/file'))
-                .to.throw(Error).that.have.property('stderr', resolved.stderr);
+            expect(staticData.loadSync.bind(undefined, {
+                orm: '/path/to/file'
+            })).to.throw(Error).that.have.property('stderr', resolved.stderr);
         });
 
         it('should throw an Error when the error occurs while attempting to spawn a new process', function() {
@@ -75,8 +79,9 @@ describe('static data', function() {
 
             this.spawnSyncStub.returns(resolved);
 
-            expect(staticData.loadSync.bind(undefined, '/path/to/file'))
-                .to.throw(resolved.error);
+            expect(staticData.loadSync.bind(undefined, {
+                orm: '/path/to/file'
+            })).to.throw(resolved.error);
         });
 
         it('should return parsed stdout json data', function() {
@@ -85,7 +90,7 @@ describe('static data', function() {
                 stdout: '{"some": "data"}'
             });
 
-            var result = staticData.loadSync('/path/to/file');
+            var result = staticData.loadSync({odm: '/path/to/file'});
 
             result.should.be.eql({some: 'data'});
         });
@@ -97,7 +102,9 @@ describe('static data', function() {
             });
 
             function test() {
-                staticData.loadSync('/path/to/file');
+                staticData.loadSync({
+                    odm: '/path/to/file'
+                });
             }
 
             expect(test).to.throw(Error)
@@ -129,16 +136,18 @@ describe('static data', function() {
         it('should call the `spawn` method with correct arguments', function() {
             var cmd = require.resolve('../../../lib/staticData/loader.js');
 
-            staticData.load(['/path/to/file', '/path/to/dir/']);
+            staticData.load({
+                orm: ['/path/to/file', '/path/to/dir/']
+            });
 
             this.spawnStub.should.have.been.calledOnce;
             this.spawnStub.should.have.been.calledWith(
                 'node',
                 [
                     cmd,
-                    '--path',
+                    '--orm-path',
                     '/path/to/file',
-                    '--path',
+                    '--orm-path',
                     '/path/to/dir/'
                 ]
             );
@@ -151,7 +160,9 @@ describe('static data', function() {
                 self.process.emit('close', 1);
             });
 
-            return staticData.load('/path/to/file').should.be.rejected.then(function(err) {
+            return staticData.load({
+                odm: '/path/to/file'
+            }).should.be.rejected.then(function(err) {
                 err.should.be.an.instanceof(Error);
                 err.should.have.property('stderr');
             });
@@ -165,7 +176,9 @@ describe('static data', function() {
                 self.process.emit('close', 0);
             });
 
-            return staticData.load('/path/to/file').should.be.rejected.then(function(err) {
+            return staticData.load({
+                odm: '/path/to/file'
+            }).should.be.rejected.then(function(err) {
                 err.should.be.an.instanceof(Error);
                 err.should.have.property('message')
                     .that.include('Expected application static data in valid JSON format:');
@@ -180,7 +193,9 @@ describe('static data', function() {
                 self.process.emit('close', 0);
             });
 
-            return staticData.load('/path/to/file').should.become({some: 'data'});
+            return staticData.load({
+                odm: '/path/to/file'
+            }).should.become({some: 'data'});
         });
     });
 
@@ -218,27 +233,35 @@ describe('static data', function() {
         });
 
         it('should accept a string argument value instead of an Array', function() {
-            var input = '/some/path/to/file';
+            var input = {orm: '/some/path/to/file'};
 
             var output = this.getCommandArgs(input);
 
             output.should.be.an.instanceof(Array);
+            output.should.have.lengthOf(2);
         });
 
         it("should transform input array so that each string item is prefixed with `--path ` string", function() {
-            var input = [
-                '/path/to/file',
-                './path/to/dir/'
-            ];
+            var input = {
+                orm: [
+                    '/path/to/file',
+                    './path/to/dir/'
+                ],
+                odm: [
+                    '/path/to/other/file',
+                ]
+            };
 
             var output = this.getCommandArgs(input);
 
             output.should.be.an.instanceof(Array);
             output.should.be.eql([
-                '--path',
-                input[0],
-                '--path',
-                input[1]
+                '--orm-path',
+                input.orm[0],
+                '--orm-path',
+                input.orm[1],
+                '--odm-path',
+                input.odm[0]
             ]);
         });
     });
