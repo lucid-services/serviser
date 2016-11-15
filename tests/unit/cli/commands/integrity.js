@@ -25,8 +25,17 @@ describe('`integrity` command', function() {
     before(function() {
         //fake app
         var appManager = this.appManager = new AppManager(/*no options needed for mocked apps*/);
-        var app = this.app = Object.create(App.prototype);
-        var app2 = this.app2 = Object.create(App.prototype);
+        var app = this.app = Object.create(App.prototype, {
+            options: {
+                value: {name: 'public'}
+            }
+        });
+        var app2 = this.app2 = Object.create(App.prototype, {
+            options: {
+                value: {name: 'private'}
+            }
+        });
+        console.log(app);
 
         appManager.add(app);
         appManager.add(app2);
@@ -137,12 +146,12 @@ describe('`integrity` command', function() {
                 }
             ];
 
-            var output = integrityCmd.print(data);
+            var output = integrityCmd.print(data, this.appManager.apps);
 
-            var expected = 'APP  NODE   COUCHBASE   POSTGRES \n' +
-                            '---  -----  ----------  ---------\n' +
-                            '0    node   couchbase   postgres \n' +
-                            '1    node2  couchbase2  postgres2\n';
+            var expected = 'ID  APP      NODE   COUCHBASE   POSTGRES \n' +
+                           '--  -------  -----  ----------  ---------\n' +
+                           '0   public   node   couchbase   postgres \n' +
+                           '1   private  node2  couchbase2  postgres2\n';
             output.should.be.equal(expected);
         });
     });

@@ -23,8 +23,8 @@ describe('`ls` command', function() {
 
         this.appManager = new AppManager(this.config, this.models);
 
-        var app = this.app = this.appManager.buildApp();
-        var app2 = this.app2 = this.appManager.buildApp();
+        var app = this.app = this.appManager.buildApp({name: 'public'});
+        var app2 = this.app2 = this.appManager.buildApp({name: 'private'});
 
         app.server = new ServerMock;
         app2.server = new ServerMock;
@@ -161,10 +161,10 @@ describe('`ls` command', function() {
             var port = this.app.server.address().port;
             var port2 = this.app2.server.address().port;
 
-            var expected = `ID  PORT  STATUS\n` +
-                           `--  ----  ------\n` +
-                           `0   ${port }  init  \n` +
-                           `1   ${port2}  init  \n`
+            var expected = `ID  NAME     PORT  STATUS\n` +
+                           `--  -------  ----  ------\n` +
+                           `0   public   ${port }  init  \n` +
+                           `1   private  ${port2}  init  \n`
 
             output.should.be.equal(expected);
         });
@@ -177,8 +177,8 @@ describe('`ls` command', function() {
                 header: false
             });
 
-            var expected = `0  ${this.app.server.address().port }  init\n`+
-                           `1  ${this.app2.server.address().port}  init\n`;
+            var expected = `0  public   ${this.app.server.address().port }  init\n`+
+                           `1  private  ${this.app2.server.address().port}  init\n`;
 
             output.should.be.equal(expected);
         });
