@@ -37,7 +37,10 @@ describe('CouchbaseCluster', function() {
     describe('constructor', function() {
         it('should create new couchbase Cluster with received connection options', function() {
             var options = {
-                host: 'localhost'
+                host: 'localhost',
+                buckets: {
+                    main: {bucket: 'main'}
+                }
             };
 
             var couchbaseCluster = new CouchbaseCluster(options);
@@ -49,13 +52,26 @@ describe('CouchbaseCluster', function() {
 
         it('should clone received options', function() {
             var options = {
-                host: 'localhost'
+                host: 'localhost',
+                buckets: {
+                    main: {bucket: 'main'}
+                }
             };
 
             var couchbaseCluster = new CouchbaseCluster(options);
 
             couchbaseCluster.options.should.be.eql(options);
             couchbaseCluster.options.should.not.be.equal(options);
+        });
+
+        it('should throw an Error when we try to create empty cluster (a cluster without any buckets)', function() {
+            function test() {
+                return new CouchbaseCluster({
+                    host: 'localhost',
+                });
+            }
+
+            expect(test).to.throw(Error);
         });
     });
 
@@ -196,7 +212,10 @@ describe('CouchbaseCluster', function() {
     describe('build', function() {
         it('should return new CouchbaseCluster object with correct initialization options', function() {
             var options = {
-                host: 'localhost'
+                host: 'localhost',
+                buckets: {
+                    main: {bucket: 'main'}
+                }
             };
 
             var cluster = CouchbaseCluster.build(options);

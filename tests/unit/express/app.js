@@ -54,6 +54,15 @@ describe('App', function() {
         app.on('unknown-error', this.unknownErrorSpy);
         app.on('error', this.errorSpy);
 
+        this.configGetStub.withArgs('couchbase').returns({
+            host: 'localhost',
+            buckets: {
+                main: {
+                    bucket: 'main'
+                }
+            }
+        });
+
     });
 
     before(function() {
@@ -173,7 +182,13 @@ describe('App', function() {
 
     describe('useCouchbase', function() {
         before(function() {
-            this.couchbaseCluster = new CouchbaseCluster();
+            this.couchbaseCluster = new CouchbaseCluster({
+                buckets: {
+                    main: {
+                        bucket: 'main'
+                    }
+                }
+            });
             this.couchbaseODM = new CouchbaseODM();
         });
 
