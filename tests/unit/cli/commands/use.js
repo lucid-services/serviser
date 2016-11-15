@@ -1,7 +1,8 @@
-var rewire         = require('rewire');
-var sinon          = require('sinon');
-var chai           = require('chai');
-var sinonChai      = require("sinon-chai");
+var _         = require('lodash');
+var rewire    = require('rewire');
+var sinon     = require('sinon');
+var chai      = require('chai');
+var sinonChai = require("sinon-chai");
 
 var App        = require('../../../../lib/express/app.js');
 var AppManager = require('../../../../lib/express/appManager.js');
@@ -24,8 +25,8 @@ describe('`use` command', function() {
 
         this.appManager = new AppManager(this.config, this.models);
 
-        var app = this.app = this.appManager.buildApp();
-        var app2 = this.app2 = this.appManager.buildApp();
+        var app = this.app = this.appManager.buildApp({name: 'public'});
+        var app2 = this.app2 = this.appManager.buildApp({name: 'private'});
 
         app.server = new ServerMock;
         app2.server = new ServerMock;
@@ -74,6 +75,15 @@ describe('`use` command', function() {
 
             this.cli.apps.should.have.lengthOf(1);
             this.cli.apps.should.include(this.app);
+        });
+
+        it('should disconnect all currently conected apps and connect the one specified (string identifier)', function() {
+            this.action({
+                apps: this.app2.options.name
+            }, sinon.spy());
+
+            _.compact(this.cli.apps).should.have.lengthOf(1);
+            this.cli.apps.should.include(this.app2);
         });
 
         it('should log an Invalid argument error', function() {
