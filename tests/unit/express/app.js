@@ -406,11 +406,13 @@ describe('App', function() {
         });
 
         it('should emit the `listening` event', function(done) {
+            var self = this;
             this.app.on('error', function(err) {
                 return done(err);
             });
 
-            this.app.on('listening', function() {
+            this.app.on('listening', function(app) {
+                app.should.be.equal(self.app);
                 return done();
             });
 
