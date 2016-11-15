@@ -14,7 +14,7 @@
   },
   "peerDependencies": {
     "kouchbase-odm": "^1.0.1",
-    "bi-config": "1.0.1"
+    "bi-config": "0.2.0"
   },
   "dependencies": {
     "@fogine/sequelize": "^3.23.5",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "bi-config": "1.0.1",
+    "bi-config": "0.2.0",
     "chai-as-promised": "^5.3.0",
     "istanbul": "^0.4.3",
     "kouchbase-odm": "^1.0.1",
