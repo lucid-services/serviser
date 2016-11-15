@@ -30,7 +30,7 @@ describe('`ls` command', function() {
         app2.server = new ServerMock;
 
         this.cli = new CLI({
-            apps: [app, app2]
+            appManager: this.appManager
         });
 
         var router = app.buildRouter({

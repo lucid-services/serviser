@@ -31,7 +31,7 @@ describe('`use` command', function() {
         app2.server = new ServerMock;
 
         this.cli = new CLI({
-            apps: [app, app2]
+            appManager: this.appManager
         });
 
         this.logStub = sinon.stub();

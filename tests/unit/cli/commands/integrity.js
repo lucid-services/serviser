@@ -6,6 +6,7 @@ var chaiAsPromised = require('chai-as-promised');
 var Vantage        = require('vantage');
 var Promise        = require('bluebird');
 
+var AppManager       = require('../../../../lib/express/appManager.js');
 var App              = require('../../../../lib/express/app.js');
 var CLI              = require('../../../../lib/cli');
 var serviceIntegrity = require('../../../../lib/serviceIntegrity.js');
@@ -23,11 +24,15 @@ chai.should();
 describe('`integrity` command', function() {
     before(function() {
         //fake app
+        var appManager = this.appManager = new AppManager(/*no options needed for mocked apps*/);
         var app = this.app = Object.create(App.prototype);
         var app2 = this.app2 = Object.create(App.prototype);
 
+        appManager.add(app);
+        appManager.add(app2);
+
         this.cli = new CLI({
-            apps: [app, app2]
+            appManager: appManager
         });
     });
 

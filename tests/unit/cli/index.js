@@ -31,7 +31,7 @@ describe('CLI', function() {
     describe('constructor', function() {
         it('should have Vantage server object', function() {
             var cli = new CLI({
-                apps: [this.app]
+                appManager: this.appManager
             });
 
             cli.should.have.property('server').that.is.an.instanceof(Vantage);
@@ -44,7 +44,7 @@ describe('CLI', function() {
             });
 
             var cli = new CLI({
-                apps: [this.app]
+                appManager: this.appManager
             });
 
             cmdSpies.forEach(function(spy) {
@@ -54,20 +54,10 @@ describe('CLI', function() {
             });
         });
 
-        it('should throw an Error when we provide options.apps value that is not an array', function() {
+        it('should throw an Error when we provide options.appManager that is not an instanceof AppManager', function() {
             function test() {
                 var cli = new CLI({
-                    apps: this.app
-                });
-            }
-
-            expect(test).to.throw(Error);
-        });
-
-        it('should throw an Error when options.apps contains value that is not instanceof App', function() {
-            function test() {
-                var cli = new CLI({
-                    apps: ['invalid value']
+                    appManager: this.appManager
                 });
             }
 
@@ -78,7 +68,7 @@ describe('CLI', function() {
     describe('close', function() {
         before(function() {
             this.cli = new CLI({
-                apps: []
+                appManager: this.appManager
             });
 
             //TODO causes the npm run coverage to print [ERROR]
@@ -99,7 +89,7 @@ describe('CLI', function() {
         it('should return fulfilled promise', function() {
             this.cliServerCloseStub.yields();
 
-            return this.cli.close().should.be.become(this.cli);
+            return this.cli.close().should.become(this.cli);
         });
 
         it('should return rejected promise', function() {
@@ -113,7 +103,7 @@ describe('CLI', function() {
     describe('listen', function() {
         before(function() {
             this.cli = new CLI({
-                apps: [this.app]
+                appManager: this.appManager
             });
 
             this.cliServerListenSpy = sinon.spy(this.cli.server, 'listen');
@@ -162,7 +152,7 @@ describe('CLI', function() {
     describe('show', function() {
         before(function() {
             this.cli = new CLI({
-                apps: [this.app]
+                appManager: this.appManager
             });
 
             this.cliServerShowStub = sinon.stub(this.cli.server, 'show');
@@ -185,7 +175,7 @@ describe('CLI', function() {
     describe('command definition interface every command should implement', function() {
         before(function() {
             this.cli = new CLI({
-                apps: [this.app]
+                appManager: this.appManager
             });
         });
 
