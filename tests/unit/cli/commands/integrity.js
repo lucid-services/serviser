@@ -10,6 +10,7 @@ var AppManager       = require('../../../../lib/express/appManager.js');
 var App              = require('../../../../lib/express/app.js');
 var CLI              = require('../../../../lib/cli');
 var serviceIntegrity = require('../../../../lib/serviceIntegrity.js');
+var ServiceError     = require('../../../../lib/error/serviceError.js');
 var integrityCmd     = rewire('../../../../lib/cli/commands/integrity.js');
 
 //this makes sinon-as-promised available in sinon:
@@ -53,7 +54,7 @@ describe('`integrity` command', function() {
 
             this.consoleStubRevert = integrityCmd.__set__({
                 console: {
-                    log: this.logStub,
+                    log: console.log,
                     error: this.logErrStub
                 }
             });
@@ -129,6 +130,27 @@ describe('`integrity` command', function() {
                 done();
             });
         });
+
+        //it.only('should convert serviceIntegrity error data object to an Array when inspection fails', function() {
+            //var self = this;
+            //var error = new ServiceError({context: 'test error'});
+            //var outputData = {some: 'data'};
+
+            //var printSpy = sinon.spy(integrityCmd, 'print');
+
+            //this.serviceIntegrityInspectStub.onFirstCall().returns(Promise.resolve(outputData));
+            //this.serviceIntegrityInspectStub.onSecondCall().returns(Promise.reject(error));
+
+            //this.cli.apps.push(this.app);
+            //this.cli.apps.push(this.app2);
+
+            //this.action({}, function() {
+                //printSpy.should.have.been.calledOnce;
+                //self.logStub.should.have.been.calledWith(printSpy.firstCall.returnValue);
+                //printSpy.restore();
+                //done();
+            //});
+        //});
     });
 
     describe('print', function() {
@@ -137,21 +159,23 @@ describe('`integrity` command', function() {
                 {
                     node: 'node',
                     couchbase: 'couchbase',
-                    postgres: 'postgres'
+                    postgres: 'postgres',
+                    configuration: 'configuration'
                 },
                 {
                     node: 'node2',
                     couchbase: 'couchbase2',
-                    postgres: 'postgres2'
+                    postgres: 'postgres2',
+                    configuration: 'configuration'
                 }
             ];
 
             var output = integrityCmd.print(data, this.appManager.apps);
 
-            var expected = 'ID  APP      NODE   COUCHBASE   POSTGRES \n' +
-                           '--  -------  -----  ----------  ---------\n' +
-                           '0   public   node   couchbase   postgres \n' +
-                           '1   private  node2  couchbase2  postgres2\n';
+            var expected = 'ID  APP      NODE   COUCHBASE   POSTGRES   CONFIGURATION\n' +
+                           '--  -------  -----  ----------  ---------  -------------\n' +
+                           '0   public   node   couchbase   postgres   configuration\n' +
+                           '1   private  node2  couchbase2  postgres2  configuration\n';
             output.should.be.equal(expected);
         });
     });
