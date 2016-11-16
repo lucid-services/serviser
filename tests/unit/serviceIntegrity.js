@@ -3,6 +3,7 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
+var jsonInspector  = require('json-inspector');
 var couchbase      = require('couchbase');
 var BucketMock     = require('couchbase/lib/mock/bucket');
 
@@ -44,23 +45,27 @@ describe('serviceIntegrity', function() {
             this.inspectNodeStub = sinon.stub(serviceIntegrity, 'inspectNode');
             this.inspectPostgresStub = sinon.stub(serviceIntegrity, 'inspectPostgres');
             this.inspectCouchbaseStub = sinon.stub(serviceIntegrity, 'inspectCouchbase');
+            this.inspectConfigurationStub = sinon.stub(serviceIntegrity, 'inspectConfiguration');
         });
 
         beforeEach(function() {
             this.inspectNodeStub.reset();
             this.inspectPostgresStub.reset();
             this.inspectCouchbaseStub.reset();
+            this.inspectConfigurationStub.reset();
         });
 
         after(function() {
             this.inspectNodeStub.restore();
             this.inspectPostgresStub.restore();
             this.inspectCouchbaseStub.restore();
+            this.inspectConfigurationStub.restore();
         });
 
         describe('all checks are resolved', function() {
             beforeEach(function() {
                 this.inspectNodeStub.returns(true);
+                this.inspectConfigurationStub.returns(true);
                 this.inspectPostgresStub.returns(Promise.resolve(true));
                 this.inspectCouchbaseStub.returns(Promise.resolve(true));
             });
@@ -70,7 +75,8 @@ describe('serviceIntegrity', function() {
                 return serviceIntegrity.inspect(this.app).should.become({
                     node: true,
                     postgres: true,
-                    couchbase: true
+                    couchbase: true,
+                    configuration: true
                 });
             });
 
@@ -99,6 +105,13 @@ describe('serviceIntegrity', function() {
                 });
 
             });
+
+            it('should call inspectConfiguration method', function() {
+                return serviceIntegrity.inspect(this.app).bind(this).then(function() {
+                    this.inspectConfigurationStub.should.have.been.calledOnce;
+                    this.inspectConfigurationStub.should.have.been.calledWithExactly(this.app);
+                });
+            });
         });
 
         it('should return rejected promise with rejection reason', function() {
@@ -106,6 +119,7 @@ describe('serviceIntegrity', function() {
             var postgresError = new Error('Inspect postgres test');
 
             this.inspectNodeStub.throws(nodeError);
+            this.inspectConfigurationStub.returns(true);
             this.inspectPostgresStub.returns(Promise.reject(postgresError));
             this.inspectCouchbaseStub.returns(Promise.resolve(true));
 
@@ -115,7 +129,8 @@ describe('serviceIntegrity', function() {
                     err.should.have.property('context').that.is.eql({
                         node: nodeError,
                         postgres: postgresError,
-                        couchbase: true
+                        couchbase: true,
+                        configuration: true
                     });
                 });
         });
@@ -333,6 +348,79 @@ describe('serviceIntegrity', function() {
             }
 
             expect(test).to.throw(Error);
+        });
+    });
+
+    describe('inspectConfiguration', function() {
+        describe('with provided config schema', function() {
+            before(function() {
+                var definitions = {
+                    '#appConfiguration': {
+                        $required: true,
+                        couchbase: {
+                            host: {
+                                $is: String
+                            },
+                            buckets: {
+                                main: {
+                                    bucket: {
+                                        $is: String
+                                    }
+                                }
+                            }
+                        },
+                        shutDownOnError: {
+                            $isBoolean: null
+                        }
+                    }
+                };
+
+                this.app.options = {
+                    validator: {
+                        definitions: definitions
+                    }
+                };
+            });
+
+            after(function() {
+                this.app.options.validator = {};
+            });
+
+            it('should return true', function() {
+                this.configGetStub.returns({
+                    couchbase: {
+                        host: 'localhost',
+                        buckets: {
+                            main: {
+                                bucket: 'main'
+                            }
+                        }
+                    },
+                    shutDownOnError: false
+                });
+
+                serviceIntegrity.inspectConfiguration(this.app).should.be.equal(true);
+            });
+
+            it('should throw a ValidationError', function() {
+                this.configGetStub.returns({});
+
+                function test() {
+                    serviceIntegrity.inspectConfiguration(this.app);
+                }
+
+                expect(test.bind(this)).to.throw(jsonInspector.ValidationMultiError);
+            });
+        });
+
+        describe('without config schema', function() {
+            it('should throw an Error when there is no schema defined', function() {
+                function test() {
+                    serviceIntegrity.inspectConfiguration(this.app);
+                }
+
+                expect(test.bind(this)).to.throw(Error);
+            });
         });
     });
 
