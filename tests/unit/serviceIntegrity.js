@@ -164,8 +164,8 @@ describe('serviceIntegrity', function() {
                 this.memcachedMock.client.set.yields();
             });
 
-            it('should return resolved promise with undefined', function() {
-                return serviceIntegrity.inspectSession(this.app).should.be.resolved;
+            it('should return resolved promise with "true" boolean value', function() {
+                return serviceIntegrity.inspectSession(this.app).should.become(true);
             });
 
             it('should return rejected promise with an Error', function() {
