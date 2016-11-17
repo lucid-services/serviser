@@ -54,7 +54,7 @@ describe('`integrity` command', function() {
 
             this.consoleStubRevert = integrityCmd.__set__({
                 console: {
-                    log: console.log,
+                    log: this.logStub,
                     error: this.logErrStub
                 }
             });
@@ -115,7 +115,12 @@ describe('`integrity` command', function() {
 
         it('should print the results of inspection', function(done) {
             var self = this;
-            var outputData = {some: 'data'};
+            var outputData = [{
+                couchbase: 'couchbase',
+                postgres: 'postgres',
+                configuration: 'configuration',
+                node: 'node'
+            }];
 
             var printSpy = sinon.spy(integrityCmd, 'print');
 
@@ -131,26 +136,26 @@ describe('`integrity` command', function() {
             });
         });
 
-        //it.only('should convert serviceIntegrity error data object to an Array when inspection fails', function() {
-            //var self = this;
-            //var error = new ServiceError({context: 'test error'});
-            //var outputData = {some: 'data'};
+        it('should convert serviceIntegrity error data object to an Array when inspection fails', function(done) {
+            var self = this;
+            var error = new ServiceError({context: 'test error'});
+            var outputData = {some: 'data'};
 
-            //var printSpy = sinon.spy(integrityCmd, 'print');
+            var printSpy = sinon.spy(integrityCmd, 'print');
 
-            //this.serviceIntegrityInspectStub.onFirstCall().returns(Promise.resolve(outputData));
-            //this.serviceIntegrityInspectStub.onSecondCall().returns(Promise.reject(error));
+            this.serviceIntegrityInspectStub.onFirstCall().returns(Promise.resolve(outputData));
+            this.serviceIntegrityInspectStub.onSecondCall().returns(Promise.reject(error));
 
-            //this.cli.apps.push(this.app);
-            //this.cli.apps.push(this.app2);
+            this.cli.apps.push(this.app);
+            this.cli.apps.push(this.app2);
 
-            //this.action({}, function() {
-                //printSpy.should.have.been.calledOnce;
-                //self.logStub.should.have.been.calledWith(printSpy.firstCall.returnValue);
-                //printSpy.restore();
-                //done();
-            //});
-        //});
+            this.action({}, function() {
+                printSpy.should.have.been.calledOnce;
+                self.logStub.should.have.been.calledWith(printSpy.firstCall.returnValue);
+                printSpy.restore();
+                done();
+            });
+        });
     });
 
     describe('print', function() {
