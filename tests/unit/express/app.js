@@ -1,14 +1,15 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var sinonChai      = require("sinon-chai");
-var http           = require('http');
-var https          = require('https');
-var Express        = require('express');
-var logger         = require('bi-logger');
-var Session        = require('express-session');
-var Flash          = require('connect-flash');
-var CouchbaseODM   = require('kouchbase-odm');
+var sinon            = require('sinon');
+var chai             = require('chai');
+var chaiAsPromised   = require('chai-as-promised');
+var sinonChai        = require("sinon-chai");
+var http             = require('http');
+var https            = require('https');
+var Express          = require('express');
+var logger           = require('bi-logger');
+var Session          = require('express-session');
+var Flash            = require('connect-flash');
+var CouchbaseODM     = require('kouchbase-odm');
+var ExpressValidator = require('json-inspector');
 
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
@@ -37,6 +38,7 @@ describe('App', function() {
         var app = this.app = this.appManager.buildApp();
 
         this.configGetStub = sinon.stub(this.config, 'get');
+        this.getExpressInjectorSpy = sinon.spy(ExpressValidator, 'getExpressInjector');
 
         this.preBuildSpy      = sinon.spy();
         this.postBuildSpy     = sinon.spy();
@@ -91,6 +93,8 @@ describe('App', function() {
         delete this.config;
         delete this.appManager;
         delete this.app;
+
+        this.getExpressInjectorSpy.restore();
     });
 
     describe('on', function() {
@@ -164,6 +168,15 @@ describe('App', function() {
 
         it('should emit `pre-init` event', function() {
             this.postInitSpy.should.have.been.calledOnce;
+        });
+
+        it('should pass CLONED options object to the json inspector injector middleware', function() {
+            var self = this;
+
+            this.getExpressInjectorSpy.should.have.been.calledOnce;
+            this.getExpressInjectorSpy.should.have.been.calledWith(sinon.match(function(options) {
+                return self.app.options.validator !== options && options.should.be.eql(self.app.options.validator);
+            }));
         });
     });
 
