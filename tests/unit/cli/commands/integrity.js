@@ -165,22 +165,24 @@ describe('`integrity` command', function() {
                     node: 'node',
                     couchbase: 'couchbase',
                     postgres: 'postgres',
-                    configuration: 'configuration'
+                    configuration: 'configuration',
+                    session: 'session'
                 },
                 {
                     node: 'node2',
                     couchbase: 'couchbase2',
                     postgres: 'postgres2',
-                    configuration: 'configuration'
+                    configuration: 'configuration',
+                    session: 'session'
                 }
             ];
 
             var output = integrityCmd.print(data, this.appManager.apps);
 
-            var expected = 'ID  APP      NODE   COUCHBASE   POSTGRES   CONFIGURATION\n' +
-                           '--  -------  -----  ----------  ---------  -------------\n' +
-                           '0   public   node   couchbase   postgres   configuration\n' +
-                           '1   private  node2  couchbase2  postgres2  configuration\n';
+            var expected = 'ID  APP      NODE   COUCHBASE   POSTGRES   SESSION  CONFIGURATION\n' +
+                           '--  -------  -----  ----------  ---------  -------  -------------\n' +
+                           '0   public   node   couchbase   postgres   session  configuration\n' +
+                           '1   private  node2  couchbase2  postgres2  session  configuration\n';
             output.should.be.equal(expected);
         });
     });
