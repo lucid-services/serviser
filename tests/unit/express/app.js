@@ -19,6 +19,7 @@ var AppStatus        = require('../../../lib/express/appStatus.js');
 var sequelizeBuilder = require('../../../lib/database/sequelize.js');
 var Config           = require('../mocks/config.js');
 var Server           = require('../mocks/server.js');
+var MemcachedStore   = require('../mocks/memcachedStore.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -183,13 +184,26 @@ describe('App', function() {
     describe('useSession', function() {
         it('should connect Session & Flash middlewares to express app', function() {
             var appUseSpy = sinon.spy(this.app, 'use');
+            var memcachedMock = new MemcachedStore();
+
             this.configGetStub.returns({});
 
-            this.app.useSession();
+            this.app.useSession(memcachedMock);
+
+            this.app.storage.session.should.be.equal(memcachedMock);
 
             //TODO verify that actuall flash & session middleware was provided to the function
             sinon.assert.alwaysCalledWith(appUseSpy, sinon.match.func);
             appUseSpy.calledTwice;
+        });
+
+        it('should return connected memcached object when the app is already connected to to memcached', function() {
+            var memcachedMock = new MemcachedStore();
+            var memcachedMock2 = new MemcachedStore();
+
+            this.configGetStub.returns({});
+            this.app.useSession(memcachedMock);
+            this.app.useSession(memcachedMock2).should.be.equal(memcachedMock);
         });
     });
 

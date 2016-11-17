@@ -7,6 +7,7 @@ var jsonInspector  = require('json-inspector');
 var couchbase      = require('couchbase');
 var BucketMock     = require('couchbase/lib/mock/bucket');
 
+var MemcachedStore   = require('./mocks/memcachedStore.js');
 var ServiceError     = require('../../lib/error/serviceError.js');
 var serviceIntegrity = require('../../lib/serviceIntegrity.js');
 var CouchbaseCluster = require('../../lib/database/couchbase.js');
@@ -43,6 +44,7 @@ describe('serviceIntegrity', function() {
     describe('inspect', function() {
         before(function() {
             this.inspectNodeStub = sinon.stub(serviceIntegrity, 'inspectNode');
+            this.inspectSessionStub = sinon.stub(serviceIntegrity, 'inspectSession');
             this.inspectPostgresStub = sinon.stub(serviceIntegrity, 'inspectPostgres');
             this.inspectCouchbaseStub = sinon.stub(serviceIntegrity, 'inspectCouchbase');
             this.inspectConfigurationStub = sinon.stub(serviceIntegrity, 'inspectConfiguration');
@@ -50,6 +52,7 @@ describe('serviceIntegrity', function() {
 
         beforeEach(function() {
             this.inspectNodeStub.reset();
+            this.inspectSessionStub.reset();
             this.inspectPostgresStub.reset();
             this.inspectCouchbaseStub.reset();
             this.inspectConfigurationStub.reset();
@@ -57,6 +60,7 @@ describe('serviceIntegrity', function() {
 
         after(function() {
             this.inspectNodeStub.restore();
+            this.inspectSessionStub.restore();
             this.inspectPostgresStub.restore();
             this.inspectCouchbaseStub.restore();
             this.inspectConfigurationStub.restore();
@@ -65,6 +69,7 @@ describe('serviceIntegrity', function() {
         describe('all checks are resolved', function() {
             beforeEach(function() {
                 this.inspectNodeStub.returns(true);
+                this.inspectSessionStub.returns(Promise.resolve(true));
                 this.inspectConfigurationStub.returns(true);
                 this.inspectPostgresStub.returns(Promise.resolve(true));
                 this.inspectCouchbaseStub.returns(Promise.resolve(true));
@@ -76,7 +81,8 @@ describe('serviceIntegrity', function() {
                     node: true,
                     postgres: true,
                     couchbase: true,
-                    configuration: true
+                    configuration: true,
+                    session: true
                 });
             });
 
@@ -122,6 +128,7 @@ describe('serviceIntegrity', function() {
             this.inspectConfigurationStub.returns(true);
             this.inspectPostgresStub.returns(Promise.reject(postgresError));
             this.inspectCouchbaseStub.returns(Promise.resolve(true));
+            this.inspectSessionStub.returns(Promise.resolve(true));
 
             return serviceIntegrity.inspect(this.app).should.be.rejected
                 .then(function(err) {
@@ -130,9 +137,74 @@ describe('serviceIntegrity', function() {
                         node: nodeError,
                         postgres: postgresError,
                         couchbase: true,
-                        configuration: true
+                        configuration: true,
+                        session: true
                     });
                 });
+        });
+    });
+
+    describe('inspectSession', function() {
+
+        describe('with session store connected to the app', function() {
+            before(function() {
+                this.memcachedMock = new MemcachedStore();
+                this.configGetStub.returns({});
+
+                this.app.useSession(this.memcachedMock);
+            });
+
+            beforeEach(function() {
+                this.memcachedMock.client.get.reset();
+                this.memcachedMock.client.destroy.reset();
+                this.memcachedMock.client.set.reset();
+
+                this.memcachedMock.client.get.yields();
+                this.memcachedMock.client.destroy.yields();
+                this.memcachedMock.client.set.yields();
+            });
+
+            it('should return resolved promise with undefined', function() {
+                return serviceIntegrity.inspectSession(this.app).should.be.resolved;
+            });
+
+            it('should return rejected promise with an Error', function() {
+                var error = new Error('test inspectSession error');
+                this.memcachedMock.client.get.yields(error);
+
+                return serviceIntegrity.inspectSession(this.app)
+                    .should.be.rejected.then(function(err) {
+                        err.message.should.be.equal(error.message);
+                    });
+            });
+        });
+
+        describe('without session store connected to the app', function() {
+            before(function() {
+                this.app.storage.session = null;
+            });
+
+            it('should return resolved promise with "false" boolean value', function() {
+                return serviceIntegrity.inspectSession(this.app).should.become(false);
+            });
+        });
+
+        describe('with UNSUPPORTED session store connected to the app', function() {
+            before(function() {
+                this.configGetStub.returns({});
+                this.app.storage.session = {
+                    get: sinon.stub(),
+                    set: sinon.stub(),
+                    destroy: sinon.stub(),
+                };
+            });
+
+            it('should return rejected Promise with an Error', function() {
+                return serviceIntegrity.inspectSession(this.app)
+                    .should.be.rejected.then(function(err) {
+                        err.message.should.include('Unsupported session store');
+                    });
+            });
         });
     });
 
