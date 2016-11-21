@@ -21,8 +21,8 @@ describe('errorHandler middleware', function() {
         this.models = {};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.config, this.models);
-        var app = this.app = this.appManager.buildApp();
+        this.appManager = new AppManager(this.models);
+        var app = this.app = this.appManager.buildApp(this.config);
 
         this.appSetStatusSpy = sinon.spy(this.app, '$setStatus');
         this.loggerStub = sinon.stub(logger, 'err');

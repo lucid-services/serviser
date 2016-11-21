@@ -33,8 +33,8 @@ describe('serviceIntegrity', function() {
 
         this.configGetStub = sinon.stub(this.config, 'get');
 
-        this.appManager = new AppManager(this.config, this.models);
-        var app = this.app = this.appManager.buildApp();
+        this.appManager = new AppManager(this.models);
+        var app = this.app = this.appManager.buildApp(this.config);
     });
 
     beforeEach(function() {

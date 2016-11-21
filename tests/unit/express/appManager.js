@@ -15,7 +15,7 @@ describe('AppManager', function() {
     before(function() {
         this.models = {};
         this.config = new Config();
-        this.appManager = new AppManager(this.config, this.models);
+        this.appManager = new AppManager(this.models);
     });
 
     after(function() {
@@ -43,7 +43,7 @@ describe('AppManager', function() {
                     failOnFirstErr: false
                 }
             };
-            this.app = this.appManager.buildApp(this.options);
+            this.app = this.appManager.buildApp(this.config, this.options);
         });
 
         after(function() {
