@@ -95,6 +95,18 @@ describe('static data', function() {
             result.should.be.eql({some: 'data'});
         });
 
+        it('should update `loadFnOptionsCache` variable', function() {
+            this.spawnSyncStub.returns({
+                status: 0,
+                stdout: '{"some": "data"}'
+            });
+
+            var options = [{odm: '/path/to/unique/file'}];
+            var result = staticData.loadSync.apply(staticData, options);
+
+            staticData.__get__('loadFnOptionsCache').should.be.eql(options);
+        });
+
         it('should throw an Error when stdout data are not valid JSON', function() {
             this.spawnSyncStub.returns({
                 status: 0,
@@ -102,6 +114,7 @@ describe('static data', function() {
             });
 
             function test() {
+
                 staticData.loadSync({
                     odm: '/path/to/file'
                 });
@@ -197,6 +210,20 @@ describe('static data', function() {
                 odm: '/path/to/file'
             }).should.become({some: 'data'});
         });
+
+        it('should update `loadFnOptionsCache` variable', function() {
+            var self = this;
+            var options = [{odm: '/path/to/unique/destination'}];
+
+            process.nextTick(function() {
+                self.process.stdout.emit('data', '{"some": "data"}');
+                self.process.emit('close', 0);
+            });
+
+            return staticData.load.apply(staticData, options).then(function() {
+                staticData.__get__('loadFnOptionsCache').should.be.eql(options);
+            });
+        });
     });
 
     describe('get', function() {
@@ -218,6 +245,16 @@ describe('static data', function() {
             staticData.__set__('staticData', {});
 
             expect(staticData.get.bind(undefined, 'group_type')).to.throw(Error);
+        });
+    });
+
+    describe('$getLastLoadOptions', function() {
+        it('should return load options cache', function() {
+            var data = [{some: 'value'}];
+
+            staticData.__set__('loadFnOptionsCache', data);
+
+            staticData.$getLastLoadOptions().should.be.equal(data);
         });
     });
 
