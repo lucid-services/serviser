@@ -1,7 +1,7 @@
 var sinon        = require('sinon');
 var chai         = require('chai');
 var sinonChai    = require("sinon-chai");
-var Sequelize    = require('@fogine/sequelize');
+var Sequelize    = require('sequelize');
 
 var sequelizeBuilder = require('../../../lib/database/sequelize.js');
 var penetrator       = require('../../../lib/sequelize/penetrator.js');

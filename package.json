@@ -17,7 +17,7 @@
     "bi-config": "0.5.0"
   },
   "dependencies": {
-    "@fogine/sequelize": "^3.23.5",
+    "sequelize": "^3.27.0",
     "async": "^2.0.1",
     "bi-logger": "git+ssh://git@webdev-git.czupc.bistudio.com:juraj/logger.git#master",
     "bluebird": "^3.4.6",
