@@ -83,7 +83,9 @@ describe('errorHandler middleware', function() {
     });
 
     it('should return json response with correct status code when we get RequestError', function() {
-        var error = new RequestError('message');
+        var error = new RequestError({
+            message: 'test message'
+        });
 
         errorHandler.call(this.app, error, this.req, this.res, this.next);
 
