@@ -116,8 +116,8 @@ describe('static data loader', function() {
 
         this.sequelizeBuilderStub.returns(this.sequelizeStub);
         //this.configGetStub.returns();
-        this.configGetStub.withArgs('sequelize').returns(this.postgresConfig);
-        this.configGetStub.withArgs('couchbase').returns(this.couchbaseConfig);
+        this.configGetStub.withArgs('storage:sequelize').returns(this.postgresConfig);
+        this.configGetStub.withArgs('storage:couchbase').returns(this.couchbaseConfig);
     });
 
     it("should exit with status code (1) when we don't provide module destination", function() {
