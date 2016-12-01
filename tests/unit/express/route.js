@@ -415,6 +415,86 @@ describe('Route', function() {
         });
     });
 
+    describe('restrictByIp', function() {
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                url: '/',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+
+            this.restrictIpMiddlewareSpy = sinon.spy(this.route, '$restrictIpMiddleware');            
+        });
+
+        afterEach(function() {
+            this.restrictIpMiddlewareSpy.restore();            
+        });
+
+        it('should call route.$restrictIpMiddleware builder function', function() {
+
+            this.route.restrictByIp();
+            this.restrictIpMiddlewareSpy.should.have.been.calledOnce;            
+        });
+
+        it("should push restrict ip middleware to the route's stack", function() {
+            this.route.restrictByIp();
+
+            this.route.steps.should.include({
+                name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
+            });
+        });
+
+        it("should add restrict ip middleware to the route's dictionary", function() {
+            this.route.restrictByIp();
+
+            this.route.steps.should.include({
+                name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
+            });
+        });
+    });
+
+    describe('restrictByOrigin', function() {
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                url: '/',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+            
+            this.restrictOriginMiddlewareSpy = sinon.spy(this.route, '$restrictOriginMiddleware');
+        });
+
+        afterEach(function() {            
+            this.restrictOriginMiddlewareSpy.restore();
+        });
+
+        it('should call route.$restrictOriginMiddleware builder function', function() {
+
+            this.route.restrictByOrigin();
+            this.restrictOriginMiddlewareSpy.should.have.been.calledOnce;
+        });
+
+        it("should push restrict origin middleware to the route's stack", function() {
+            this.route.restrictByOrigin();
+
+            this.route.steps.should.include({
+                name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
+            });
+        });
+
+        it("should add restrict origin middleware to the route's dictionary", function() {
+            this.route.restrictByOrigin();
+
+            this.route.steps.should.include({
+                name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
+            });
+        });        
+    });    
+
     describe('addStep', function() {
         beforeEach(function() {
             this.route = this.buildRoute({
