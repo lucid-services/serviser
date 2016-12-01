@@ -1,5 +1,10 @@
-var chai = require('chai');
+var chai             = require('chai');
+var chaiAsPromised   = require('chai-as-promised');
+var sinonChai        = require("sinon-chai");
+
 chai.should();
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 var RestrictIpMiddleware = require('./../../../lib/middleware/restrictIp.js');
 var RequestError = require('./../../../lib/error/requestError.js');
