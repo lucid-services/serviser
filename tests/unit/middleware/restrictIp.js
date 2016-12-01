@@ -67,7 +67,7 @@ describe('restrict ip middleware', function () {
                 }
             };
 
-            restrictIp(req).should.be.rejected.then(function(e){
+            return restrictIp(req).should.be.rejected.then(function(e){
                 e.should.be.instanceOf(RequestError);
                 e.should.have.property('message', 'Forbidden');
                 e.should.have.property('code', 403);
@@ -84,7 +84,7 @@ describe('restrict ip middleware', function () {
                 }
             };
 
-            restrictIp(req).should.be.rejected.then(function(e){
+            return restrictIp(req).should.be.rejected.then(function(e){
                 e.should.be.instanceOf(RequestError);
                 e.should.have.property('message', 'Forbidden');
                 e.should.have.property('code', 403);
