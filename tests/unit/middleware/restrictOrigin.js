@@ -10,29 +10,26 @@ describe('restrict origin middleware', function () {
     describe('unifyUrl()', function () {
 
         it('should unify url',
-            function (done) {
+            function () {
                 var url = 'http://localhost/spare&part=true';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals('http://localhost');
-                done();
             }
         );
 
         it('should unify ip address',
-            function (done) {
+            function () {
                 var url = 'http://127.0.0.1:3030/spare&part=true';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals('http://127.0.0.1:3030');
-                done();
             }
         );
 
         it('shouldn\'t modify unified url',
-            function (done) {
+            function () {
                 var url = 'http://localhost';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals(url);
-                done();
             }
         );
     });
