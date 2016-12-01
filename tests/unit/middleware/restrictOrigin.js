@@ -3,6 +3,7 @@ chai.should();
 
 var RestrictOriginMiddleware = require('./../../../lib/middleware/restrictOrigin.js');
 var RequestError = require('./../../../lib/error/requestError.js');
+var ServiceError = require('./../../../lib/error/serviceError.js');
 var restrictOrigin = RestrictOriginMiddleware();
 
 describe('restrict origin middleware', function () {
@@ -236,9 +237,7 @@ describe('restrict origin middleware', function () {
                     done(new Error('Should not resolve'));
                 })
                 .catch(function(e){
-                    e.should.be.instanceOf(RequestError);
-                    e.should.have.property('message', 'Domains must be set');
-                    e.should.have.property('code', 400);
+                    e.should.be.instanceOf(ServiceError);                    
                     done();
                 }); 
             }

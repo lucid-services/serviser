@@ -3,6 +3,7 @@ chai.should();
 
 var RestrictIpMiddleware = require('./../../../lib/middleware/restrictIp.js');
 var RequestError = require('./../../../lib/error/requestError.js');
+var ServiceError = require('./../../../lib/error/serviceError.js');
 var restrictIp = new RestrictIpMiddleware();
 
 describe('restrict ip middleware', function () {
@@ -60,9 +61,7 @@ describe('restrict ip middleware', function () {
                 done(new Error('Should not resolve'));
             })
             .catch(function(e){
-                e.should.be.instanceOf(RequestError);
-                e.should.have.property('message', 'Ip addresses must be set');                
-                e.should.have.property('code', 400);                
+                e.should.be.instanceOf(ServiceError);
                 done();
             });
         }

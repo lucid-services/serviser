@@ -439,11 +439,9 @@ describe('Route', function() {
         });
 
         it("should push restrict ip middleware to the route's stack", function() {
-            this.route.restrictByIp();
 
-            this.route.steps.should.include({
-                name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
-            });
+            this.route.restrictByIp();
+            this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
 
         it("should add restrict ip middleware to the route's dictionary", function() {
@@ -481,9 +479,7 @@ describe('Route', function() {
         it("should push restrict origin middleware to the route's stack", function() {
             this.route.restrictByOrigin();
 
-            this.route.steps.should.include({
-                name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
-            });
+            this.route.stepsDict.should.have.property('restrictOrigin').that.is.a('function');
         });
 
         it("should add restrict origin middleware to the route's dictionary", function() {
