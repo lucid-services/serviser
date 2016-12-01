@@ -8,7 +8,7 @@ var restrictIp = new RestrictIpMiddleware();
 describe('restrict ip middleware', function () {
 
     it('should resolve if ip address is in client\'s ips array',
-        function (done) {
+        function () {
 
             var req = {
                 ip: '::ffff:127.0.0.1',
@@ -17,13 +17,7 @@ describe('restrict ip middleware', function () {
                 }
             };
 
-            restrictIp(req)
-            .then(function(){
-                done();
-            })
-            .catch(function(e){
-                done(e);
-            });
+            return restrictIp(req).should.be.fulfilled;
         }
     );
 
@@ -48,28 +42,23 @@ describe('restrict ip middleware', function () {
     );
 
     it('should reject if client\'s ips is undefined',
-        function (done) {
+        function () {
             
             var req = {
                 ip: '::ffff:127.0.0.1',
                 client: {}
             };
 
-            restrictIp(req)
-            .then(function(){
-                done(new Error('Should not resolve'));
-            })
-            .catch(function(e){
+            return restrictIp(req).should.be.rejected.then(function(e){
                 e.should.be.instanceOf(RequestError);
                 e.should.have.property('message', 'Ip addresses must be set');                
                 e.should.have.property('code', 400);                
-                done();
             });
         }
     );
 
     it('should reject if provided ip address is not allowed',
-        function (done) {
+        function () {
             
             var req = {
                 ip: '::ffff:127.0.0.3',
@@ -78,21 +67,16 @@ describe('restrict ip middleware', function () {
                 }
             };
 
-            restrictIp(req)
-            .then(function(){
-                done(new Error('Should not resolve'));
-            })
-            .catch(function(e){
+            restrictIp(req).should.be.rejected.then(function(e){
                 e.should.be.instanceOf(RequestError);
                 e.should.have.property('message', 'Forbidden');
                 e.should.have.property('code', 403);
-                done();
             });
         }
     );    
 
     it('should reject if ip address was not supplied',
-        function (done) {
+        function () {
             
             var req = {                
                 client: {
@@ -100,15 +84,10 @@ describe('restrict ip middleware', function () {
                 }
             };
 
-            restrictIp(req)
-            .then(function(){
-                done(new Error('Should not resolve'));
-            })
-            .catch(function(e){
+            restrictIp(req).should.be.rejected.then(function(e){
                 e.should.be.instanceOf(RequestError);
                 e.should.have.property('message', 'Forbidden');
                 e.should.have.property('code', 403);
-                done();
             });
         }
     );
