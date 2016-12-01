@@ -1,5 +1,8 @@
-var chai = require('chai');
+var chai             = require('chai');
+var chaiAsPromised   = require('chai-as-promised');
+
 chai.should();
+chai.use(chaiAsPromised);
 
 var RestrictOriginMiddleware = require('./../../../lib/middleware/restrictOrigin.js');
 var RequestError = require('./../../../lib/error/requestError.js');
@@ -51,7 +54,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.fulfilled;
+                return restrictOrigin(req).should.be.fulfilled;
             }
         );
 
@@ -71,7 +74,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.fulfilled;
+                return restrictOrigin(req).should.be.fulfilled;
             }
         );
 
@@ -91,7 +94,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.fulfilled;
+                return restrictOrigin(req).should.be.fulfilled;
             }
         );
 
@@ -109,7 +112,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.fulfilled;                
+                return restrictOrigin(req).should.be.fulfilled;                
             }
         );
 
@@ -124,7 +127,8 @@ describe('restrict origin middleware', function () {
                         return;
                     }
                 };
-                restrictOrigin(req).should.be.rejected
+
+                return restrictOrigin(req).should.be.rejected
                 .then(function(e){
                     e.should.be.instanceOf(RequestError);
                     e.should.have.property('message', 'Forbidden');
@@ -147,7 +151,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
 
-                restrictOrigin(req).should.be.rejected
+                return restrictOrigin(req).should.be.rejected
                 .then(function(e){
                     e.should.be.instanceOf(RequestError);
                     e.should.have.property('message', 'Forbidden');
@@ -170,7 +174,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.rejected
+                return restrictOrigin(req).should.be.rejected
                 .then(function(e){
                     e.should.be.instanceOf(RequestError);
                     e.should.have.property('message', 'Forbidden');
@@ -193,7 +197,7 @@ describe('restrict origin middleware', function () {
                     }
                 };
                 
-                restrictOrigin(req).should.be.rejected
+                return restrictOrigin(req).should.be.rejected
                 .then(function(e){
                     e.should.be.instanceOf(ServiceError);                         
                 }); 
