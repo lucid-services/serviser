@@ -5,7 +5,7 @@ var RestrictIpMiddleware = require('./../../../lib/middleware/restrictIp.js');
 var RequestError = require('./../../../lib/error/requestError.js');
 var restrictIp = new RestrictIpMiddleware();
 
-describe('Restrict ip middleware', function () {
+describe('restrict ip middleware', function () {
 
     it('should resolve if ip address is in client\'s ips array',
         function (done) {

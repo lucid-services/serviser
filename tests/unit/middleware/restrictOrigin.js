@@ -5,7 +5,7 @@ var RestrictOriginMiddleware = require('./../../../lib/middleware/restrictOrigin
 var RequestError = require('./../../../lib/error/requestError.js');
 var restrictOrigin = RestrictOriginMiddleware();
 
-describe('Restrict origin middleware', function () {
+describe('restrict origin middleware', function () {
 
     describe('unifyUrl()', function () {
 
