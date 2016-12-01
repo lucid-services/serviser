@@ -14,7 +14,7 @@ describe('Restrict origin middleware', function () {
                 var url = 'http://localhost/spare&part=true';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals('http://localhost');
-                return done();
+                done();
             }
         );
 
@@ -23,7 +23,7 @@ describe('Restrict origin middleware', function () {
                 var url = 'http://127.0.0.1:3030/spare&part=true';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals('http://127.0.0.1:3030');
-                return done();
+                done();
             }
         );
 
@@ -32,7 +32,7 @@ describe('Restrict origin middleware', function () {
                 var url = 'http://localhost';
                 var result = RestrictOriginMiddleware.unifyUrl(url);
                 result.should.be.an('string').and.equals(url);
-                return done();
+                done();
             }
         );
     });
