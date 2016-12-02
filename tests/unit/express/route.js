@@ -438,13 +438,13 @@ describe('Route', function() {
             this.restrictIpMiddlewareSpy.should.have.been.calledOnce;            
         });
 
-        it("should push restrict ip middleware to the route's stack", function() {
+        it("should push restrict ip middleware to the route's dictionary", function() {
 
             this.route.restrictByIp();
             this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
 
-        it("should add restrict ip middleware to the route's dictionary", function() {
+        it("should add restrict ip middleware to the route's stack", function() {
             this.route.restrictByIp();
 
             this.route.steps.should.include({
@@ -476,13 +476,13 @@ describe('Route', function() {
             this.restrictOriginMiddlewareSpy.should.have.been.calledOnce;
         });
 
-        it("should push restrict origin middleware to the route's stack", function() {
+        it("should push restrict origin middleware to the route's dictionary", function() {
             this.route.restrictByOrigin();
 
             this.route.stepsDict.should.have.property('restrictOrigin').that.is.a('function');
         });
 
-        it("should add restrict origin middleware to the route's dictionary", function() {
+        it("should add restrict origin middleware to the route's stack", function() {
             this.route.restrictByOrigin();
 
             this.route.steps.should.include({
