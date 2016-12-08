@@ -241,6 +241,14 @@ describe('App', function() {
             });
 
             it("should create & assign new CouchbaseCluster object to the app if we hadn't provided one", function() {
+                this.configGetStub.returns({
+                    host: 'localhost',
+                    buckets: {
+                        main: {
+                            bucket: 'main'
+                        }
+                    }
+                });
                 this.app.useCouchbase();
                 this.app.storage.couchbase.should.be.an.instanceof(CouchbaseCluster);
             });
