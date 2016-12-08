@@ -43,7 +43,8 @@ describe('static data', function() {
 
             staticData.loadSync({
                 odm: ['/path/to/file'],
-                orm: ['/path/to/dir/']
+                orm: ['/path/to/dir/'],
+                config: '/path/to/config/file'
             });
 
             this.spawnSyncStub.should.have.been.calledOnce;
@@ -54,7 +55,9 @@ describe('static data', function() {
                     '--orm-path',
                     '/path/to/dir/',
                     '--odm-path',
-                    '/path/to/file'
+                    '/path/to/file',
+                    '--config',
+                    '/path/to/config/file'
                 ]
             );
         });
@@ -150,7 +153,8 @@ describe('static data', function() {
             var cmd = require.resolve('../../../lib/staticData/loader.js');
 
             staticData.load({
-                orm: ['/path/to/file', '/path/to/dir/']
+                orm: ['/path/to/file', '/path/to/dir/'],
+                config: '/path/to/config/file'
             });
 
             this.spawnStub.should.have.been.calledOnce;
@@ -161,7 +165,9 @@ describe('static data', function() {
                     '--orm-path',
                     '/path/to/file',
                     '--orm-path',
-                    '/path/to/dir/'
+                    '/path/to/dir/',
+                    '--config',
+                    '/path/to/config/file'
                 ]
             );
         });
@@ -280,7 +286,8 @@ describe('static data', function() {
                 ],
                 odm: [
                     '/path/to/other/file',
-                ]
+                ],
+                config: '/path/to/config/file'
             };
 
             var output = this.getCommandArgs(input);
@@ -292,7 +299,9 @@ describe('static data', function() {
                 '--orm-path',
                 input.orm[1],
                 '--odm-path',
-                input.odm[0]
+                input.odm[0],
+                '--config',
+                input.config
             ]);
         });
     });
