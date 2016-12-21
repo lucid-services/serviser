@@ -15,7 +15,7 @@
   "peerDependencies": {
     "kouchbase-odm": "^2.0.0-rc.1",
     "bi-config": "^0.6.1",
-    "pg": "^4.4.6",
+    "pg": "^4.5.0",
     "pg-hstore": "2.3.*",
     "couchbase": "^2.1.6",
     "cookie-parser": "1.4.*",
@@ -42,7 +42,7 @@
     "vantage": "^1.7.0"
   },
   "devDependencies": {
-    "pg": "^4.4.6",
+    "pg": "^4.5.0",
     "pg-hstore": "2.3.*",
     "connect-flash": "^0.1.1",
     "bi-config": "^0.6.1",
