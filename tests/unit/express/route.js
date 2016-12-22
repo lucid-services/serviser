@@ -309,6 +309,29 @@ describe('Route', function() {
         });
     });
 
+    describe('catch', function() {
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                url: '/',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+
+            this.middleware = function middleware() {};
+        });
+
+        it('should push provided `catch` promise handler function to the end of private catch stack', function() {
+            var catchFn = function(err, req, res) { };
+
+            this.route.catch(catchFn);
+
+            this.route.$catchStack.should.be.an.instanceof(Array);
+            this.route.$catchStack.should.include(catchFn);
+        });
+    });
+
     describe('validate', function() {
         before(function() {
             this.validatorMiddlewareStub = sinon.stub();
@@ -425,21 +448,19 @@ describe('Route', function() {
                 type: 'get'
             });
 
-            this.restrictIpMiddlewareSpy = sinon.spy(this.route, '$restrictIpMiddleware');            
+            this.restrictIpMiddlewareSpy = sinon.spy(this.route, '$restrictIpMiddleware');
         });
 
         afterEach(function() {
-            this.restrictIpMiddlewareSpy.restore();            
+            this.restrictIpMiddlewareSpy.restore();
         });
 
         it('should call route.$restrictIpMiddleware builder function', function() {
-
             this.route.restrictByIp();
-            this.restrictIpMiddlewareSpy.should.have.been.calledOnce;            
+            this.restrictIpMiddlewareSpy.should.have.been.calledOnce;
         });
 
         it("should push restrict ip middleware to the route's dictionary", function() {
-
             this.route.restrictByIp();
             this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
@@ -462,11 +483,11 @@ describe('Route', function() {
                 url: '/',
                 type: 'get'
             });
-            
+
             this.restrictOriginMiddlewareSpy = sinon.spy(this.route, '$restrictOriginMiddleware');
         });
 
-        afterEach(function() {            
+        afterEach(function() {
             this.restrictOriginMiddlewareSpy.restore();
         });
 
@@ -488,8 +509,8 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
             });
-        });        
-    });    
+        });
+    });
 
     describe('addStep', function() {
         beforeEach(function() {
