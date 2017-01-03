@@ -1,6 +1,8 @@
 ## FUTURE
 
 * [FIXED] min required `pg` module version (if installed as peer dependency)
+* [ADDED] Route.prototype.catch method - reflects bluebirds Promise.catch method signature
+* [ADDED] most of the `Route` methods were made chainable (`main`, `validate`, `restrictByClient`, `restrictByIp`, `restrictByOrigin`, `addStep`, `catch`)
 
 ## v0.4.0
 
