@@ -307,39 +307,48 @@ describe('Route', function() {
             this.route.main(this.middleware);
             this.route.stepsDict.should.have.property('main', this.middleware);
         });
+
+        it('should return self (Route object)', function() {
+            this.route.main(this.middleware).should.be.equal(this.route);
+        });
     });
 
     describe('catch', function() {
-        //beforeEach(function() {
-            //this.route = this.buildRoute({
-                //url: '/',
-                //version: 1.0
-            //}, {
-                //url: '/',
-                //type: 'get'
-            //});
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                url: '/',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
 
-            //this.middleware = function middleware() {};
-        //});
+            this.middleware = function middleware() {};
+        });
 
-        //it('should push provided `catch` promise handler function to the end of private catch stack', function() {
-            //var catchFn = function(err, req, res) { };
+        it('should return self (Route object)', function() {
+            this.route.main(sinon.spy());
+            this.route.catch(sinon.spy()).should.be.equal(this.route);
+        });
 
-            //this.route.catch(catchFn);
+        it('should attach provided catch error handler to the last middleware in stack', function() {
+            var catchFn = function(err, req, res) { };
 
-            //this.route.catchStack.should.be.an.instanceof(Array);
-            //this.route.catchStack[0].should.include(catchFn);
-        //});
+            this.route.main(sinon.spy());
+            this.route.catch(RouteError, catchFn);
 
-        //it('should push provided `catch` promise handler arguments to the end of private catch stack', function() {
-            //var catchFn = function(err, req, res) { };
+            this.route.steps.pop().should.have.property('catch').that.is.eql([[RouteError, catchFn]]);
+        });
 
-            //this.route.catch(RouteError, catchFn);
+        it('should throw RouteError when we try to register `catch` error handler too early', function() {
+            var self = this;
 
-            //this.route.catchStack.should.be.an.instanceof(Array);
-            //this.route.catchStack[0][0].should.be.equal(RouteError);
-            //this.route.catchStack[0][1].should.be.equal(catchFn);
-        //});
+            function testCase() {
+                self.route.catch(sinon.spy());
+            }
+
+            expect(testCase).to.throw(RouteError);
+        });
     });
 
     describe('validate', function() {
@@ -403,6 +412,10 @@ describe('Route', function() {
             var middleware = this.route.stepsDict.validator;
             return middleware(req, res).should.be.rejectedWith(err);
         });
+
+        it('should return self (Route object)', function() {
+            this.route.validate(this.schema, 'query').should.be.equal(this.route);
+        });
     });
 
     describe('restrictByClient', function() {
@@ -446,6 +459,10 @@ describe('Route', function() {
                 name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
             });
         });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByClient().should.be.equal(this.route);
+        });
     });
 
     describe('restrictByIp', function() {
@@ -481,6 +498,10 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
             });
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByIp().should.be.equal(this.route);
         });
     });
 
@@ -519,6 +540,10 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
             });
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByOrigin().should.be.equal(this.route);
         });
     });
 
@@ -567,6 +592,10 @@ describe('Route', function() {
 
             expect(addStep).to.not.throw(Error);
             expect(addStep).to.throw(RouteError);
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.addStep(sinon.spy()).should.be.equal(this.route);
         });
     });
 
