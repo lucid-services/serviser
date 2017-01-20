@@ -127,7 +127,7 @@ describe('`ls` command', function() {
                 //connect apps to cli
                 this.cli.apps = [this.app, this.app2];
 
-                this.action({options: {routes: true, filter: []}}, sinon.spy());
+                this.action({options: {routes: true}, filter: []}, sinon.spy());
 
                 this.printRoutesSpy.should.have.been.calledOnce;
                 this.printRoutesSpy.should.have.been.calledWith(this.cli.apps);
@@ -142,7 +142,7 @@ describe('`ls` command', function() {
             });
 
             it('should print an error when the is no app connected', function() {
-                this.action({options: {routes: true, filter: []}}, sinon.spy());
+                this.action({options: {routes: true}, filter: []}, sinon.spy());
 
                 this.logErrStub.should.have.been.calledOnce;
                 this.logErrStub.should.have.been.calledWith(
@@ -152,7 +152,7 @@ describe('`ls` command', function() {
 
             it('should call the callback', function() {
                 var callbackSpy = sinon.spy();
-                this.action({options: {routes: true, filter: []}}, callbackSpy);
+                this.action({options: {routes: true}, filter: []}, callbackSpy);
 
                 callbackSpy.should.have.been.calledOnce;
             });
