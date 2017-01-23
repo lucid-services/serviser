@@ -4,6 +4,7 @@
 * [ADDED] Route.prototype.catch method - reflects bluebirds Promise.catch method signature
 * [ADDED] most of the `Route` methods were made chainable (`main`, `validate`, `restrictByClient`, `restrictByIp`, `restrictByOrigin`, `addStep`, `catch`)
 * [ADDED] CLI `sort` && filter options to the `ls` command
+* [FIXED] CLI error handling of synchrounously throwed errors (witout this fix, an app would crash with exit code != 0) on error
 
 ## v0.4.0
 

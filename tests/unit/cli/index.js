@@ -3,6 +3,7 @@ var chai           = require('chai');
 var sinonChai      = require("sinon-chai");
 var chaiAsPromised = require('chai-as-promised');
 var Vantage        = require('vantage');
+var VorpalUI       = require('vorpal/lib/ui');
 
 var AppManager = require('../../../lib/express/appManager.js');
 var App        = require('../../../lib/express/app.js');
@@ -21,6 +22,7 @@ chai.should();
 
 describe('CLI', function() {
     before(function() {
+        VorpalUI.setMaxListeners(100);
         this.models = {};
         this.config = new Config();
 
@@ -116,6 +118,7 @@ describe('CLI', function() {
         after(function() {
             this.cliServerListenSpy.restore();
             return this.cli.close();
+            delete this.cli();
         });
 
         it('should call cli.server.listen with provided options', function(done) {
@@ -160,6 +163,7 @@ describe('CLI', function() {
 
         after(function() {
             this.cliServerShowStub.restore();
+            delete this.cli;
         });
 
         it('should call cli.server.show method', function() {
@@ -172,7 +176,7 @@ describe('CLI', function() {
         });
     });
 
-    describe('command definition interface every command should implement', function() {
+    describe('Command definition interface every command should implement: ', function() {
         before(function() {
             this.cli = new CLI({
                 appManager: this.appManager
@@ -195,13 +199,72 @@ describe('CLI', function() {
             });
         });
 
-        it('should assign `action` function to the Command object with explicitly set context (this) object to the cli object', function() {
+        it('should assign `action` function to the Command object', function() {
             var self = this;
 
+            this.cli.server.on("command_registered", onCmd);
+
             Object.keys(commands).forEach(function(name, index) {
+                var cmdActionStub = sinon.stub(commands[name], 'action');
+                var actionSpy = sinon.spy();
+                cmdActionStub.returns(actionSpy);
+
                 var cmd = commands[name].build(self.cli);
 
-                cmd._fn.toString().should.be.equal(commands[name].action(self.cli).toString());
+                cmdActionStub.should.have.been.calledOnce;
+                cmdActionStub.should.have.been.calledWith(self.cli);
+                cmd.action.should.have.been.calledOnce;
+                cmd.action.should.have.been.calledWith(actionSpy);
+
+                cmdActionStub.restore();
+            });
+
+            this.cli.server.removeListener("command_registered", onCmd);
+
+            function onCmd(opt) {
+                sinon.spy(opt.command, 'action');
+            }
+        });
+
+        describe('synchronous error handling', function() {
+            before(function() {
+                var self = this;
+
+                this.error = new Error('Synchronous test error');
+                this.cmdActionBck = {};
+
+                Object.keys(commands).forEach(function(name, index) {
+                    self.cmdActionBck[name] = commands[name].action;
+
+                    commands[name].action = function() {
+                        return function() {
+                            throw self.error;
+                        };
+                    };
+                });
+            });
+
+            after(function() {
+                var self = this;
+
+                Object.keys(commands).forEach(function(name, index) {
+                    commands[name] = self.cmdActionBck[name];
+                });
+            });
+
+            Object.keys(commands).forEach(function(name, index) {
+                it(`builded "${name}" command should correctly handle synchronously throwed Error`, function() {
+                    var cmdCallbackSpy = sinon.spy();
+                    var consoleErrStub = sinon.stub(console, 'error');
+                    var cmd = commands[name].build(this.cli);
+
+                    expect(cmd._fn.bind(cmd, {}, cmdCallbackSpy)).to.not.throw(Error);
+                    cmdCallbackSpy.should.have.been.calledOnce;
+                    consoleErrStub.should.have.been.calledOnce;
+                    consoleErrStub.should.have.been.calledWith(this.error);
+
+                    consoleErrStub.restore();
+                });
             });
         });
     });
