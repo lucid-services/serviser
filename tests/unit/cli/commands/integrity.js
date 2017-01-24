@@ -73,13 +73,15 @@ describe('`integrity` command', function() {
         });
 
         it('should log an error when there is no app connected to the cli', function() {
-            this.action({}, sinon.spy());
+            var callbackSpy = sinon.spy();
+            this.action({}, callbackSpy);
 
             this.logErrStub.should.have.been.calledOnce;
             this.logErrStub.should.have.been.calledWith(sinon.match.string);
 
             this.serviceIntegrityInspectStub.should.have.callCount(0);
             this.logStub.should.have.callCount(0);
+            callbackSpy.should.have.been.calledOnce;
         });
 
         it('should log an error when unexpected exception occurs', function(done) {

@@ -1,3 +1,8 @@
+## FUTURE
+
+* [FIXED] frozen CLI when we execute `integrity` cli command if no app is connected
+
+
 ## v0.5.0
 
 * [FIXED] min required `pg` module version (if installed as peer dependency)
