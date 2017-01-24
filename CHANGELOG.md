@@ -1,4 +1,4 @@
-## FUTURE
+## v0.5.0
 
 * [FIXED] min required `pg` module version (if installed as peer dependency)
 * [ADDED] Route.prototype.catch method - reflects bluebirds Promise.catch method signature
