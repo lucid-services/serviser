@@ -39,7 +39,7 @@ describe('`ls` command', function() {
         });
 
         var router2 = app.buildRouter({
-            version: '1.0',
+            version: '2.0',
             url: '/'
         });
 
@@ -51,6 +51,16 @@ describe('`ls` command', function() {
         router2.buildRoute({
             url: '/app2',
             type: 'get'
+        });
+
+        router2.buildRoute({
+            url: '/app2',
+            type: 'post'
+        });
+
+        router2.buildRoute({
+            url: '/del',
+            type: 'delete'
         });
 
         this.logStub = sinon.stub();
@@ -117,7 +127,7 @@ describe('`ls` command', function() {
                 //connect apps to cli
                 this.cli.apps = [this.app, this.app2];
 
-                this.action({options: {routes: true}}, sinon.spy());
+                this.action({options: {routes: true}, filter: []}, sinon.spy());
 
                 this.printRoutesSpy.should.have.been.calledOnce;
                 this.printRoutesSpy.should.have.been.calledWith(this.cli.apps);
@@ -132,7 +142,7 @@ describe('`ls` command', function() {
             });
 
             it('should print an error when the is no app connected', function() {
-                this.action({options: {routes: true}}, sinon.spy());
+                this.action({options: {routes: true}, filter: []}, sinon.spy());
 
                 this.logErrStub.should.have.been.calledOnce;
                 this.logErrStub.should.have.been.calledWith(
@@ -142,7 +152,7 @@ describe('`ls` command', function() {
 
             it('should call the callback', function() {
                 var callbackSpy = sinon.spy();
-                this.action({options: {routes: true}}, callbackSpy);
+                this.action({options: {routes: true}, filter: []}, callbackSpy);
 
                 callbackSpy.should.have.been.calledOnce;
             });
@@ -191,10 +201,99 @@ describe('`ls` command', function() {
                 this.app2,
             ]);
 
-            var expected = 'GET  /app   getApp_v1.0 \n'+
-                           'GET  /app2  getApp2_v1.0\n';
+            var expected = 'GET     /app   getApp_v1.0   \n'+
+                           'GET     /app2  getApp2_v2.0  \n'+
+                           'POST    /app2  postApp2_v2.0 \n'+
+                           'DELETE  /del   deleteDel_v2.0\n';
 
             output.should.be.equal(expected);
+        });
+
+        describe('filter list', function() {
+            it('should filter route list by HTTP method', function() {
+                var output = lsCmd.printRoutes([
+                    this.app,
+                    this.app2,
+                ], {
+                    filter: {
+                        method: 'get'
+                    }
+                });
+
+                var expected = 'GET  /app   getApp_v1.0 \n'+
+                               'GET  /app2  getApp2_v2.0\n';
+
+                output.should.be.equal(expected);
+            });
+
+            it('should filter route list by url', function() {
+                var output = lsCmd.printRoutes([
+                    this.app,
+                    this.app2,
+                ], {
+                    filter: {
+                        url: 'app2'
+                    }
+                });
+
+                var expected = 'GET   /app2  getApp2_v2.0 \n'+
+                               'POST  /app2  postApp2_v2.0\n';
+
+                output.should.be.equal(expected);
+            });
+
+            it('should filter route list by route UID', function() {
+                var output = lsCmd.printRoutes([
+                    this.app,
+                    this.app2,
+                ], {
+                    filter: {
+                        uid: 'v2.0'
+                    }
+                });
+
+                var expected = 'GET     /app2  getApp2_v2.0  \n'+
+                               'POST    /app2  postApp2_v2.0 \n'+
+                               'DELETE  /del   deleteDel_v2.0\n';
+
+                output.should.be.equal(expected);
+            });
+
+            it('should filter route list by route method & url & uid', function() {
+                var output = lsCmd.printRoutes([
+                    this.app,
+                    this.app2,
+                ], {
+                    filter: {
+                        method: 'get|post',
+                        url: 'app2',
+                        uid: 'get'
+                    }
+                });
+
+                var expected = 'GET  /app2  getApp2_v2.0\n';
+
+                output.should.be.equal(expected);
+            });
+        });
+
+        describe('sort order', function() {
+
+            it('should sort route list in correct order', function() {
+                var output = lsCmd.printRoutes([
+                    this.app,
+                    this.app2,
+                ], {
+                    sort: 'm' //sort by route's (m)ethod
+                });
+
+                var expected = 'DELETE  /del   deleteDel_v2.0\n'+
+                               'GET     /app   getApp_v1.0   \n'+
+                               'GET     /app2  getApp2_v2.0  \n'+
+                               'POST    /app2  postApp2_v2.0 \n';
+
+                output.should.be.equal(expected);
+            });
         });
     });
 });

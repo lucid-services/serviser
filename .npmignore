@@ -1,0 +1,10 @@
+.gitignore
+.gitlab-ci.yml
+.tern-project
+.travis.yml
+.jsdoc.json
+*.vim
+.idea
+npm-debug.log
+coverage/
+tests/

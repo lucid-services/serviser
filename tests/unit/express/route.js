@@ -307,6 +307,48 @@ describe('Route', function() {
             this.route.main(this.middleware);
             this.route.stepsDict.should.have.property('main', this.middleware);
         });
+
+        it('should return self (Route object)', function() {
+            this.route.main(this.middleware).should.be.equal(this.route);
+        });
+    });
+
+    describe('catch', function() {
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                url: '/',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+
+            this.middleware = function middleware() {};
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.main(sinon.spy());
+            this.route.catch(sinon.spy()).should.be.equal(this.route);
+        });
+
+        it('should attach provided catch error handler to the last middleware in stack', function() {
+            var catchFn = function(err, req, res) { };
+
+            this.route.main(sinon.spy());
+            this.route.catch(RouteError, catchFn);
+
+            this.route.steps.pop().should.have.property('catch').that.is.eql([[RouteError, catchFn]]);
+        });
+
+        it('should throw RouteError when we try to register `catch` error handler too early', function() {
+            var self = this;
+
+            function testCase() {
+                self.route.catch(sinon.spy());
+            }
+
+            expect(testCase).to.throw(RouteError);
+        });
     });
 
     describe('validate', function() {
@@ -370,6 +412,10 @@ describe('Route', function() {
             var middleware = this.route.stepsDict.validator;
             return middleware(req, res).should.be.rejectedWith(err);
         });
+
+        it('should return self (Route object)', function() {
+            this.route.validate(this.schema, 'query').should.be.equal(this.route);
+        });
     });
 
     describe('restrictByClient', function() {
@@ -413,6 +459,10 @@ describe('Route', function() {
                 name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
             });
         });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByClient().should.be.equal(this.route);
+        });
     });
 
     describe('restrictByIp', function() {
@@ -425,21 +475,19 @@ describe('Route', function() {
                 type: 'get'
             });
 
-            this.restrictIpMiddlewareSpy = sinon.spy(this.route, '$restrictIpMiddleware');            
+            this.restrictIpMiddlewareSpy = sinon.spy(this.route, '$restrictIpMiddleware');
         });
 
         afterEach(function() {
-            this.restrictIpMiddlewareSpy.restore();            
+            this.restrictIpMiddlewareSpy.restore();
         });
 
         it('should call route.$restrictIpMiddleware builder function', function() {
-
             this.route.restrictByIp();
-            this.restrictIpMiddlewareSpy.should.have.been.calledOnce;            
+            this.restrictIpMiddlewareSpy.should.have.been.calledOnce;
         });
 
         it("should push restrict ip middleware to the route's dictionary", function() {
-
             this.route.restrictByIp();
             this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
@@ -450,6 +498,10 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
             });
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByIp().should.be.equal(this.route);
         });
     });
 
@@ -462,11 +514,11 @@ describe('Route', function() {
                 url: '/',
                 type: 'get'
             });
-            
+
             this.restrictOriginMiddlewareSpy = sinon.spy(this.route, '$restrictOriginMiddleware');
         });
 
-        afterEach(function() {            
+        afterEach(function() {
             this.restrictOriginMiddlewareSpy.restore();
         });
 
@@ -488,8 +540,12 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
             });
-        });        
-    });    
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.restrictByOrigin().should.be.equal(this.route);
+        });
+    });
 
     describe('addStep', function() {
         beforeEach(function() {
@@ -536,6 +592,10 @@ describe('Route', function() {
 
             expect(addStep).to.not.throw(Error);
             expect(addStep).to.throw(RouteError);
+        });
+
+        it('should return self (Route object)', function() {
+            this.route.addStep(sinon.spy()).should.be.equal(this.route);
         });
     });
 
@@ -621,6 +681,83 @@ describe('Route', function() {
                     self.next.should.have.been.calledOnce;
                     self.next.should.have.been.calledWith(error);
                     spy.should.have.callCount(0);
+                });
+            });
+
+            it("should call registered route's catch error handler", function() {
+                var self = this;
+                var err = new RouteError('testinng error');
+                var catchHandlerSpy = sinon.spy();
+                var middlewareSpy = sinon.spy();
+
+                this.route.main(function() {
+                    return Promise.reject(err);
+                });
+                this.route.addStep(middlewareSpy);
+
+                this.route.catch(RouteError, catchHandlerSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(this.req, this.res, this.next).should.be.fulfilled.then(function() {
+                    catchHandlerSpy.should.have.been.calledOnce;
+                    catchHandlerSpy.should.have.been.calledWith(err, self.req, self.res);
+                    middlewareSpy.should.have.callCount(0);
+                    self.next.should.have.callCount(0);
+                });
+            });
+
+            it("should call registered route's catch error handler (2)", function() {
+                var self = this;
+                var err = new RouteError('testinng error');
+                var catchHandlerSpy = sinon.spy();
+                var middlewareSpy = sinon.spy();
+                var mainMiddlewareSpy = sinon.spy();
+
+                this.route.main(mainMiddlewareSpy);
+                this.route.addStep(function() {
+                    throw err;
+                });
+
+                this.route.catch(catchHandlerSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(this.req, this.res, this.next).should.be.fulfilled.then(function() {
+                    catchHandlerSpy.should.have.been.calledOnce;
+                    catchHandlerSpy.should.have.been.calledWith(err, self.req, self.res);
+                    mainMiddlewareSpy.should.have.callCount(1);
+                    mainMiddlewareSpy.should.have.been.calledWith(self.req, self.res);
+                    self.next.should.have.callCount(0);
+                });
+            });
+
+            it("should call registered route's error handler and redirect received error to the express error handler (via `next` callback)", function() {
+                var self = this;
+                var err = new RouteError('testinng error');
+                var catchHandlerSpy = sinon.spy(function(err, res, res) {
+                    throw err;
+                });
+                var middlewareSpy = sinon.spy();
+
+                this.route.main(function() {
+                    return Promise.reject(err);
+                });
+                this.route.addStep(middlewareSpy);
+
+                this.route.catch(catchHandlerSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(this.req, this.res, this.next).should.be.fulfilled.then(function() {
+                    catchHandlerSpy.should.have.been.calledOnce;
+                    catchHandlerSpy.should.have.been.calledWith(err, self.req, self.res);
+                    middlewareSpy.should.have.callCount(0);
+                    self.next.should.have.callCount(1);
+                    self.next.should.have.been.calledWith(err);
                 });
             });
 
