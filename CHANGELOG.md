@@ -5,6 +5,7 @@
 * [ADDED] most of the `Route` methods were made chainable (`main`, `validate`, `restrictByClient`, `restrictByIp`, `restrictByOrigin`, `addStep`, `catch`)
 * [ADDED] CLI `sort` && filter options to the `ls` command
 * [FIXED] CLI error handling of synchrounously throwed errors (witout this fix, an app would crash with exit code != 0) on error
+* [FIXED] Sequelize penetrator - don't load (require) `cache` module unless we want to penetrate cache support into a sequelize instance
 
 ## v0.4.0
 
