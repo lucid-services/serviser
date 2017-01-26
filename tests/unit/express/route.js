@@ -340,6 +340,15 @@ describe('Route', function() {
             this.route.steps.pop().should.have.property('catch').that.is.eql([[RouteError, catchFn]]);
         });
 
+        it('should normalize provided arguments for the catch method', function() {
+            var catchFn = function(err, req, res) { };
+
+            this.route.main(sinon.spy());
+            this.route.catch(catchFn);
+
+            this.route.steps.pop().should.have.property('catch').that.is.eql([[Error, catchFn]]);
+        });
+
         it('should throw RouteError when we try to register `catch` error handler too early', function() {
             var self = this;
 
@@ -731,6 +740,43 @@ describe('Route', function() {
                     mainMiddlewareSpy.should.have.callCount(1);
                     mainMiddlewareSpy.should.have.been.calledWith(self.req, self.res);
                     self.next.should.have.callCount(0);
+                });
+            });
+
+            it('(catch function handler) should get correct req, res object arguments', function() {
+                var self = this;
+                var err = new RouteError('testinng error');
+                var catchHandlerSpy = sinon.spy();
+                var res1 = {};
+                var res2 = {};
+                var req1 = {};
+                var req2 = {};
+
+                this.route.addStep(function() {
+                    throw err;
+                });
+
+                this.route.catch(catchHandlerSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(req1, res1, this.next).should.be.fulfilled.then(function() {
+                    catchHandlerSpy.should.have.been.calledOnce;
+                    catchHandlerSpy.should.have.been.calledWith(
+                        err,
+                        sinon.match.same(req1),
+                        sinon.match.same(res1)
+                    );
+                }).then(function() {
+                    return routeMiddleware(req2, res2, this.next).should.be.fulfilled.then(function() {
+                        catchHandlerSpy.should.have.been.calledTwice;
+                        catchHandlerSpy.should.have.been.calledWithExactly(
+                            err,
+                            sinon.match.same(req2),
+                            sinon.match.same(res2)
+                        );
+                    });
                 });
             });
 
