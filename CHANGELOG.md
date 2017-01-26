@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [FIXED] frozen CLI when we execute `integrity` cli command if no app is connected
+* [FIXED] `req` & `res` objects memory leak. Incorrect `req` & `res` objects were being provided to a `Route.prototype.catch` error handler function
 
 
 ## v0.5.0
