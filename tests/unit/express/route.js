@@ -340,6 +340,15 @@ describe('Route', function() {
             this.route.steps.pop().should.have.property('catch').that.is.eql([[RouteError, catchFn]]);
         });
 
+        it('should normalize provided arguments for the catch method', function() {
+            var catchFn = function(err, req, res) { };
+
+            this.route.main(sinon.spy());
+            this.route.catch(catchFn);
+
+            this.route.steps.pop().should.have.property('catch').that.is.eql([[Error, catchFn]]);
+        });
+
         it('should throw RouteError when we try to register `catch` error handler too early', function() {
             var self = this;
 
