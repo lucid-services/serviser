@@ -734,6 +734,43 @@ describe('Route', function() {
                 });
             });
 
+            it('(catch function handler) should get correct req, res object arguments', function() {
+                var self = this;
+                var err = new RouteError('testinng error');
+                var catchHandlerSpy = sinon.spy();
+                var res1 = {};
+                var res2 = {};
+                var req1 = {};
+                var req2 = {};
+
+                this.route.addStep(function() {
+                    throw err;
+                });
+
+                this.route.catch(catchHandlerSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(req1, res1, this.next).should.be.fulfilled.then(function() {
+                    catchHandlerSpy.should.have.been.calledOnce;
+                    catchHandlerSpy.should.have.been.calledWith(
+                        err,
+                        sinon.match.same(req1),
+                        sinon.match.same(res1)
+                    );
+                }).then(function() {
+                    return routeMiddleware(req2, res2, this.next).should.be.fulfilled.then(function() {
+                        catchHandlerSpy.should.have.been.calledTwice;
+                        catchHandlerSpy.should.have.been.calledWithExactly(
+                            err,
+                            sinon.match.same(req2),
+                            sinon.match.same(res2)
+                        );
+                    });
+                });
+            });
+
             it("should call registered route's error handler and redirect received error to the express error handler (via `next` callback)", function() {
                 var self = this;
                 var err = new RouteError('testinng error');
