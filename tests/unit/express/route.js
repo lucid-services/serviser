@@ -702,7 +702,7 @@ describe('Route', function() {
                 var middlewareSpy = sinon.spy();
 
                 this.route.main(function() {
-                    return Response(function() {
+                    return this.route.buildResponse(function() {
                         this.redirect('https://google.com');
                     });
                 });
