@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] react on route middleware's fulfillment value. Allows to stop processing a request and respond to the request earlier.
+
 ## v0.5.1
 
 * [FIXED] frozen CLI when we execute `integrity` cli command if no app is connected
