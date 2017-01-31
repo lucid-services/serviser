@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] CLI - ls -r (aka. list routes) add additional column listing applied route's middlewares
+* [ADDED] react on route middleware's fulfillment value. Allows to stop processing a request and respond to the request earlier.
 
 ## v0.5.1
 

@@ -1,3 +1,8 @@
+var Promise = require('bluebird');
+Promise.config({
+    cancellation: true,
+});
+
 exports.CLI              = require('./lib/cli');
 exports.Express          = require('express');
 exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
