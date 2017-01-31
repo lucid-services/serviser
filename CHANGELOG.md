@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] CLI - ls -r (aka. list routes) add additional column listing applied route's middlewares
+
 ## v0.5.1
 
 * [FIXED] frozen CLI when we execute `integrity` cli command if no app is connected
