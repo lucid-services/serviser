@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 Promise.config({
-    cancellation: true,
+    cancellation: true, //used for canceling promise chain in case of early request response
 });
 
 exports.CLI              = require('./lib/cli');
