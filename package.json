@@ -14,7 +14,7 @@
   },
   "peerDependencies": {
     "kouchbase-odm": "^2.0.0-rc.1",
-    "bi-config": "^0.6.1",
+    "bi-config": "^0.7.1",
     "pg": "^4.5.0",
     "pg-hstore": "2.3.*",
     "couchbase": "^2.1.6",
@@ -39,13 +39,13 @@
     "minimist": "^1.2.0",
     "raw-body": "2.1.*",
     "semver": "^5.1.0",
-    "vantage": "^1.7.0"
+    "bi-vantage": "^1.7.1"
   },
   "devDependencies": {
     "pg": "^4.5.0",
     "pg-hstore": "2.3.*",
     "connect-flash": "^0.1.1",
-    "bi-config": "^0.6.1",
+    "bi-config": "^0.7.1",
     "kouchbase-odm": "^2.0.0-rc.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
