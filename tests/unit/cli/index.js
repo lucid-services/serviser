@@ -2,7 +2,7 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var sinonChai      = require("sinon-chai");
 var chaiAsPromised = require('chai-as-promised');
-var Vantage        = require('vantage');
+var Vantage        = require('bi-vantage');
 var VorpalUI       = require('vorpal/lib/ui');
 
 var AppManager = require('../../../lib/express/appManager.js');
