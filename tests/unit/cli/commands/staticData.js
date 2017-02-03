@@ -81,15 +81,19 @@ describe('`staticData` command', function() {
 
             it('should call provided callback without any arguments when staticData has been successfully reloaded', function() {
                 var callback = sinon.spy();
+                var logSpy = sinon.spy();
                 this.staticDataGetLoadOptionsStub.returns([
                     {
                         odm: ['/some/path'],
                     }
                 ]);
 
-                return this.action({
+                return this.action.call({
+                    log: logSpy
+                },{
                     options: {refresh: true}
                 }, callback).should.be.fulfilled.then(function() {
+                    logSpy.should.have.been.calledOnce;
                     callback.should.be.calledOnce;
                     callback.should.be.calledWith();
                 });

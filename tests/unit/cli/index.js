@@ -3,7 +3,7 @@ var chai           = require('chai');
 var sinonChai      = require("sinon-chai");
 var chaiAsPromised = require('chai-as-promised');
 var Vantage        = require('bi-vantage');
-var VorpalUI       = require('vorpal/lib/ui');
+var VorpalUI       = require('vorpal/dist/ui');
 
 var AppManager = require('../../../lib/express/appManager.js');
 var App        = require('../../../lib/express/app.js');
@@ -52,6 +52,8 @@ describe('CLI', function() {
             cmdSpies.forEach(function(spy) {
                 spy.should.have.been.calledOnce;
                 spy.should.have.been.calledWith(cli);
+
+                spy.getCall(0).returnValue.remove();//unregister cmd
                 spy.restore();
             });
         });
@@ -181,6 +183,13 @@ describe('CLI', function() {
             this.cli = new CLI({
                 appManager: this.appManager
             });
+
+            //we can avoid "command registered more than once" warning by
+            //explicitly unregistering cmd before it's registered again
+            //in test cases
+            this.cli.server.commands.forEach(function(cmd) {
+                cmd.remove();
+            });
         });
 
         it('should return the Command object', function() {
@@ -190,6 +199,7 @@ describe('CLI', function() {
                 var cmd = commands[name].build(self.cli);
                 //we don't have access to the Command constructor
                 Object.getPrototypeOf(cmd).constructor.name.should.be.equal('Command');
+                cmd.remove();
             });
         });
 
@@ -216,6 +226,7 @@ describe('CLI', function() {
                 cmd.action.should.have.been.calledOnce;
                 cmd.action.should.have.been.calledWith(actionSpy);
 
+                cmd.remove();
                 cmdActionStub.restore();
             });
 
@@ -255,15 +266,18 @@ describe('CLI', function() {
             Object.keys(commands).forEach(function(name, index) {
                 it(`builded "${name}" command should correctly handle synchronously throwed Error`, function() {
                     var cmdCallbackSpy = sinon.spy();
-                    var consoleErrStub = sinon.stub(console, 'error');
+                    var logStub = sinon.stub(console, 'error');
                     var cmd = commands[name].build(this.cli);
 
-                    expect(cmd._fn.bind(cmd, {}, cmdCallbackSpy)).to.not.throw(Error);
+                    expect(cmd._fn.bind({
+                        log: logStub
+                    }, null, cmdCallbackSpy)).to.not.throw(Error);
                     cmdCallbackSpy.should.have.been.calledOnce;
-                    consoleErrStub.should.have.been.calledOnce;
-                    consoleErrStub.should.have.been.calledWith(this.error);
+                    logStub.should.have.been.calledOnce;
+                    logStub.should.have.been.calledWith(this.error);
 
-                    consoleErrStub.restore();
+                    logStub.restore();
+                    cmd.remove();
                 });
             });
         });

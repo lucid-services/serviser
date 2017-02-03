@@ -10,6 +10,8 @@ var ServerMock       = require('../../mocks/server.js');
 var CLI              = require('../../../../lib/cli');
 var lsCmd            = rewire('../../../../lib/cli/commands/ls.js');
 
+var expect = chai.expect;
+
 chai.use(sinonChai);
 chai.should();
 
@@ -72,26 +74,15 @@ describe('`ls` command', function() {
             type: 'delete'
         });
 
-        this.logStub = sinon.stub();
-        this.logErrStub = sinon.stub();
+        this.logStub = sinon.spy();
 
-        this.consoleStubRevert = lsCmd.__set__({
-            console: {
-                log: this.logStub,
-                error: this.logErrStub
-            }
+        this.action = lsCmd.action(this.cli).bind({
+            log: this.logStub
         });
-
-        this.action = lsCmd.action(this.cli);
     });
 
     beforeEach(function() {
         this.logStub.reset();
-        this.logErrStub.reset();
-    });
-
-    after(function() {
-        this.consoleStubRevert();
     });
 
     describe('action', function() {
@@ -150,20 +141,14 @@ describe('`ls` command', function() {
                 this.cli.apps = [];
             });
 
-            it('should print an error when the is no app connected', function() {
-                this.action({options: {routes: true}, filter: []}, sinon.spy());
+            it('should print an error when there is no app connected', function() {
+                var self = this;
 
-                this.logErrStub.should.have.been.calledOnce;
-                this.logErrStub.should.have.been.calledWith(
-                    sinon.match.string
-                );
-            });
+                function testCase() {
+                    self.action({options: {routes: true}, filter: []}, sinon.spy());
+                }
 
-            it('should call the callback', function() {
-                var callbackSpy = sinon.spy();
-                this.action({options: {routes: true}, filter: []}, callbackSpy);
-
-                callbackSpy.should.have.been.calledOnce;
+                expect(testCase).to.throw(Error);
             });
         });
     });

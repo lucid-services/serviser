@@ -48,40 +48,30 @@ describe('`integrity` command', function() {
         before(function() {
             this.serviceIntegrityInspectStub = sinon.stub(serviceIntegrity, 'inspect');
             this.logStub = sinon.stub();
-            this.logErrStub = sinon.stub();
-
-            this.consoleStubRevert = integrityCmd.__set__({
-                console: {
-                    log: this.logStub,
-                    error: this.logErrStub
-                }
+            this.action = integrityCmd.action(this.cli).bind({
+                log: this.logStub
             });
-
-            this.action = integrityCmd.action(this.cli);
         });
 
         after(function() {
             this.serviceIntegrityInspectStub.restore();
-            this.consoleStubRevert();
         });
 
         beforeEach(function() {
             this.serviceIntegrityInspectStub.reset();
             this.logStub.reset();
-            this.logErrStub.reset();
             this.cli.apps = [];
         });
 
         it('should log an error when there is no app connected to the cli', function() {
-            var callbackSpy = sinon.spy();
-            this.action({}, callbackSpy);
+            var self = this;
 
-            this.logErrStub.should.have.been.calledOnce;
-            this.logErrStub.should.have.been.calledWith(sinon.match.string);
+            function testCase() {
+                self.action({}, sinon.spy());
+            }
 
+            expect(testCase).to.throw(Error);
             this.serviceIntegrityInspectStub.should.have.callCount(0);
-            this.logStub.should.have.callCount(0);
-            callbackSpy.should.have.been.calledOnce;
         });
 
         it('should log an error when unexpected exception occurs', function(done) {
@@ -92,8 +82,8 @@ describe('`integrity` command', function() {
             this.serviceIntegrityInspectStub.returns(Promise.reject(err))
 
             this.action({}, function() {
-                self.logErrStub.should.have.been.calledOnce;
-                self.logErrStub.should.have.been.calledWith(err.stack);
+                self.logStub.should.have.been.calledOnce;
+                self.logStub.should.have.been.calledWith(err.stack);
                 done();
             });
         });

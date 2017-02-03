@@ -11,6 +11,8 @@ var ServerMock = require('../../mocks/server.js');
 var lsCmd      = require('../../../../lib/cli/commands/ls.js');
 var usingCmd   = rewire('../../../../lib/cli/commands/using.js');
 
+var expect = chai.expect;
+
 chai.use(sinonChai);
 chai.should();
 
@@ -36,22 +38,15 @@ describe('`using` command', function() {
         });
 
         this.logStub = sinon.stub();
-        this.logErrStub = sinon.stub();
         this.printAppsSpy = sinon.spy(lsCmd, 'printApps');
 
-        this.consoleStubRevert = usingCmd.__set__({
-            console: {
-                log: this.logStub,
-                error: this.logErrStub
-            }
+        this.action = usingCmd.action(this.cli).bind({
+            log: this.logStub
         });
-
-        this.action = usingCmd.action(this.cli);
     });
 
     beforeEach(function() {
         this.logStub.reset();
-        this.logErrStub.reset();
         this.printAppsSpy.reset();
 
         this.cli.apps = [];
@@ -59,15 +54,17 @@ describe('`using` command', function() {
 
     after(function() {
         this.printAppsSpy.restore();
-        this.consoleStubRevert();
     });
 
     describe('action', function() {
         it('should print an error when there are no apps connected to the cli', function() {
-            this.action({}, sinon.spy());
+            var self = this;
 
-            this.logErrStub.should.have.been.calledOnce;
-            this.logErrStub.should.have.been.calledWith('No app connected');
+            function testCase() {
+                self.action({}, sinon.spy());
+            }
+
+            expect(testCase).to.throw(Error);
         });
 
         it('should print table of connected apps to the cli', function() {
@@ -86,14 +83,10 @@ describe('`using` command', function() {
         it('should call the callback', function() {
             var callbackSpy = sinon.spy();
 
-            this.action({}, callbackSpy);
-
-            callbackSpy.should.have.been.calledOnce;
-
             this.cli.apps.push(this.app2);
             this.action({}, callbackSpy);
 
-            callbackSpy.should.have.been.calledTwice;
+            callbackSpy.should.have.been.calledOnce;
         });
     });
 });
