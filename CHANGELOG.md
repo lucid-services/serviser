@@ -6,6 +6,7 @@
 * [FIXED] CLI - `vantage` remote authentication issues (authentication was made to work but has been disabled for now)
 * [FIXED] min. `bi-config` version dumped to `0.7.1` - the version searches for config file name 'config.json5' by default
 * [FIXED] `staticData.loader` - takes db config from `storage:postgres` config path instead of `storage:sequelize`
+* [FIXED] CLI - support data logging to a remote cli console
 
 ## v0.5.1
 
