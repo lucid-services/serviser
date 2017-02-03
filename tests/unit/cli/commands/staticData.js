@@ -67,15 +67,19 @@ describe('`staticData` command', function() {
         });
 
         describe('-r, --refresh option', function() {
-            it('should call provided callback with an Error when staticData has never been loaded (so we cant reload it)', function() {
+            it('should log an Error when staticData has never been loaded (so we cant reload it)', function() {
                 var callback = sinon.spy();
+                var logSpy = sinon.spy();
                 this.staticDataGetLoadOptionsStub.returns();
 
-                return this.action({
+                return this.action.call({
+                    log: logSpy
+                },{
                     options: {refresh: true}
-                }, callback).should.be.rejected.then(function() {
+                }, callback).then(function() {
                     callback.should.be.calledOnce;
-                    callback.should.be.calledWith(sinon.match.string);
+                    logSpy.should.have.been.calledOnce;
+                    logSpy.should.have.been.calledWith(sinon.match.instanceOf(Error));
                 });
             });
 
