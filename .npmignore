@@ -5,6 +5,8 @@
 .jsdoc.json
 *.vim
 .idea
+test.js
+logs/
 npm-debug.log
 coverage/
 tests/
