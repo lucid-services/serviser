@@ -1,4 +1,4 @@
-## FUTURE
+## v0.6.0
 
 * [ADDED] common cli initialization procedure via new static `CLI.init` method
 * [ADDED] CLI - ls -r (aka. list routes) add additional column listing applied route's middlewares
