@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)
+
 ## v0.6.1
 
 * [FIXED] CLI - `ls -a` cmd should not crash when one of app servers is not running
