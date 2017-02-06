@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] CLI - `ls -a` cmd should not crash when one of app servers is not running
+
 ## v0.6.0
 
 * [ADDED] common cli initialization procedure via new static `CLI.init` method
