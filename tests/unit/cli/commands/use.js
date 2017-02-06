@@ -36,27 +36,15 @@ describe('`use` command', function() {
         });
 
         this.logStub = sinon.stub();
-        this.logErrStub = sinon.stub();
-
-        this.consoleStubRevert = useCmd.__set__({
-            console: {
-                log: this.logStub,
-                error: this.logErrStub
-            }
+        this.action = useCmd.action(this.cli).bind({
+            log: this.logStub
         });
-
-        this.action = useCmd.action(this.cli);
     });
 
     beforeEach(function() {
         this.logStub.reset();
-        this.logErrStub.reset();
 
         this.cli.apps = [];
-    });
-
-    after(function() {
-        this.consoleStubRevert();
     });
 
     describe('action', function() {
@@ -89,9 +77,9 @@ describe('`use` command', function() {
         it('should log an Invalid argument error', function() {
             this.action({apps: ''}, sinon.spy());
 
-            this.logErrStub.should.have.been.calledOnce;
-            this.logErrStub.should.have.been.calledWith(sinon.match(function(message) {
-                return ~message.indexOf('Invalid argument');
+            this.logStub.should.have.been.calledOnce;
+            this.logStub.should.have.been.calledWith(sinon.match(function(err) {
+                return ~err.message.indexOf('Invalid argument');
             }, 'Invalid argument'));
         });
 

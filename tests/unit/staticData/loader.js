@@ -9,6 +9,7 @@ var Promise        = require('bluebird');
 var couchbase      = require('couchbase');
 var CouchbaseODM   = require('kouchbase-odm');
 var BucketMock     = require('couchbase/lib/mock/bucket');
+var _              = require('lodash');
 
 var loaderPath = path.normalize(__dirname + '/../../../lib/staticData/loader.js');
 var ConfigMock = require('../mocks/config.js');
@@ -107,6 +108,7 @@ describe('static data loader', function() {
         this.context.console.error.reset();
 
         this.context.require.withArgs('bluebird').returns(Promise);
+        this.context.require.withArgs('lodash').returns(_);
         this.context.require.withArgs('bi-config').returns(this.config);
         this.context.require.withArgs('minimist').returns(this.minimistStub);
         this.context.require.withArgs('kouchbase-odm').returns(CouchbaseODM);
@@ -116,7 +118,7 @@ describe('static data loader', function() {
 
         this.sequelizeBuilderStub.returns(this.sequelizeStub);
         //this.configGetStub.returns();
-        this.configGetStub.withArgs('storage:sequelize').returns(this.postgresConfig);
+        this.configGetStub.withArgs('storage:postgres').returns(this.postgresConfig);
         this.configGetStub.withArgs('storage:couchbase').returns(this.couchbaseConfig);
     });
 

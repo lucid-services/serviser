@@ -10,6 +10,8 @@ var ServerMock       = require('../../mocks/server.js');
 var CLI              = require('../../../../lib/cli');
 var lsCmd            = rewire('../../../../lib/cli/commands/ls.js');
 
+var expect = chai.expect;
+
 chai.use(sinonChai);
 chai.should();
 
@@ -43,14 +45,23 @@ describe('`ls` command', function() {
             url: '/'
         });
 
-        router.buildRoute({
+        var route = router.buildRoute({
             url: '/app',
             type: 'get'
         });
 
-        router2.buildRoute({
+        route.validate('body', {
+            $is: Object
+        });
+        route.main(sinon.spy());
+
+        var route2 = router2.buildRoute({
             url: '/app2',
             type: 'get'
+        });
+
+        route2.validate('body', {
+            $is: Object
         });
 
         router2.buildRoute({
@@ -63,26 +74,15 @@ describe('`ls` command', function() {
             type: 'delete'
         });
 
-        this.logStub = sinon.stub();
-        this.logErrStub = sinon.stub();
+        this.logStub = sinon.spy();
 
-        this.consoleStubRevert = lsCmd.__set__({
-            console: {
-                log: this.logStub,
-                error: this.logErrStub
-            }
+        this.action = lsCmd.action(this.cli).bind({
+            log: this.logStub
         });
-
-        this.action = lsCmd.action(this.cli);
     });
 
     beforeEach(function() {
         this.logStub.reset();
-        this.logErrStub.reset();
-    });
-
-    after(function() {
-        this.consoleStubRevert();
     });
 
     describe('action', function() {
@@ -141,20 +141,14 @@ describe('`ls` command', function() {
                 this.cli.apps = [];
             });
 
-            it('should print an error when the is no app connected', function() {
-                this.action({options: {routes: true}, filter: []}, sinon.spy());
+            it('should print an error when there is no app connected', function() {
+                var self = this;
 
-                this.logErrStub.should.have.been.calledOnce;
-                this.logErrStub.should.have.been.calledWith(
-                    sinon.match.string
-                );
-            });
+                function testCase() {
+                    self.action({options: {routes: true}, filter: []}, sinon.spy());
+                }
 
-            it('should call the callback', function() {
-                var callbackSpy = sinon.spy();
-                this.action({options: {routes: true}, filter: []}, callbackSpy);
-
-                callbackSpy.should.have.been.calledOnce;
+                expect(testCase).to.throw(Error);
             });
         });
     });
@@ -201,10 +195,10 @@ describe('`ls` command', function() {
                 this.app2,
             ]);
 
-            var expected = 'GET     /app   getApp_v1.0   \n'+
-                           'GET     /app2  getApp2_v2.0  \n'+
-                           'POST    /app2  postApp2_v2.0 \n'+
-                           'DELETE  /del   deleteDel_v2.0\n';
+            var expected = 'GET     /app   getApp_v1.0     main validator\n'+
+                           'GET     /app2  getApp2_v2.0    validator     \n'+
+                           'POST    /app2  postApp2_v2.0                 \n'+
+                           'DELETE  /del   deleteDel_v2.0                \n';
 
             output.should.be.equal(expected);
         });
@@ -220,8 +214,8 @@ describe('`ls` command', function() {
                     }
                 });
 
-                var expected = 'GET  /app   getApp_v1.0 \n'+
-                               'GET  /app2  getApp2_v2.0\n';
+                var expected = 'GET  /app   getApp_v1.0   main validator\n'+
+                               'GET  /app2  getApp2_v2.0  validator     \n';
 
                 output.should.be.equal(expected);
             });
@@ -236,8 +230,8 @@ describe('`ls` command', function() {
                     }
                 });
 
-                var expected = 'GET   /app2  getApp2_v2.0 \n'+
-                               'POST  /app2  postApp2_v2.0\n';
+                var expected = 'GET   /app2  getApp2_v2.0   validator\n'+
+                               'POST  /app2  postApp2_v2.0           \n';
 
                 output.should.be.equal(expected);
             });
@@ -252,9 +246,9 @@ describe('`ls` command', function() {
                     }
                 });
 
-                var expected = 'GET     /app2  getApp2_v2.0  \n'+
-                               'POST    /app2  postApp2_v2.0 \n'+
-                               'DELETE  /del   deleteDel_v2.0\n';
+                var expected = 'GET     /app2  getApp2_v2.0    validator\n'+
+                               'POST    /app2  postApp2_v2.0            \n'+
+                               'DELETE  /del   deleteDel_v2.0           \n';
 
                 output.should.be.equal(expected);
             });
@@ -271,7 +265,7 @@ describe('`ls` command', function() {
                     }
                 });
 
-                var expected = 'GET  /app2  getApp2_v2.0\n';
+                var expected = 'GET  /app2  getApp2_v2.0  validator\n';
 
                 output.should.be.equal(expected);
             });
@@ -287,10 +281,10 @@ describe('`ls` command', function() {
                     sort: 'm' //sort by route's (m)ethod
                 });
 
-                var expected = 'DELETE  /del   deleteDel_v2.0\n'+
-                               'GET     /app   getApp_v1.0   \n'+
-                               'GET     /app2  getApp2_v2.0  \n'+
-                               'POST    /app2  postApp2_v2.0 \n';
+                var expected = 'DELETE  /del   deleteDel_v2.0                \n'+
+                               'GET     /app   getApp_v1.0     main validator\n'+
+                               'GET     /app2  getApp2_v2.0    validator     \n'+
+                               'POST    /app2  postApp2_v2.0                 \n';
 
                 output.should.be.equal(expected);
             });

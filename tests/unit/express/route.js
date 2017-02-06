@@ -9,6 +9,7 @@ var Promise        = require('bluebird');
 var AppManager = require('../../../lib/express/appManager.js');
 var Router     = require('../../../lib/express/router.js');
 var Route      = require('../../../lib/express/route.js');
+var Response   = require('../../../lib/express/response.js');
 var RouteError = require('../../../lib/error/routeError.js');
 var Config     = require('../mocks/config.js');
 
@@ -690,6 +691,31 @@ describe('Route', function() {
                     self.next.should.have.been.calledOnce;
                     self.next.should.have.been.calledWith(error);
                     spy.should.have.callCount(0);
+                });
+            });
+
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function() {
+                var self = this;
+                var res = {
+                    redirect: sinon.spy()
+                };
+                var middlewareSpy = sinon.spy();
+
+                this.route.main(function() {
+                    return this.route.buildResponse(function() {
+                        this.redirect('https://google.com');
+                    });
+                });
+                this.route.addStep(middlewareSpy);
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                    res.redirect.should.have.been.calledOnce;
+                    res.redirect.should.have.been.calledWith('https://google.com');
+                    middlewareSpy.should.have.callCount(0);
+                    self.next.should.have.callCount(0);
                 });
             });
 
