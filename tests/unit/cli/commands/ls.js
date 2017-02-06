@@ -186,6 +186,26 @@ describe('`ls` command', function() {
 
             output.should.be.equal(expected);
         });
+
+        it('should not fail when an app server is not running', function() {
+            var self = this;
+            var serverBck = this.app.server;
+            this.app.server = null;
+
+            function testCase() {
+                return lsCmd.printApps([
+                    self.app,
+                    self.app2,
+                ], {
+                    header: false
+                });
+            }
+
+            expect(testCase).to.not.throw(Error);
+
+            this.app.server = serverBck;
+        });
+
     });
 
     describe('printRoutes', function() {

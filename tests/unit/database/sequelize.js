@@ -24,12 +24,15 @@ describe('sequelizeBuilder', function() {
     });
 
     it('should build new Sequelize object with provided options', function() {
+        var logSpy = sinon.spy();
+
         var options = {
             host: 'localhost',
             db: 'test',
             username: 'root',
             password: 'test',
             dialect: 'postgres',
+            logging: logSpy,
             pool: {
                 min: 10,
                 max: 100,
@@ -40,6 +43,7 @@ describe('sequelizeBuilder', function() {
 
         var sequelize = sequelizeBuilder(options);
 
+        sequelize.options.should.have.property('logging', logSpy);
         sequelize.config.should.have.property('database', options.db);
         sequelize.config.should.have.property('username', options.username);
         sequelize.config.should.have.property('password', options.password);

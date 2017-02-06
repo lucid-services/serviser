@@ -1,3 +1,9 @@
+## v0.6.1
+
+* [FIXED] CLI - `ls -a` cmd should not crash when one of app servers is not running
+* [FIXED] database/sequelize.js - don't crash an app when invalid `SEQUELIZE_DEBUG` option is set. Log warning instead.
+* [FIXED] `sequelizeBuilder` don't ignore custom `logging` (function) option
+
 ## v0.6.0
 
 * [ADDED] common cli initialization procedure via new static `CLI.init` method
