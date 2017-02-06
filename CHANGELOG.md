@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [FIXED] CLI - `ls -a` cmd should not crash when one of app servers is not running
+* [FIXED] database/sequelize.js - don't crash an app when invalid `SEQUELIZE_DEBUG` option is set. Log warning instead.
 
 ## v0.6.0
 
