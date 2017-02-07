@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)
+* [FIXED] `staticData.loader` - particular db settings is taken from `storage.postgres.databases.staticData` config path
 
 ## v0.6.1
 
