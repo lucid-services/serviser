@@ -719,6 +719,28 @@ describe('Route', function() {
                 });
             });
 
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware (2)", function() {
+                var self = this;
+                var res = {
+                    redirect: sinon.spy()
+                };
+
+                this.route.main(function() {
+                    return this.route.buildResponse(function() {
+                        this.redirect('https://google.com');
+                    });
+                });
+                this.route.build(this.expressRouter);
+
+                var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
+
+                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                    res.redirect.should.have.been.calledOnce;
+                    res.redirect.should.have.been.calledWith('https://google.com');
+                    self.next.should.have.callCount(0);
+                });
+            });
+
             it("should call registered route's catch error handler", function() {
                 var self = this;
                 var err = new RouteError('testinng error');
