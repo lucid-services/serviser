@@ -55,9 +55,15 @@ describe('static data loader', function() {
         };
 
         this.postgresConfig = {
-            db: 'test',
-            user: 'test',
-            host: 'localhost'
+            ssl: false,
+            host: '127.0.0.1',
+            databases: {
+                staticData: {
+                    db: 'test',
+                    username: 'test',
+                    password: 'test'
+                }
+            }
         };
 
         this.couchbaseConfig = {

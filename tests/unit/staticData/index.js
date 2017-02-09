@@ -65,7 +65,8 @@ describe('static data', function() {
         it('should throw an Error when we get exit status code which is NOT equal 0', function() {
             var resolved = {
                 status: 2,
-                stderr: 'some error message'
+                stderr: 'some error message',
+                stdout: new Buffer('')
             };
 
             this.spawnSyncStub.returns(resolved);
