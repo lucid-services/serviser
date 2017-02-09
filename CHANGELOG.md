@@ -2,8 +2,9 @@
 
 * [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)
 * [FIXED] `staticData.loader` - particular db settings is taken from `storage.postgres.databases.staticData` config path
-* [FIXED] `clientMiddleware` - the `restrictScope` & `restrictRedirect` options were ignored + added tests for the middleware (tests requires kouchbase-odm@2.0.0-rc.2)
+* [FIXED] `clientMiddleware` - the `restrictScope` & `restrictRedirect` options were ignored + added tests for the middleware (tests requires >kouchbase-odm@2.0.0-rc.1)
 * [FIXED] fulfillent value (eg.: Response object) of the last route middleware was never being processed
+* [FIXED] updated `kouchbase-odm` allowing versions greater than `2.0.0-rc.1`
 
 ## v0.6.1
 
