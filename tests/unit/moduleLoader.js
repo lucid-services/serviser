@@ -21,6 +21,7 @@ describe('moduleLoader', function() {
             require(path);
             return self.moduleStub;
         });
+        this.requireSpy.extensions = require.extensions;
 
         moduleLoader.__set__('require', this.requireSpy);
 
@@ -342,6 +343,7 @@ describe('moduleLoader', function() {
                             'route1.js': null,
                             'route2.js': null,
                             'route3.js': null,
+                            '.gitignore': null,
                             s2s: {
                                 'route1.js': null,
                                 'route2.js': null,
@@ -360,7 +362,7 @@ describe('moduleLoader', function() {
             this.createFileTree(tree, this.tmpDir.name);
         });
 
-        it('should "require" every file in provided directory', function() {
+        it('should "require" every SUPPORTED file in provided directory', function() {
             moduleLoader.loadModules(
                 this.tmpDir.name + '/modules/'
             );

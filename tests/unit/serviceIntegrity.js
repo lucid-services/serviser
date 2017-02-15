@@ -295,7 +295,7 @@ describe('serviceIntegrity', function() {
             });
         });
 
-        describe('couchbase driver IS set', function() {
+        describe('couchbase driver IS set (in use by an application)', function() {
             before(function() {
 
                 var self = this;
@@ -334,6 +334,29 @@ describe('serviceIntegrity', function() {
             after(function() {
                 this.clusterStub.restore();
                 this.couchbaseGetStub.restore();
+            });
+
+            it('should wait unit bucket gets connected in case it is not', function() {
+                var self = this;
+                this.couchbaseCluster.buckets.main.connected = false;
+                this.couchbaseCluster.buckets.cache.connected = false;
+
+                setTimeout(function() {
+                    self.couchbaseCluster.buckets.main.connected = true;
+                    self.couchbaseCluster.buckets.cache.connected = true;
+
+                    self.couchbaseCluster.buckets.main.emit('connect')
+                    self.couchbaseCluster.buckets.cache.emit('connect');
+                }, 50);
+
+                this.couchbaseGetStub.yields(null, {
+                    cas: '123456',
+                    value: {}
+                });
+
+                return serviceIntegrity.inspectCouchbase(this.app).then(function(result) {
+                    self.couchbaseGetStub.should.have.been.calledTwice;
+                });
             });
 
             it('should make a select query for each of the two opened buckets', function() {
