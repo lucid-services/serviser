@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] `serviceIntegrity.inspectCouchbase` - if a bucket is not connected already, wait on `connect` or `error` event before the test get request is made
 * [FIXED] don't print warning to stdout when `SEQEULIZE_DEBUG` is `undefined`
 * [FIXED] `moduleLoader` - don't load unsupported files... load only files with an extension from `require.extensions`
 
