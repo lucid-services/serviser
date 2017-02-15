@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] don't print warning to stdout when `SEQEULIZE_DEBUG` is `undefined`
 * [FIXED] `moduleLoader` - don't load unsupported files... load only files with an extension from `require.extensions`
 
 ## v0.6.2
