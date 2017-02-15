@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] `moduleLoader` - don't load unsupported files... load only files with an extension from `require.extensions`
+
 ## v0.6.2
 
 * [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)
