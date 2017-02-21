@@ -1,3 +1,10 @@
+## FUTURE
+
+* [ADDED] CLI - new `inspect route` command
+* [ADDED] `chalk` module dependency (we have been already using it in bi-vantage)
+* [ADDED] `bi-json-stringifier` module dependency
+* [REMOVED] `route.stepsDict` hash table as it was unnecessary & unused
+
 ## v0.6.3
 
 * [FIXED] `serviceIntegrity.inspectCouchbase` - if a bucket is not connected already, wait on `connect` or `error` event before the test get request is made

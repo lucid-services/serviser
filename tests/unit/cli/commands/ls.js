@@ -50,9 +50,9 @@ describe('`ls` command', function() {
             type: 'get'
         });
 
-        route.validate('body', {
+        route.validate({
             $is: Object
-        });
+        }, 'body');
         route.main(sinon.spy());
 
         var route2 = router2.buildRoute({
@@ -60,9 +60,9 @@ describe('`ls` command', function() {
             type: 'get'
         });
 
-        route2.validate('body', {
+        route2.validate({
             $is: Object
-        });
+        }, 'body');
 
         router2.buildRoute({
             url: '/app2',
