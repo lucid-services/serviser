@@ -1,3 +1,10 @@
+## FUTURE
+
+* [ADDED] CLI - new `inspect route` command
+* [ADDED] `chalk` module dependency (we have been already using it in bi-vantage)
+* [ADDED] `bi-json-stringifier` module dependency
+* [REMOVED] `route.stepsDict` hash table as it was unnecessary & unused
+
 ## v0.6.2
 
 * [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)

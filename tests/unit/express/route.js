@@ -304,11 +304,6 @@ describe('Route', function() {
             });
         });
 
-        it("should add provided middleware function to the route's dictionary", function() {
-            this.route.main(this.middleware);
-            this.route.stepsDict.should.have.property('main', this.middleware);
-        });
-
         it('should return self (Route object)', function() {
             this.route.main(this.middleware).should.be.equal(this.route);
         });
@@ -395,20 +390,13 @@ describe('Route', function() {
             step.fn.should.be.a('function');
         });
 
-        it("should add promise based function middleware to the route's dictionary", function() {
-            this.route.stepsDict.should.be.eql({});
-            this.route.validate(this.schema, 'query');
-
-            this.route.stepsDict.should.have.property('validator').that.is.a('function');
-        });
-
         it('should create transformed validator middleware which returns a Promise', function() {
             var req = {};
             var res = {};
 
             this.validatorMiddlewareStub.yields();
             this.route.validate(this.schema, 'query');
-            var middleware = this.route.stepsDict.validator;
+            var middleware = this.route.steps[0].fn;
             return middleware(req, res).should.be.fulfilled;
         });
 
@@ -419,7 +407,7 @@ describe('Route', function() {
 
             this.validatorMiddlewareStub.yields(err);
             this.route.validate(this.schema, 'query');
-            var middleware = this.route.stepsDict.validator;
+            var middleware = this.route.steps[0].fn;
             return middleware(req, res).should.be.rejectedWith(err);
         });
 
@@ -458,15 +446,9 @@ describe('Route', function() {
             this.route.restrictByClient();
 
             this.route.steps.should.include({
-                name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
-            });
-        });
-
-        it("should add client middleware with provided options to the route's dictionary", function() {
-            this.route.restrictByClient();
-
-            this.route.steps.should.include({
-                name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
+                name: 'client',
+                fn: this.clientMiddlewareSpy.firstCall.returnValue,
+                args: []
             });
         });
 
@@ -495,11 +477,6 @@ describe('Route', function() {
         it('should call route.$restrictIpMiddleware builder function', function() {
             this.route.restrictByIp();
             this.restrictIpMiddlewareSpy.should.have.been.calledOnce;
-        });
-
-        it("should push restrict ip middleware to the route's dictionary", function() {
-            this.route.restrictByIp();
-            this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
 
         it("should add restrict ip middleware to the route's stack", function() {
@@ -536,12 +513,6 @@ describe('Route', function() {
 
             this.route.restrictByOrigin();
             this.restrictOriginMiddlewareSpy.should.have.been.calledOnce;
-        });
-
-        it("should push restrict origin middleware to the route's dictionary", function() {
-            this.route.restrictByOrigin();
-
-            this.route.stepsDict.should.have.property('restrictOrigin').that.is.a('function');
         });
 
         it("should add restrict origin middleware to the route's stack", function() {
@@ -582,16 +553,6 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'name', fn: this.middleware
             });
-        });
-
-        it("should add provided middleware function to the route's dictionary", function() {
-            this.route.addStep(this.middleware);
-            this.route.stepsDict.should.have.property('1', this.middleware);
-        });
-
-        it("should add provided NAMED middleware function to the route's dictionary", function() {
-            this.route.addStep('name', this.middleware);
-            this.route.stepsDict.should.have.property('name', this.middleware);
         });
 
         it('should throw a RouteError when we try to assign a middleware with duplicate name', function() {
