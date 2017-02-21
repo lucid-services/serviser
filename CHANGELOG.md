@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [ADDED] `serviceIntegrity` debug points
 * [ADDED] CLI - new `inspect route` command
 * [ADDED] `chalk` module dependency (we have been already using it in bi-vantage)
 * [ADDED] `bi-json-stringifier` module dependency
