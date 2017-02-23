@@ -41,7 +41,8 @@
     "minimist": "^1.2.0",
     "raw-body": "2.1.*",
     "semver": "^5.1.0",
-    "sequelize": "^3.27.0"
+    "sequelize": "^3.27.0",
+    "stack-trace": "0.0.9"
   },
   "devDependencies": {
     "pg": "^4.5.0",

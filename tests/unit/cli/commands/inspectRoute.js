@@ -73,6 +73,8 @@ describe('`inspect route` command', function() {
             output.should.be.eql({
                 absolute: this.route.Router.App.config.get('baseUrl') + relativeUrl,
                 app: 'public',
+                // doesn't realy test much here regarding route's file definition location
+                fpath: require.resolve('../../../../lib/express/route.js'),
                 method: this.route.options.type,
                 relative: relativeUrl,
                 uid: 'getApp_v1.0',
