@@ -9,7 +9,7 @@ var logger           = require('bi-logger');
 var Session          = require('express-session');
 var Flash            = require('connect-flash');
 var CouchbaseODM     = require('kouchbase-odm');
-var ExpressValidator = require('json-inspector');
+var ExpressValidator = require('bi-json-inspector');
 
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');

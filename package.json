@@ -36,7 +36,7 @@
     "express": "^4.14.0",
     "express-session": "1.13.*",
     "http-status-codes": "^1.0.6",
-    "json-inspector": "^1.0.0-rc.2",
+    "bi-json-inspector": "^1.0.0-rc.3",
     "lodash": "^4.16.2",
     "minimist": "^1.2.0",
     "raw-body": "2.1.*",

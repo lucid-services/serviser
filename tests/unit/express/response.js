@@ -2,7 +2,7 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var Validator      = require('json-inspector');
+var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
 var Response   = require('../../../lib/express/response.js');
