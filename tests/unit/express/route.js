@@ -528,6 +528,63 @@ describe('Route', function() {
         });
     });
 
+    describe('respondsWith', function() {
+        before(function() {
+            this.route = this.buildRoute({
+                url: '/respondsWith',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+        });
+
+        it('should assign provided response data schema to the route', function() {
+            var schema = {
+                some: {
+                    data: {
+                        $is: String
+                    }
+                }
+            };
+
+            this.route.respondsWith(200, schema);
+            this.route.respondsWith(304, schema);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema
+            });
+
+            this.route.description.responses.should.have.property('304').that.is.eql({
+                schema: schema
+            });
+        });
+
+        it('should return self aka the route object', function() {
+            this.route.respondsWith(500, {$is: String}).should.be.equal(this.route);
+        });
+
+        it('should default to 200 status code if none is provided', function() {
+            var schema = {$is: Number};
+            this.route.respondsWith(schema);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema
+            });
+        });
+
+        it('should overwrite existing schema if already set', function() {
+            var schema = {$is: Number};
+            var schema2 = {$is: String};
+            this.route.respondsWith(schema);
+            this.route.respondsWith(schema2);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema2
+            });
+        });
+    });
+
     describe('addStep', function() {
         beforeEach(function() {
             this.route = this.buildRoute({
