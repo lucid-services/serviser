@@ -13,6 +13,8 @@ var Response   = require('../../../lib/express/response.js');
 var RouteError = require('../../../lib/error/routeError.js');
 var Config     = require('../mocks/config.js');
 
+//should be required as it enables promise cancellation feature of bluebird Promise
+require('../../../index.js');
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
 
@@ -712,7 +714,7 @@ describe('Route', function() {
                 });
             });
 
-            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function() {
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function(done) {
                 var self = this;
                 var res = {
                     redirect: sinon.spy()
@@ -725,19 +727,24 @@ describe('Route', function() {
                     });
                 });
                 this.route.addStep(middlewareSpy);
+                this.route.addStep(middlewareSpy);
                 this.route.build(this.expressRouter);
 
                 var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
 
-                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                //promise will never get fulfilled or rejected as it will be cancelled
+                var promise = routeMiddleware(this.req, res, this.next);
+                setTimeout(function() {
                     res.redirect.should.have.been.calledOnce;
                     res.redirect.should.have.been.calledWith('https://google.com');
                     middlewareSpy.should.have.callCount(0);
                     self.next.should.have.callCount(0);
-                });
+
+                    done();
+                }, 50);
             });
 
-            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware (2)", function() {
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware (2)", function(done) {
                 var self = this;
                 var res = {
                     redirect: sinon.spy()
@@ -752,11 +759,14 @@ describe('Route', function() {
 
                 var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
 
-                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                //promise will never get fulfilled or rejected as it will be cancelled
+                var promise = routeMiddleware(this.req, res, this.next);
+                setTimeout(function() {
                     res.redirect.should.have.been.calledOnce;
                     res.redirect.should.have.been.calledWith('https://google.com');
                     self.next.should.have.callCount(0);
-                });
+                    done();
+                }, 50);
             });
 
             it("should call registered route's catch error handler", function() {
