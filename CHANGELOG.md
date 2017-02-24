@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [CHANGED] use private npm module `bi-json-inspector` instead of global `json-inspector`
+* [ADDED] common bi-service app initialization procedure as `bi-service/bin/www` script
 * [ADDED] `Route.prototype.respondsWith` method - allows to describe data the route responds with
 * [ADDED] `res.filter` method, which filters provided data and returns custom response object which works only with the filtered data
 * [ADDED] `res` object provided to a route middlewares is simple wrapper object around the original express `res` object. That allows us implement additional methods, like the `res.filter` method
