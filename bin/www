@@ -1,0 +1,44 @@
+'use strict';
+var debug   = require('debug')('app:www');
+var service = require('../index.js');
+
+module.exports = initializer;
+
+function initializer(appManager, config) {
+    var cli = service.CLI.init(appManager, config.get('cli'));
+
+    appManager.apps.forEach(function(app) {
+        app.once('post-init', initializer.onPostInit);
+    }, this);
+
+    //TODO implement same interface for CLI server as for other apps so that
+    //cli can be one of the apps in appManager
+    return cli;
+}
+
+initializer.onPostInit = onPostInit;
+initializer.onListening = onListening;
+initializer.onError = onError;
+initializer.onInspectionFailure = onInspectionFailure;
+
+function onPostInit(app) {
+    app.on('error', initializer.onError);
+    app.on('listening', initializer.onListening);
+    app.build();
+    service.serviceIntegrity.inspect(app).then(function() {
+        app.listen(app.config.get('listen'));
+    }).catch(initializer.onInspectionFailure);
+}
+
+function onListening(app) {
+    console.log(`${app.options.name} app listening on port: ${app.server.address().port}`);
+}
+
+function onError(err) {
+    debug(err.stack);
+}
+
+function onInspectionFailure(err) {
+    console.error(err);
+    process.exit(1);
+}
