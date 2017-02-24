@@ -756,8 +756,8 @@ describe('Route', function() {
                 var self = this;
                 var err = new RouteError('testinng error');
                 var catchHandlerSpy = sinon.spy();
-                var res1 = {};
-                var res2 = {};
+                var res1 = {statusCode: 200};
+                var res2 = {statusCode: 301};
                 var req1 = {};
                 var req2 = {};
 
@@ -772,18 +772,24 @@ describe('Route', function() {
 
                 return routeMiddleware(req1, res1, this.next).should.be.fulfilled.then(function() {
                     catchHandlerSpy.should.have.been.calledOnce;
+                    var wrappedResponse = catchHandlerSpy.getCall(0).args[2];
+                    wrappedResponse.__proto__.should.be.equal(res1);
+
                     catchHandlerSpy.should.have.been.calledWith(
                         err,
                         sinon.match.same(req1),
-                        sinon.match.same(res1)
+                        wrappedResponse
                     );
                 }).then(function() {
                     return routeMiddleware(req2, res2, this.next).should.be.fulfilled.then(function() {
+                        var wrappedResponse = catchHandlerSpy.getCall(1).args[2];
+                        wrappedResponse.__proto__.should.be.equal(res2);
+
                         catchHandlerSpy.should.have.been.calledTwice;
                         catchHandlerSpy.should.have.been.calledWithExactly(
                             err,
                             sinon.match.same(req2),
-                            sinon.match.same(res2)
+                            wrappedResponse
                         );
                     });
                 });
