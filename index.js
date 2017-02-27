@@ -30,9 +30,9 @@ exports.database    = {
     sequelizeBuilder: require('./lib/database/sequelize.js')
 };
 exports.error       = {
-    IncompleteDataError: require('./lib/error/incompleteDataError.js'),
-    RequestError: require('./lib/error/requestError.js'),
-    RouteError: require('./lib/error/routeError.js'),
-    ServiceError: require('./lib/error/serviceError.js'),
-    UnauthorizedError: require('./lib/error/unauthorizedError.js')
+    IncompleteDataError : require('./lib/error/incompleteDataError.js'),
+    RequestError        : require('./lib/error/requestError.js'),
+    RouteError          : require('./lib/error/routeError.js'),
+    ServiceError        : require('./lib/error/serviceError.js'),
+    UnauthorizedError   : require('./lib/error/unauthorizedError.js')
 };

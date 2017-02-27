@@ -1,3 +1,16 @@
+## v0.7.0
+
+* [CHANGED] use private npm module `bi-json-inspector` instead of global `json-inspector`
+* [ADDED] common bi-service app initialization procedure as `bi-service/bin/www` script
+* [ADDED] `Route.prototype.respondsWith` method - allows to describe data the route responds with
+* [ADDED] `res.filter` method, which filters provided data and returns custom response object which works only with the filtered data
+* [ADDED] `res` object provided to a route middlewares is simple wrapper object around the original express `res` object. That allows us implement additional methods, like the `res.filter` method
+* [ADDED] `serviceIntegrity` debug points
+* [ADDED] CLI - new `inspect route` command
+* [ADDED] explicitly list `chalk` module as dependency (we have been already using it in bi-vantage)
+* [ADDED] `bi-json-stringifier` module dependency
+* [REMOVED] `route.stepsDict` hash table as it was unnecessary & unused
+
 ## v0.6.3
 
 * [FIXED] `serviceIntegrity.inspectCouchbase` - if a bucket is not connected already, wait on `connect` or `error` event before the test get request is made

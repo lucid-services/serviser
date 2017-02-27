@@ -3,7 +3,7 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var jsonInspector  = require('json-inspector');
+var jsonInspector  = require('bi-json-inspector');
 var couchbase      = require('couchbase');
 var BucketMock     = require('couchbase/lib/mock/bucket');
 

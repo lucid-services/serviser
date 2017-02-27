@@ -3,7 +3,7 @@ var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Express        = require('express');
-var Validator      = require('json-inspector');
+var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
 var AppManager = require('../../../lib/express/appManager.js');
@@ -13,6 +13,8 @@ var Response   = require('../../../lib/express/response.js');
 var RouteError = require('../../../lib/error/routeError.js');
 var Config     = require('../mocks/config.js');
 
+//should be required as it enables promise cancellation feature of bluebird Promise
+require('../../../index.js');
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
 
@@ -304,11 +306,6 @@ describe('Route', function() {
             });
         });
 
-        it("should add provided middleware function to the route's dictionary", function() {
-            this.route.main(this.middleware);
-            this.route.stepsDict.should.have.property('main', this.middleware);
-        });
-
         it('should return self (Route object)', function() {
             this.route.main(this.middleware).should.be.equal(this.route);
         });
@@ -395,20 +392,13 @@ describe('Route', function() {
             step.fn.should.be.a('function');
         });
 
-        it("should add promise based function middleware to the route's dictionary", function() {
-            this.route.stepsDict.should.be.eql({});
-            this.route.validate(this.schema, 'query');
-
-            this.route.stepsDict.should.have.property('validator').that.is.a('function');
-        });
-
         it('should create transformed validator middleware which returns a Promise', function() {
             var req = {};
             var res = {};
 
             this.validatorMiddlewareStub.yields();
             this.route.validate(this.schema, 'query');
-            var middleware = this.route.stepsDict.validator;
+            var middleware = this.route.steps[0].fn;
             return middleware(req, res).should.be.fulfilled;
         });
 
@@ -419,7 +409,7 @@ describe('Route', function() {
 
             this.validatorMiddlewareStub.yields(err);
             this.route.validate(this.schema, 'query');
-            var middleware = this.route.stepsDict.validator;
+            var middleware = this.route.steps[0].fn;
             return middleware(req, res).should.be.rejectedWith(err);
         });
 
@@ -458,15 +448,9 @@ describe('Route', function() {
             this.route.restrictByClient();
 
             this.route.steps.should.include({
-                name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
-            });
-        });
-
-        it("should add client middleware with provided options to the route's dictionary", function() {
-            this.route.restrictByClient();
-
-            this.route.steps.should.include({
-                name: 'client', fn: this.clientMiddlewareSpy.firstCall.returnValue
+                name: 'client',
+                fn: this.clientMiddlewareSpy.firstCall.returnValue,
+                args: []
             });
         });
 
@@ -495,11 +479,6 @@ describe('Route', function() {
         it('should call route.$restrictIpMiddleware builder function', function() {
             this.route.restrictByIp();
             this.restrictIpMiddlewareSpy.should.have.been.calledOnce;
-        });
-
-        it("should push restrict ip middleware to the route's dictionary", function() {
-            this.route.restrictByIp();
-            this.route.stepsDict.should.have.property('restrictIp').that.is.a('function');
         });
 
         it("should add restrict ip middleware to the route's stack", function() {
@@ -538,12 +517,6 @@ describe('Route', function() {
             this.restrictOriginMiddlewareSpy.should.have.been.calledOnce;
         });
 
-        it("should push restrict origin middleware to the route's dictionary", function() {
-            this.route.restrictByOrigin();
-
-            this.route.stepsDict.should.have.property('restrictOrigin').that.is.a('function');
-        });
-
         it("should add restrict origin middleware to the route's stack", function() {
             this.route.restrictByOrigin();
 
@@ -554,6 +527,63 @@ describe('Route', function() {
 
         it('should return self (Route object)', function() {
             this.route.restrictByOrigin().should.be.equal(this.route);
+        });
+    });
+
+    describe('respondsWith', function() {
+        before(function() {
+            this.route = this.buildRoute({
+                url: '/respondsWith',
+                version: 1.0
+            }, {
+                url: '/',
+                type: 'get'
+            });
+        });
+
+        it('should assign provided response data schema to the route', function() {
+            var schema = {
+                some: {
+                    data: {
+                        $is: String
+                    }
+                }
+            };
+
+            this.route.respondsWith(200, schema);
+            this.route.respondsWith(304, schema);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema
+            });
+
+            this.route.description.responses.should.have.property('304').that.is.eql({
+                schema: schema
+            });
+        });
+
+        it('should return self aka the route object', function() {
+            this.route.respondsWith(500, {$is: String}).should.be.equal(this.route);
+        });
+
+        it('should default to 200 status code if none is provided', function() {
+            var schema = {$is: Number};
+            this.route.respondsWith(schema);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema
+            });
+        });
+
+        it('should overwrite existing schema if already set', function() {
+            var schema = {$is: Number};
+            var schema2 = {$is: String};
+            this.route.respondsWith(schema);
+            this.route.respondsWith(schema2);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema2
+            });
         });
     });
 
@@ -582,16 +612,6 @@ describe('Route', function() {
             this.route.steps.should.include({
                 name: 'name', fn: this.middleware
             });
-        });
-
-        it("should add provided middleware function to the route's dictionary", function() {
-            this.route.addStep(this.middleware);
-            this.route.stepsDict.should.have.property('1', this.middleware);
-        });
-
-        it("should add provided NAMED middleware function to the route's dictionary", function() {
-            this.route.addStep('name', this.middleware);
-            this.route.stepsDict.should.have.property('name', this.middleware);
         });
 
         it('should throw a RouteError when we try to assign a middleware with duplicate name', function() {
@@ -694,7 +714,7 @@ describe('Route', function() {
                 });
             });
 
-            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function() {
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function(done) {
                 var self = this;
                 var res = {
                     redirect: sinon.spy()
@@ -707,19 +727,24 @@ describe('Route', function() {
                     });
                 });
                 this.route.addStep(middlewareSpy);
+                this.route.addStep(middlewareSpy);
                 this.route.build(this.expressRouter);
 
                 var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
 
-                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                //promise will never get fulfilled or rejected as it will be cancelled
+                var promise = routeMiddleware(this.req, res, this.next);
+                setTimeout(function() {
                     res.redirect.should.have.been.calledOnce;
                     res.redirect.should.have.been.calledWith('https://google.com');
                     middlewareSpy.should.have.callCount(0);
                     self.next.should.have.callCount(0);
-                });
+
+                    done();
+                }, 50);
             });
 
-            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware (2)", function() {
+            it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware (2)", function(done) {
                 var self = this;
                 var res = {
                     redirect: sinon.spy()
@@ -734,11 +759,14 @@ describe('Route', function() {
 
                 var routeMiddleware = this.expressRouterGetSpy.getCall(0).args.pop();
 
-                return routeMiddleware(this.req, res, this.next).should.be.fulfilled.then(function() {
+                //promise will never get fulfilled or rejected as it will be cancelled
+                var promise = routeMiddleware(this.req, res, this.next);
+                setTimeout(function() {
                     res.redirect.should.have.been.calledOnce;
                     res.redirect.should.have.been.calledWith('https://google.com');
                     self.next.should.have.callCount(0);
-                });
+                    done();
+                }, 50);
             });
 
             it("should call registered route's catch error handler", function() {
@@ -795,8 +823,8 @@ describe('Route', function() {
                 var self = this;
                 var err = new RouteError('testinng error');
                 var catchHandlerSpy = sinon.spy();
-                var res1 = {};
-                var res2 = {};
+                var res1 = {statusCode: 200};
+                var res2 = {statusCode: 301};
                 var req1 = {};
                 var req2 = {};
 
@@ -811,18 +839,24 @@ describe('Route', function() {
 
                 return routeMiddleware(req1, res1, this.next).should.be.fulfilled.then(function() {
                     catchHandlerSpy.should.have.been.calledOnce;
+                    var wrappedResponse = catchHandlerSpy.getCall(0).args[2];
+                    wrappedResponse.__proto__.should.be.equal(res1);
+
                     catchHandlerSpy.should.have.been.calledWith(
                         err,
                         sinon.match.same(req1),
-                        sinon.match.same(res1)
+                        wrappedResponse
                     );
                 }).then(function() {
                     return routeMiddleware(req2, res2, this.next).should.be.fulfilled.then(function() {
+                        var wrappedResponse = catchHandlerSpy.getCall(1).args[2];
+                        wrappedResponse.__proto__.should.be.equal(res2);
+
                         catchHandlerSpy.should.have.been.calledTwice;
                         catchHandlerSpy.should.have.been.calledWithExactly(
                             err,
                             sinon.match.same(req2),
-                            sinon.match.same(res2)
+                            wrappedResponse
                         );
                     });
                 });
