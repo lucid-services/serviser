@@ -1,4 +1,4 @@
-## FUTURE
+## v0.7.0
 
 * [CHANGED] use private npm module `bi-json-inspector` instead of global `json-inspector`
 * [ADDED] common bi-service app initialization procedure as `bi-service/bin/www` script
