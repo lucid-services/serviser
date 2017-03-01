@@ -1,4 +1,4 @@
-## FUTURE
+## v0.7.1
 
 * [FIXED] wrapped `res` object provided to route middlewares broke express res methods as they were being called with incorrect context
 
