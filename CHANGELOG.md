@@ -1,3 +1,7 @@
+## v0.7.1
+
+* [FIXED] wrapped `res` object provided to route middlewares broke express res methods as they were being called with incorrect context
+
 ## v0.7.0
 
 * [CHANGED] use private npm module `bi-json-inspector` instead of global `json-inspector`

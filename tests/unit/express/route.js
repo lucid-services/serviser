@@ -840,7 +840,7 @@ describe('Route', function() {
                 return routeMiddleware(req1, res1, this.next).should.be.fulfilled.then(function() {
                     catchHandlerSpy.should.have.been.calledOnce;
                     var wrappedResponse = catchHandlerSpy.getCall(0).args[2];
-                    wrappedResponse.__proto__.should.be.equal(res1);
+                    wrappedResponse.should.be.equal(res1);
 
                     catchHandlerSpy.should.have.been.calledWith(
                         err,
@@ -850,7 +850,7 @@ describe('Route', function() {
                 }).then(function() {
                     return routeMiddleware(req2, res2, this.next).should.be.fulfilled.then(function() {
                         var wrappedResponse = catchHandlerSpy.getCall(1).args[2];
-                        wrappedResponse.__proto__.should.be.equal(res2);
+                        wrappedResponse.should.be.equal(res2);
 
                         catchHandlerSpy.should.have.been.calledTwice;
                         catchHandlerSpy.should.have.been.calledWithExactly(
