@@ -34,12 +34,9 @@ describe('Response', function() {
     });
 
     describe('wrap', function() {
-        it('should return new response object which has the original object set as its prototype', function() {
-            var res = Response.wrap(this.res);
-            Object.getPrototypeOf(res).should.be.equal(this.res);
-        });
-
         it('should return new response object with additional methods', function() {
+            this.res.should.not.have.property('filter');
+
             var res = Response.wrap(this.res);
 
             res.should.have.property('filter').that.is.a('function');
@@ -74,10 +71,11 @@ describe('Response', function() {
         });
 
         describe('filter method', function() {
-            it('should return new response object which has original response object set as its prototype', function() {
-                var res = this.wrappedRes.filter({prop: 'test'});
-                Object.getPrototypeOf(res).should.be.equal(this.res);
-            });
+            //it.only('should return new response object which has original response object set as its prototype', function() {
+                //var res = this.wrappedRes.filter({prop: 'test'});
+                //expect(res).to.be.an.instanceof(Proxy);
+                ////Object.getPrototypeOf(res).should.be.equal(this.res);
+            //});
 
             it('should throw an Error when the validation process fails', function() {
                 var self = this;
@@ -114,15 +112,18 @@ describe('Response', function() {
             describe('wrapped response object returned from the `filter` method', function() {
                 beforeEach(function() {
                     this.dataTargetedRes = this.wrappedRes.filter(this.data);
+                    this.res.json.reset();
                 });
 
                 it('`json` method should always explicitly call original json method with filtered data', function() {
-                    this.dataTargetedRes.json().should.be.equal(this.dataTargetedRes);
+                    this.res.json.returns(this.dataTargetedRes);
+                    expect(this.dataTargetedRes.json()).to.be.equal(this.dataTargetedRes);
                     this.res.json.should.have.been.calledWith(this.data);
                 });
 
                 it('`write` method should always explicitly call original json method with filtered data', function() {
-                    this.dataTargetedRes.write().should.be.equal(this.dataTargetedRes);
+                    this.res.json.returns(this.dataTargetedRes);
+                    expect(this.dataTargetedRes.write()).to.be.equal(this.dataTargetedRes);
                     this.res.write.should.have.been.calledWith(this.data);
                 });
             });
