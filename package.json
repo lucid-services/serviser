@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "async": "^2.0.1",
-    "bi-docs": "^0.4.0",
+    "bi-docs": "^0.5.0",
     "bi-json-inspector": "^1.0.0-rc.3b",
     "bi-json-stringifier": "0.2.x",
     "bi-logger": "^1.0.0",
