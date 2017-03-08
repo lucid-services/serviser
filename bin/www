@@ -1,15 +1,35 @@
 'use strict';
 var debug   = require('debug')('app:www');
+var _       = require('lodash');
+var docs    = require('bi-docs');
+
 var service = require('../index.js');
 
 module.exports = initializer;
 
+/**
+ *
+ * @param {AppManager} appManager
+ * @param {Config} config
+ *
+ * @return {CLI}
+ */
 function initializer(appManager, config) {
     var cli = service.CLI.init(appManager, config.get('cli'));
 
-    appManager.apps.forEach(function(app) {
+    //this implementation expects apps array growth in the loop 
+    for (var i = 0, app = null; i < appManager.apps.length; i++) {
+        app = appManager.apps[i];
+
         app.once('post-init', initializer.onPostInit);
-    }, this);
+
+        //run doc server
+        if (app.config.get('doc') && app.config.get('doc:listen')) {
+
+            var docCfg = config.createLiteralProvider(app.config.get('doc'));
+            docs.server.build(app, docCfg);
+        }
+    }
 
     //TODO implement same interface for CLI server as for other apps so that
     //cli can be one of the apps in appManager

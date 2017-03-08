@@ -1,3 +1,9 @@
+## FUTURE
+
+* [ADDED] automatic documentation server generation
+* [ADDED] `Route` constructor `summary` & `description` options for documenation purposes
+* [CHANGED] behavior of the `Route.prototype.respondsWith` behavior. The methods accepts single `descriptor` argument which can be either `json-inspector` schema or `Error` constructor & instance
+
 ## v0.7.1
 
 * [FIXED] wrapped `res` object provided to route middlewares broke express res methods as they were being called with incorrect context

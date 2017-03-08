@@ -6,12 +6,13 @@ var Express        = require('express');
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
-var AppManager = require('../../../lib/express/appManager.js');
-var Router     = require('../../../lib/express/router.js');
-var Route      = require('../../../lib/express/route.js');
-var Response   = require('../../../lib/express/response.js');
-var RouteError = require('../../../lib/error/routeError.js');
-var Config     = require('../mocks/config.js');
+var AppManager   = require('../../../lib/express/appManager.js');
+var Router       = require('../../../lib/express/router.js');
+var Route        = require('../../../lib/express/route.js');
+var Response     = require('../../../lib/express/response.js');
+var RouteError   = require('../../../lib/error/routeError.js');
+var RequestError = require('../../../lib/error/requestError.js');
+var Config       = require('../mocks/config.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -100,6 +101,18 @@ describe('Route', function() {
             route.uid.should.be.a('string');
 
             spy.restore();
+        });
+
+        it('should accept `summary` & `desc` string options (for swagger doc)', function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'get',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            route.description.summary.should.be.equal('summary');
+            route.description.description.should.be.equal('description');
         });
     });
 
@@ -550,28 +563,28 @@ describe('Route', function() {
                 }
             };
 
-            this.route.respondsWith(200, schema);
-            this.route.respondsWith(304, schema);
+            this.route.respondsWith(schema);
+            this.route.respondsWith(RequestError);
 
             this.route.description.responses.should.have.property('200').that.is.eql({
                 schema: schema
             });
 
-            this.route.description.responses.should.have.property('304').that.is.eql({
-                schema: schema
+            this.route.description.responses.should.have.property('400').that.is.eql({
+                schema: new RequestError
             });
         });
 
         it('should return self aka the route object', function() {
-            this.route.respondsWith(500, {$is: String}).should.be.equal(this.route);
+            this.route.respondsWith({$is: String}).should.be.equal(this.route);
         });
 
-        it('should default to 200 status code if none is provided', function() {
-            var schema = {$is: Number};
-            this.route.respondsWith(schema);
+        it('should accept Error instance object', function() {
+            var descriptor = new RequestError;
+            this.route.respondsWith(descriptor);
 
-            this.route.description.responses.should.have.property('200').that.is.eql({
-                schema: schema
+            this.route.description.responses.should.have.property('400').that.is.eql({
+                schema: descriptor
             });
         });
 
