@@ -1,6 +1,6 @@
 {
   "name": "bi-service",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Generic service module",
   "main": "index.js",
   "testFramework": "mocha",
@@ -25,6 +25,8 @@
   },
   "dependencies": {
     "async": "^2.0.1",
+    "bi-docs": "^0.5.0",
+    "bi-json-inspector": "^1.0.0-rc.3b",
     "bi-json-stringifier": "0.2.x",
     "bi-logger": "^1.0.0",
     "bi-vantage": "^1.7.1",
@@ -36,7 +38,6 @@
     "express": "^4.14.0",
     "express-session": "1.13.*",
     "http-status-codes": "^1.0.6",
-    "bi-json-inspector": "^1.0.0-rc.3",
     "lodash": "^4.16.2",
     "minimist": "^1.2.0",
     "raw-body": "2.1.*",
