@@ -1,4 +1,4 @@
-## FUTURE
+## v0.8.0
 
 * [ADDED] automatic documentation server generation
 * [ADDED] `Route` constructor `summary` & `description` options for documenation purposes
