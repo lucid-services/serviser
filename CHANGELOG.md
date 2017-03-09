@@ -1,3 +1,7 @@
+## v0.8.1
+
+* [FIXED] invalid module required in underlying `bi-docs` module. - this fix allows patched versions to be installed
+
 ## v0.8.0
 
 * [ADDED] automatic documentation server generation
