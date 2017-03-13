@@ -28,7 +28,7 @@ chai.should();
 describe('Route', function() {
 
     before(function() {
-        this.models = {odm: {}, orm: {}};
+        this.models = {odm: {Client: {}}, orm: {}};
         this.config = new Config();
 
         this.appManager = new AppManager(this.models);

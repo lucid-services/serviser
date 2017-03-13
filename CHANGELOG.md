@@ -1,6 +1,7 @@
 ## FUTURE
 
-* [FIXED] explicit couchbase bindings
+* [FIXED] explicit couchbase bindings should be required only when needed
+* [FIXED] when we don't provide an `App` with odm `Client` model, the `router.buildRoute` method should not fail because of that. #5
 
 ## v0.8.1
 
