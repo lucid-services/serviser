@@ -18,7 +18,13 @@ describe('moduleLoader', function() {
         var self = this;
         this.moduleStub = sinon.stub();
         this.requireSpy = sinon.spy(function(path) {
-            require(path);
+
+            var module = require(path);
+            //if we require something else than module difinitions inside /tmp ,
+            //we want the module as the output
+            if (path.indexOf('/tmp') !== 0) {
+                return module;
+            }
             return self.moduleStub;
         });
         this.requireSpy.extensions = require.extensions;
@@ -239,7 +245,7 @@ describe('moduleLoader', function() {
             //NOTE that it's not insured that the models are going to be loaded
             //in this specific order. It's probable that loaded files will
             //get interchanged with incorrect model mock.
-            //It's acceptable here because it's not what we're testing
+            //It's acceptable here as it's not what we're testing
             this.moduleStub.onCall(0).returns(this.models.accessToken);
             this.moduleStub.onCall(1).returns(this.models.refreshToken);
             this.moduleStub.onCall(2).returns(this.models.user);
@@ -277,7 +283,7 @@ describe('moduleLoader', function() {
                 }
             );
 
-            this.requireSpy.should.have.callCount(0);
+            this.requireSpy.should.have.callCount(1); //require('kouchbase-odm') call
             this.moduleStub.should.have.callCount(0);
         });
 
