@@ -3,11 +3,16 @@ Promise.config({
     cancellation: true, //used for canceling promise chain in case of early request response
 });
 
+try{
+    exports.Couchbase    = require('couchbase');
+    exports.CouchbaseODM = require('kouchbase-odm');
+} catch(e) {
+    //muted
+}
+
 exports.CLI              = require('./lib/cli');
 exports.Express          = require('express');
 exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
-exports.CouchbaseODM     = require('kouchbase-odm');
-exports.Couchbase        = require('couchbase');
 exports.AppManager       = require('./lib/express/appManager.js');
 exports.App              = require('./lib/express/app.js');
 exports.Response         = require('./lib/express/response.js');
