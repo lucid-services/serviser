@@ -3,9 +3,14 @@ Promise.config({
     cancellation: true, //used for canceling promise chain in case of early request response
 });
 
+exports.database = {
+    sequelizeBuilder: require('./lib/database/sequelize.js')
+};
+
 try{
     exports.Couchbase    = require('couchbase');
     exports.CouchbaseODM = require('kouchbase-odm');
+    exports.database.CouchbaseCluster = require('./lib/database/couchbase.js');
 } catch(e) {
     //muted
 }
@@ -30,10 +35,6 @@ exports.models          = {
     }
 };
 
-exports.database    = {
-    CouchbaseCluster: require('./lib/database/couchbase.js'),
-    sequelizeBuilder: require('./lib/database/sequelize.js')
-};
 exports.error       = {
     IncompleteDataError : require('./lib/error/incompleteDataError.js'),
     RequestError        : require('./lib/error/requestError.js'),
