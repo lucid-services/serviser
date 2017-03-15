@@ -1,3 +1,5 @@
+## v0.8.3
+
 ## v0.8.2
 
 * [FIXED] explicit couchbase bindings should be required only when needed
