@@ -1,21 +1,22 @@
 'use strict';
-var debug   = require('debug')('app:www');
-var _       = require('lodash');
-var docs    = require('bi-docs');
-
-var service = require('../index.js');
 
 module.exports = initializer;
+
+var EventEmitter = require('events').EventEmitter;
+var debug        = require('debug')('app:www');
+var _            = require('lodash');
+
+var service = require('../index.js');
 
 /**
  *
  * @param {AppManager} appManager
  * @param {Config} config
  *
- * @return {CLI}
+ * @return {undefined}
  */
 function initializer(appManager, config) {
-    var cli = service.CLI.init(appManager, config.get('cli'));
+    initializer.emitter.emit('set-up', appManager, config);
 
     //this implementation expects apps array growth in the loop 
     for (var i = 0, app = null; i < appManager.apps.length; i++) {
@@ -23,23 +24,22 @@ function initializer(appManager, config) {
 
         app.once('post-init', initializer.onPostInit);
 
-        //run doc server
-        if (app.config.get('doc') && app.config.get('doc:listen')) {
-
-            var docCfg = config.createLiteralProvider(app.config.get('doc'));
-            docs.server.build(app, docCfg);
-        }
+        initializer.emitter.emit('app', app);
     }
-
-    //TODO implement same interface for CLI server as for other apps so that
-    //cli can be one of the apps in appManager
-    return cli;
 }
 
-initializer.onPostInit = onPostInit;
+//Compatibility reasons
+initializer.emitter     = new EventEmitter;
+initializer.on          = initializer.emitter.on.bind(initializer.emitter);
+initializer.emit        = initializer.emitter.emit.bind(initializer.emitter);
+initializer.onPostInit  = onPostInit;
 initializer.onListening = onListening;
-initializer.onError = onError;
-initializer.onInspectionFailure = onInspectionFailure;
+initializer.onError     = onError;
+
+initializer.on('integrity-failure', function(err, app) {
+    console.error(err);
+    process.exit(1);
+});
 
 function onPostInit(app) {
     app.on('error', initializer.onError);
@@ -47,7 +47,10 @@ function onPostInit(app) {
     app.build();
     service.serviceIntegrity.inspect(app).then(function() {
         app.listen(app.config.get('listen'));
-    }).catch(initializer.onInspectionFailure);
+        initializer.emitter.emit('integrity-pass', app);
+    }).catch(function(err) {
+        initializer.emitter.emit('integrity-failure', err, app)
+    });
 }
 
 function onListening(app) {
@@ -56,9 +59,4 @@ function onListening(app) {
 
 function onError(err) {
     debug(err.stack);
-}
-
-function onInspectionFailure(err) {
-    console.error(err);
-    process.exit(1);
 }

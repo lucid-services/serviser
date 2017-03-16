@@ -1,3 +1,8 @@
+## v0.9.0
+
+* [CHANGED] explicit `bi-service-cli` & `bi-service-doc` (renamed `bi-cli` & `bi-docs`) dependencies has been removed. Individual projects should require the modules as a plugin.
+* [ADDED] emitter interface for the common initialization procedure of `bin/www` script
+
 ## v0.8.4
 ## v0.8.3
 
