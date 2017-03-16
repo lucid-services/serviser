@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] `staticData.loader` semantic error with variable declaration order
+
 ## v0.9.0
 
 * [CHANGED] explicit `bi-service-cli` & `bi-service-doc` (renamed `bi-cli` & `bi-docs`) dependencies has been removed. Individual projects should require the modules as a plugin.
