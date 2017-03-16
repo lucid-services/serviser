@@ -15,11 +15,11 @@ try{
     //muted
 }
 
-exports.CLI              = require('./lib/cli');
 exports.Express          = require('express');
 exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
 exports.AppManager       = require('./lib/express/appManager.js');
 exports.App              = require('./lib/express/app.js');
+exports.AppStatus        = require('./lib/express/appStatus.js');
 exports.Response         = require('./lib/express/response.js');
 exports.Router           = require('./lib/express/router.js');
 exports.Route            = require('./lib/express/route.js');
