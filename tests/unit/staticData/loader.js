@@ -172,6 +172,12 @@ describe('static data loader', function() {
 
         this.runLoader();
 
+        this.sequelizeBuilderStub.should.have.been.calledWith(sinon.match(function(val) {
+            return val.hasOwnProperty('dialect') && val.hasOwnProperty('host')
+            val.hasOwnProperty('ssl') && val.hasOwnProperty('db')
+            val.hasOwnProperty('username') && val.hasOwnProperty('password');
+        }));
+
         this.moduleLoaderStub.loadORMmodels.should.have.been.calledOnce;
         this.moduleLoaderStub.loadORMmodels.should.have.been.calledWithExactly(
             destinations.orm,
