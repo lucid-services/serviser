@@ -1,4 +1,4 @@
-## FUTURE
+## v0.9.1
 
 * [FIXED] `staticData.loader` semantic error with variable declaration order
 
