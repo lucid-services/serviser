@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] `res.filter(data)` should convert the data object to json via data.toJSON if we provide non-plain data object
 * [FIXED] `Route.prototype.respondsWith` should accept json-inspector schema definition in form of a function
 * [FIXED] use `bi-json-inspector@1.0.0-rc.3c` - fixes the issue with broken lodash compatibility in a patch version
 * [FIXED] failure of `serviceIntegrity.inspect` - tried require couchbase bindings even in the case when app doesn't use couchbase

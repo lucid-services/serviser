@@ -71,11 +71,6 @@ describe('Response', function() {
         });
 
         describe('filter method', function() {
-            //it.only('should return new response object which has original response object set as its prototype', function() {
-                //var res = this.wrappedRes.filter({prop: 'test'});
-                //expect(res).to.be.an.instanceof(Proxy);
-                ////Object.getPrototypeOf(res).should.be.equal(this.res);
-            //});
 
             it('should throw an Error when the validation process fails', function() {
                 var self = this;
@@ -107,6 +102,27 @@ describe('Response', function() {
                 this.wrappedRes.filter(this.data);
                 this.data.should.have.property('prop');
                 this.data.should.not.have.property('unexpectedProp');
+            });
+
+            it('should convert an object to JSON before the validation if non plain object is provided', function() {
+                var data = new Data;
+
+                this.wrappedRes.filter(data).json();
+                this.res.json.should.have.been.calledOnce;
+                this.res.json.should.have.been.calledWith(sinon.match(function(val) {
+                    val.should.have.property('prop');
+                    val.should.not.have.property('unexpectedProp');
+                    return true;
+                }));
+
+                function Data() {
+                    this.toJSON = function() {
+                        return {
+                            prop: 'test',
+                            unexpectedProp: 'invalid'
+                        };
+                    }
+                }
             });
 
             describe('wrapped response object returned from the `filter` method', function() {
