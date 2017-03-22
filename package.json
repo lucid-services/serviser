@@ -1,6 +1,6 @@
 {
   "name": "bi-service",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Generic service module",
   "main": "index.js",
   "testFramework": "mocha",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "async": "^2.0.1",
-    "bi-json-inspector": "^1.0.0-rc.3b",
+    "bi-json-inspector": "^1.0.0-rc.3c",
     "bi-logger": "^1.0.0",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",

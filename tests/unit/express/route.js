@@ -579,6 +579,18 @@ describe('Route', function() {
             this.route.respondsWith({$is: String}).should.be.equal(this.route);
         });
 
+        it('should accept json-inspector schema in form of a Function', function() {
+            var schema = function() {
+                return {str: {$is: String}};
+            };
+
+            this.route.respondsWith(schema);
+
+            this.route.description.responses.should.have.property('200').that.is.eql({
+                schema: schema
+            });
+        });
+
         it('should accept Error instance object', function() {
             var descriptor = new RequestError;
             this.route.respondsWith(descriptor);

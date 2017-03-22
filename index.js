@@ -37,8 +37,11 @@ exports.models          = {
 
 exports.error       = {
     IncompleteDataError : require('./lib/error/incompleteDataError.js'),
+    RouteError          : require('./lib/error/routeError.js'),
+    RouteNotFoundError  : require('./lib/error/routeNotFoundError.js'),
     RequestError        : require('./lib/error/requestError.js'),
     RouteError          : require('./lib/error/routeError.js'),
     ServiceError        : require('./lib/error/serviceError.js'),
+    ValidationError     : require('./lib/error/serviceError.js'),
     UnauthorizedError   : require('./lib/error/unauthorizedError.js')
 };
