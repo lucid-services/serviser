@@ -1,4 +1,4 @@
-## FUTURE
+## v0.9.2
 
 * [FIXED] `res.filter(data)` should convert the data object to json via data.toJSON if we provide non-plain data object
 * [FIXED] `Route.prototype.respondsWith` should accept json-inspector schema definition in form of a function
