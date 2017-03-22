@@ -2,6 +2,7 @@
 
 * [FIXED] use `bi-json-inspector@1.0.0-rc.3c` - fixes the issue with broken lodash compatibility in a patch version
 * [FIXED] failure of `serviceIntegrity.inspect` - tried require couchbase bindings even in the case when app doesn't use couchbase
+* [FIXED] export all custom Errors out of the module
 
 ## v0.9.1
 
