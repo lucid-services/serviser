@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] use `bi-json-inspector@1.0.0-rc.3c` - fixes the issue with broken lodash compatibility in a patch version
+
 ## v0.9.1
 
 * [FIXED] `staticData.loader` semantic error with variable declaration order
