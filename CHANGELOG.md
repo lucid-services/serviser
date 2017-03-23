@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] `res.filter(data)` should not throw a `TypeError` when we provide `null` data
+
 ## v0.9.2
 
 * [FIXED] `res.filter(data)` should convert the data object to json via data.toJSON if we provide non-plain data object

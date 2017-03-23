@@ -5,11 +5,11 @@ var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
-var Response   = require('../../../lib/express/response.js');
-var AppManager = require('../../../lib/express/appManager.js');
-var Router     = require('../../../lib/express/router.js');
-var Route      = require('../../../lib/express/route.js');
-var Config     = require('../mocks/config.js');
+var Response        = require('../../../lib/express/response.js');
+var AppManager      = require('../../../lib/express/appManager.js');
+var Router          = require('../../../lib/express/router.js');
+var Route           = require('../../../lib/express/route.js');
+var Config          = require('../mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -123,6 +123,17 @@ describe('Response', function() {
                         };
                     }
                 }
+            });
+
+            it('should throw a ValidationError', function() {
+
+                var self = this;
+
+                function tCase() {
+                    self.wrappedRes.filter(null).json();
+                }
+
+                expect(tCase).to.throw(Validator.ValidationError);
             });
 
             describe('wrapped response object returned from the `filter` method', function() {
