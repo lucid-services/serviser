@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] `json-inspector` `required` option should be set to `false` for response data filtering due to consistency among all schema definitions
 * [FIXED] `res.filter(data)` should not throw a `TypeError` when we provide `null` data
 
 ## v0.9.2

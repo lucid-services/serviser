@@ -55,6 +55,7 @@ describe('Response', function() {
             this.route = this.router.buildRoute({type: 'get', url: '/'});
 
             this.route.respondsWith({
+                $required: true,
                 prop: {
                     $is: String
                 }
