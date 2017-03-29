@@ -544,7 +544,7 @@ describe('Route', function() {
     });
 
     describe('respondsWith', function() {
-        before(function() {
+        beforeEach(function() {
             this.route = this.buildRoute({
                 url: '/respondsWith',
                 version: 1.0
@@ -566,11 +566,11 @@ describe('Route', function() {
             this.route.respondsWith(schema);
             this.route.respondsWith(RequestError);
 
-            this.route.description.responses.should.have.property('200').that.is.eql({
+            this.route.description.responses.should.have.property('200').that.include({
                 schema: schema
             });
 
-            this.route.description.responses.should.have.property('400').that.is.eql({
+            this.route.description.responses.should.have.property('400').that.include({
                 schema: new RequestError
             });
         });
@@ -586,7 +586,7 @@ describe('Route', function() {
 
             this.route.respondsWith(schema);
 
-            this.route.description.responses.should.have.property('200').that.is.eql({
+            this.route.description.responses.should.have.property('200').that.include({
                 schema: schema
             });
         });
@@ -595,18 +595,19 @@ describe('Route', function() {
             var descriptor = new RequestError;
             this.route.respondsWith(descriptor);
 
-            this.route.description.responses.should.have.property('400').that.is.eql({
+            this.route.description.responses.should.have.property('400').that.include({
                 schema: descriptor
             });
         });
 
-        it('should overwrite existing schema if already set', function() {
+        it('should overwrite existing schema if already set in case of successfull response (200)', function() {
             var schema = {$is: Number};
             var schema2 = {$is: String};
             this.route.respondsWith(schema);
             this.route.respondsWith(schema2);
 
-            this.route.description.responses.should.have.property('200').that.is.eql({
+            console.log(this.route.description.responses[200][0].schema);
+            this.route.description.responses.should.have.property('200').that.include({
                 schema: schema2
             });
         });

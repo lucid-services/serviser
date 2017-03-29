@@ -1,5 +1,8 @@
 ## FUTURE
 
+* [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwriten - as it is for success response schema provided to the method.
+* [CHANGED] underlying format of route's response descriptors - route.description.responses[code] is an `array` instead of `object`
+* [FIXED] `res.filter(data)` should not fail when we defined a response schem  as reference to registered validator (`route.respondsWith('#valName')`)
 * [FIXED] `json-inspector` `required` option should be set to `false` for response data filtering due to consistency among all schema definitions
 * [FIXED] `res.filter(data)` should not throw a `TypeError` when we provide `null` data
 
