@@ -567,6 +567,12 @@ describe('serviceIntegrity', function() {
                 return serviceIntegrity.inspectDependentServices(this.app).should.be.fulfilled.then(function(result) {
                     expect(result).to.be.equal(true);
                     self.requestGetStub.should.have.been.calledTwice;
+                    self.requestGetStub.should.have.been.calledWith(sinon.match({
+                        uri: 'http://0.0.0.0'
+                    }));
+                    self.requestGetStub.should.have.been.calledWith(sinon.match({
+                        uri: 'https://0.0.0.0'
+                    }));
                 });
             });
 
