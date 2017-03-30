@@ -21,6 +21,7 @@
     "cookie-parser": "1.4.*",
     "connect-flash": "^0.1.1",
     "memcached": "2.2.*",
+    "express-session": "^1.13.x",
     "connect-memcached": "0.2.*"
   },
   "dependencies": {
@@ -31,11 +32,12 @@
     "body-parser": "^1.15.2",
     "debug": "^2.2.0",
     "express": "^4.14.0",
-    "express-session": "1.13.*",
     "http-status-codes": "^1.0.6",
     "lodash": "^4.16.2",
     "minimist": "^1.2.0",
     "raw-body": "2.1.*",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
     "semver": "^5.1.0",
     "sequelize": "^3.27.0",
     "stack-trace": "0.0.9"
@@ -43,6 +45,7 @@
   "devDependencies": {
     "pg": "^4.5.0",
     "pg-hstore": "2.3.*",
+    "express-session": "^1.13.x",
     "connect-flash": "^0.1.1",
     "bi-config": "^0.7.x",
     "kouchbase-odm": ">=2.0.0-rc.1 <3",

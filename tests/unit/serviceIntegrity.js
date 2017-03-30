@@ -6,6 +6,7 @@ var sinonChai      = require("sinon-chai");
 var jsonInspector  = require('bi-json-inspector');
 var couchbase      = require('couchbase');
 var BucketMock     = require('couchbase/lib/mock/bucket');
+var request        = require('request-promise');
 
 var MemcachedStore   = require('./mocks/memcachedStore.js');
 var ServiceError     = require('../../lib/error/serviceError.js');
@@ -43,15 +44,17 @@ describe('serviceIntegrity', function() {
 
     describe('inspect', function() {
         before(function() {
-            this.inspectNodeStub = sinon.stub(serviceIntegrity, 'inspectNode');
-            this.inspectSessionStub = sinon.stub(serviceIntegrity, 'inspectSession');
-            this.inspectPostgresStub = sinon.stub(serviceIntegrity, 'inspectPostgres');
-            this.inspectCouchbaseStub = sinon.stub(serviceIntegrity, 'inspectCouchbase');
-            this.inspectConfigurationStub = sinon.stub(serviceIntegrity, 'inspectConfiguration');
+            this.inspectNodeStub              = sinon.stub(serviceIntegrity, 'inspectNode');
+            this.inspectDependentServicesStub = sinon.stub(serviceIntegrity, 'inspectDependentServices');
+            this.inspectSessionStub           = sinon.stub(serviceIntegrity, 'inspectSession');
+            this.inspectPostgresStub          = sinon.stub(serviceIntegrity, 'inspectPostgres');
+            this.inspectCouchbaseStub         = sinon.stub(serviceIntegrity, 'inspectCouchbase');
+            this.inspectConfigurationStub     = sinon.stub(serviceIntegrity, 'inspectConfiguration');
         });
 
         beforeEach(function() {
             this.inspectNodeStub.reset();
+            this.inspectDependentServicesStub.reset();
             this.inspectSessionStub.reset();
             this.inspectPostgresStub.reset();
             this.inspectCouchbaseStub.reset();
@@ -60,6 +63,7 @@ describe('serviceIntegrity', function() {
 
         after(function() {
             this.inspectNodeStub.restore();
+            this.inspectDependentServicesStub.restore();
             this.inspectSessionStub.restore();
             this.inspectPostgresStub.restore();
             this.inspectCouchbaseStub.restore();
@@ -69,6 +73,7 @@ describe('serviceIntegrity', function() {
         describe('all checks are resolved', function() {
             beforeEach(function() {
                 this.inspectNodeStub.returns(true);
+                this.inspectDependentServicesStub.returns(Promise.resolve(true));
                 this.inspectSessionStub.returns(Promise.resolve(true));
                 this.inspectConfigurationStub.returns(true);
                 this.inspectPostgresStub.returns(Promise.resolve(true));
@@ -78,11 +83,12 @@ describe('serviceIntegrity', function() {
             it('should return resolved promise', function() {
 
                 return serviceIntegrity.inspect(this.app).should.become({
-                    node: true,
-                    postgres: true,
-                    couchbase: true,
-                    configuration: true,
-                    session: true
+                    node          : true,
+                    postgres      : true,
+                    couchbase     : true,
+                    services      : true,
+                    configuration : true,
+                    session       : true
                 });
             });
 
@@ -127,6 +133,7 @@ describe('serviceIntegrity', function() {
             this.inspectNodeStub.throws(nodeError);
             this.inspectConfigurationStub.returns(true);
             this.inspectPostgresStub.returns(Promise.reject(postgresError));
+            this.inspectDependentServicesStub.returns(Promise.resolve(true));
             this.inspectCouchbaseStub.returns(Promise.resolve(true));
             this.inspectSessionStub.returns(Promise.resolve(true));
 
@@ -134,11 +141,12 @@ describe('serviceIntegrity', function() {
                 .then(function(err) {
                     err.should.be.instanceof(ServiceError);
                     err.should.have.property('context').that.is.eql({
-                        node: nodeError,
-                        postgres: postgresError,
-                        couchbase: true,
-                        configuration: true,
-                        session: true
+                        node          : nodeError,
+                        postgres      : postgresError,
+                        couchbase     : true,
+                        configuration : true,
+                        services      : true,
+                        session       : true
                     });
                 });
         });
@@ -515,6 +523,61 @@ describe('serviceIntegrity', function() {
                 }
 
                 expect(test.bind(this)).to.throw(Error);
+            });
+        });
+    });
+
+    describe('inspectDependentServices', function() {
+
+        describe('an app lack any `services` configuration', function() {
+            it('should return resolved promise with false boolean value', function() {
+                return serviceIntegrity.inspectDependentServices(this.app).should.become(false);
+            });
+        });
+
+        describe('an app has `services` configured', function() {
+            before(function() {
+                this.configGetStub.returns({
+                    depot: {
+                        ssl: false,
+                        host: '0.0.0.0' //fake
+                    },
+                    auth: {
+                        ssl: true,
+                        host: '0.0.0.0'
+                    }
+                });
+                this.requestGetStub = sinon.stub(request, 'get');
+            });
+
+            after(function() {
+                this.requestGetStub.restore();
+            });
+
+            it('should make get request for each service and return resolved promise with true', function() {
+                var self = this;
+
+                this.requestGetStub.onCall(0).returns(Promise.resolve({
+                    statusCode: 404
+                }));
+                this.requestGetStub.onCall(1).returns(Promise.resolve({
+                    statusCode: 200
+                }));
+
+                return serviceIntegrity.inspectDependentServices(this.app).should.be.fulfilled.then(function(result) {
+                    expect(result).to.be.equal(true);
+                    self.requestGetStub.should.have.been.calledTwice;
+                });
+            });
+
+            it('should return rejected promise with an Error', function() {
+                var self = this;
+
+                this.requestGetStub.returns(Promise.resolve({
+                    statusCode: 500
+                }));
+
+                return serviceIntegrity.inspectDependentServices(this.app).should.be.rejectedWith(Error);
             });
         });
     });
