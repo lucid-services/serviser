@@ -472,7 +472,7 @@ describe('Route', function() {
         });
     });
 
-    describe('restrictByIp', function() {
+    describe('restrictClientIp', function() {
         beforeEach(function() {
             this.route = this.buildRoute({
                 url: '/',
@@ -490,12 +490,12 @@ describe('Route', function() {
         });
 
         it('should call route.$restrictIpMiddleware builder function', function() {
-            this.route.restrictByIp();
+            this.route.restrictClientIp();
             this.restrictIpMiddlewareSpy.should.have.been.calledOnce;
         });
 
         it("should add restrict ip middleware to the route's stack", function() {
-            this.route.restrictByIp();
+            this.route.restrictClientIp();
 
             this.route.steps.should.include({
                 name: 'restrictIp', fn: this.restrictIpMiddlewareSpy.firstCall.returnValue
@@ -503,11 +503,11 @@ describe('Route', function() {
         });
 
         it('should return self (Route object)', function() {
-            this.route.restrictByIp().should.be.equal(this.route);
+            this.route.restrictClientIp().should.be.equal(this.route);
         });
     });
 
-    describe('restrictByOrigin', function() {
+    describe('restrictClientOrigin', function() {
         beforeEach(function() {
             this.route = this.buildRoute({
                 url: '/',
@@ -526,12 +526,12 @@ describe('Route', function() {
 
         it('should call route.$restrictOriginMiddleware builder function', function() {
 
-            this.route.restrictByOrigin();
+            this.route.restrictClientOrigin();
             this.restrictOriginMiddlewareSpy.should.have.been.calledOnce;
         });
 
         it("should add restrict origin middleware to the route's stack", function() {
-            this.route.restrictByOrigin();
+            this.route.restrictClientOrigin();
 
             this.route.steps.should.include({
                 name: 'restrictOrigin', fn: this.restrictOriginMiddlewareSpy.firstCall.returnValue
@@ -539,7 +539,7 @@ describe('Route', function() {
         });
 
         it('should return self (Route object)', function() {
-            this.route.restrictByOrigin().should.be.equal(this.route);
+            this.route.restrictClientOrigin().should.be.equal(this.route);
         });
     });
 
