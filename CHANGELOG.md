@@ -6,7 +6,7 @@
 * [CHANGED] remove `success=false` property from unsuccessful response (`RequestError`)
 * [CHANGED] `epxress-session` module is not explicitly required anymore and has been setup as a peer dependency
 * [CHANGED] underlying format of route's response descriptors - route.description.responses[code] is an `array` instead of `object`
-* [FIXED] `res.filter(data)` should not fail when we defined a response schem  as reference to registered validator (`route.respondsWith('#valName')`)
+* [FIXED] `res.filter(data)` should not fail when we defined a response schema  as reference to registered validator (`route.respondsWith('#valName')`)
 * [FIXED] `json-inspector` `required` option should be set to `false` for response data filtering due to consistency among all schema definitions
 * [FIXED] `res.filter(data)` should not throw a `TypeError` when we provide `null` data
 
