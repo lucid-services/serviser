@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] request identifier should be set to an Error object before the err is logged
 * [CHANGED] renamed `Route` methods `restrictByIp` & `restrictByOrigin` to `restrictClientIp` & `restrictClientOrigin`
 * [ADDED] `serviceIntegrity` inspects that an app can connect to its dependent web services
 * [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwriten - as it is for success response schema provided to the method.

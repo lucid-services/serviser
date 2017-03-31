@@ -26,6 +26,7 @@ describe('errorHandler middleware', function() {
 
         this.appSetStatusSpy = sinon.spy(this.app, '$setStatus');
         this.loggerStub = sinon.stub(logger, 'err');
+        this.errorSetUIDSpy = sinon.spy(RequestError.prototype, 'setUID');
         this.errorHandlerSpy = sinon.spy(errorHandler, 'errorHandler');
 
         this.res = {
@@ -59,6 +60,7 @@ describe('errorHandler middleware', function() {
         this.res.json.reset();
         this.next.reset();
         this.loggerStub.reset();
+        this.errorSetUIDSpy.reset();
         this.errorHandlerSpy.reset();
 
         this.res.status.returns(this.res);
@@ -67,6 +69,7 @@ describe('errorHandler middleware', function() {
 
     after(function() {
         this.appSetStatusSpy.restore();
+        this.errorSetUIDSpy.restore();
     });
 
     it('should call the `next` callback when we get an err which is equal to "undefined" value', function() {
@@ -113,6 +116,7 @@ describe('errorHandler middleware', function() {
 
         errorHandler.call(this.app, error, this.req, this.res, this.next);
 
+        this.errorSetUIDSpy.should.have.been.calledBefore(this.loggerStub);
         this.loggerStub.should.have.been.calledOnce;
         this.loggerStub.should.have.been.calledWithExactly(error);
     });
