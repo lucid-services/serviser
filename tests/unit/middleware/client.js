@@ -162,6 +162,57 @@ describe('client middleware', function() {
             });
         });
 
+        it('should fetch data from correct target, (dataDestinations option)', function() {
+            var fn = clientMiddleware(); //dataDestionations options defaults to: headers, query, body
+            var self = this;
+
+            this.req.headers = {
+                client_id: this.clientRecord.id,
+            };
+
+            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.context.route.uid = 'notRelevant';
+
+            return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
+                self.req.client.should.be.equal(self.clientRecord);
+            });
+        });
+
+        it('should fail with UnauthorizedError when data are provided in unsupported target', function() {
+            var fn = clientMiddleware({
+                dataDestinations: ['headers'],
+                depot: {
+                    host: 'depot.bistudio.com',
+                    ssl: false,
+                    serviceName: 'bi-service'
+                }
+            });
+            var self = this;
+
+            this.req.query = {
+                client_id: this.clientRecord.id,
+            };
+
+            this.requestGetStub.returns(Promise.reject({
+                response: {
+                    statusCode: 400,
+                },
+                error: {
+                    apiCode: 'depot.clientNotFound'
+                }
+            }));
+            this.context.route.uid = 'notRelevant';
+
+            return fn.call(this.context, this.req, this.res)
+                .should.be.rejectedWith(UnauthorizedError).then(function() {
+                    self.requestGetStub.should.have.been.calledWith(sinon.match(function(val) {
+                        val.should.have.property('simple', true);
+                        val.should.have.property('uri', 'http://depot.bistudio.com/api/v1.0/services/bi-service/clients/undefined');
+                        return true;
+                    }));
+                });
+        });
+
         it('should fail with UnauthorizedError', function() {
             var fn = clientMiddleware({clientSecret: true});
             var self = this;
@@ -256,71 +307,4 @@ describe('client middleware', function() {
             return fn.call(this.context, this.req, this.res).should.be.rejectedWith(UnauthorizedError);
         });
     });
-
-    //describe('restrictRedirect option', function() {
-        //it('should return fulfilled promise with client', function() {
-            //var fn = clientMiddleware({restrictRedirect: true});
-            //var self = this;
-
-            //this.req.query = {
-                //client_id: this.client.getKey().getId(),
-                //redirect_url: 'https://bistudio.com/some/url',
-                //redirect_back: 'http://subdomain.ylands.com',
-            //};
-
-            //var context = {route: {uid: 'notRelevant'}};
-
-            //return fn.call(context, this.req, this.res).should.be.fulfilled.then(function() {
-                //self.req.client.should.be.instanceof(CouchbaseODM.Instance);
-            //});
-        //});
-
-        //it('should NOT fail when the restrictRedirect option is redirect and redirect urls dont match any pattern', function() {
-            //var fn = clientMiddleware({restrictRedirect: false});
-            //var self = this;
-
-            //this.req.query = {
-                //client_id: this.client.getKey().getId(),
-                //redirect_url: 'some-crazy-shit',
-                //redirect_back: 'https://invalidurl.com',
-            //};
-
-            //var context = {route: {uid: 'notRelevant'}};
-
-            //return fn.call(context, this.req, this.res).should.be.fulfilled.then(function() {
-                //self.req.client.should.be.instanceof(CouchbaseODM.Instance);
-            //});
-        //});
-
-        //it('should fail with UnauthorizedError when redirect_url doesnt match allowed pattern', function() {
-            //var fn = clientMiddleware({restrictRedirect: true});
-            //var self = this;
-
-            //this.req.query = {
-                //client_id: this.client.getKey().getId(),
-                //redirect_url: 'some-crazy-shit'
-            //};
-
-            //var context = {route: {uid: 'notRelevant'}};
-
-            //return fn.call(context, this.req, this.res).should.be.rejectedWith(UnauthorizedError);
-        //});
-
-        //[[], {}, 'invalid-url', 'forbided-url'].forEach(function(invalidUrlRedirectValue, index) {
-
-            //it(`Index: ${index} should fail with UnauthorizedError when redirect_back doesnt match allowed pattern`, function() {
-                //var fn = clientMiddleware({restrictRedirect: true});
-                //var self = this;
-
-                //this.req.query = {
-                    //client_id: this.client.getKey().getId(),
-                    //redirect_back: invalidUrlRedirectValue
-                //};
-
-                //var context = {route: {uid: 'notRelevant'}};
-
-                //return fn.call(context, this.req, this.res).should.be.rejectedWith(UnauthorizedError);
-            //});
-        //})
-    //});
 });
