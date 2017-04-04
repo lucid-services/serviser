@@ -59,7 +59,7 @@ describe('Route.prototype.restrictClientOrigin', function () {
     });
 
     it('should pass the Origin verification', function () {
-        this.req.headers = { Origin: 'http://correct' };
+        this.req.headers = { origin: 'http://correct' };
         this.req.client = this.buildClient({
             http_rules: {
                 origin: [ /http:\/\/correct/ ]
@@ -93,7 +93,7 @@ describe('Route.prototype.restrictClientOrigin', function () {
     });
 
     it('should fail with `ForbiddenError` if supplied Origin is incorrect', function () {
-        this.req.headers = {Origin: 'http://incorrect'};
+        this.req.headers = {origin: 'http://incorrect'};
         this.req.client = this.buildClient({
             http_rules: {
                 origin: [ /http:\/\/correct/ ]
@@ -110,7 +110,7 @@ describe('Route.prototype.restrictClientOrigin', function () {
     });
 
     it('should fail with `ServiceError` if client domains wasn\'t supplied', function () {
-        this.req.headers = {Origin: 'http://correct'};
+        this.req.headers = {origin: 'http://correct'};
         this.req.client = this.buildClient({
             http_rules: {}
         });
