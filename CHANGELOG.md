@@ -1,12 +1,16 @@
 ## FUTURE
 
-* [FIXED] request identifier should be set to an Error object before the err is logged
-* [CHANGED] renamed `Route` methods `restrictByIp` & `restrictByOrigin` to `restrictClientIp` & `restrictClientOrigin`
-* [ADDED] `serviceIntegrity` inspects that an app can connect to its dependent web services
-* [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwriten - as it is for success response schema provided to the method.
-* [CHANGED] remove `success=false` property from unsuccessful response (`RequestError`)
+* [CHANGED] renamed `Route.prototype.restrictByOrigin` method to `restrictClientOrigin`
+* [CHANGED] don't include `success=false` property in unsuccessful response (`RequestError`)
 * [CHANGED] `epxress-session` module is not explicitly required anymore and has been setup as a peer dependency
 * [CHANGED] underlying format of route's response descriptors - route.description.responses[code] is an `array` instead of `object`
+* [ADDED] automatically describe possible error response codes of "native" middlewares with the `Route.prototype.respondsWith` method
+* [ADDED] `Route.prototype.restrictClientRedirect` method
+* [ADDED] `serviceIntegrity` inspects that an app can connect to its dependent web services
+* [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwriten - as it is for success response schema provided to the method.
+* [REMOVED] `Route.prototype.restrictByIp` method
+* [REMOVED] `restrictRedirect` option of the `restrictByClient` method (use the `route.restrictClientRedirect` method instead)
+* [FIXED] request identifier should be set to an Error object before the err is logged
 * [FIXED] `res.filter(data)` should not fail when we defined a response schema  as reference to registered validator (`route.respondsWith('#valName')`)
 * [FIXED] `json-inspector` `required` option should be set to `false` for response data filtering due to consistency among all schema definitions
 * [FIXED] `res.filter(data)` should not throw a `TypeError` when we provide `null` data
