@@ -1,4 +1,4 @@
-## FUTURE
+## v0.10.0
 
 * [CHANGED] renamed `Route.prototype.restrictByOrigin` method to `restrictClientOrigin`
 * [CHANGED] don't include `success=false` property in unsuccessful response (`RequestError`)
