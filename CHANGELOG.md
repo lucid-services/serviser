@@ -4,6 +4,7 @@
 * [CHANGED] don't include `success=false` property in unsuccessful response (`RequestError`)
 * [CHANGED] `epxress-session` module is not explicitly required anymore and has been setup as a peer dependency
 * [CHANGED] underlying format of route's response descriptors - route.description.responses[code] is an `array` instead of `object`
+* [ADDED] `bi-api-errors` dependency
 * [ADDED] `AppManager.prototype.buildApp` emits a `build-app` event with a new App
 * [ADDED] `App.prototype.buildRouter` emits a `build-router` event with a new Router
 * [ADDED] new App `error-response` event which when registered, defers response of globaly handled errors to an user defined logic.
