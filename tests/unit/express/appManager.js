@@ -16,12 +16,14 @@ describe('AppManager', function() {
         this.models = {};
         this.config = new Config();
         this.appManager = new AppManager(this.models);
+        this.appManagerEmitSpy = sinon.spy(this.appManager, 'emit');
     });
 
     after(function() {
         delete this.models;
         delete this.config;
         delete this.appManger;
+        this.appManagerEmitSpy.restore();
     });
 
     describe('add', function() {
@@ -64,5 +66,9 @@ describe('AppManager', function() {
             expect(appManager.apps.indexOf(this.app)).to.be.equal(appManager.apps.length -1);
         });
 
+        it('should emit `build-app` event with a new App', function() {
+            this.appManagerEmitSpy.should.have.been.calledOnce;
+            this.appManagerEmitSpy.should.have.been.calledWith('build-app', this.app);
+        });
     });
 });

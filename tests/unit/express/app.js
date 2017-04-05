@@ -71,6 +71,8 @@ describe('App', function() {
             app.on('unknown-error', this.unknownErrorSpy);
             app.on('error', this.errorSpy);
 
+            this.appEmitSpy = sinon.spy(app, 'emit');
+
             this.configGetStub.withArgs('couchbase').returns({
                 host: 'localhost',
                 buckets: {
@@ -310,6 +312,11 @@ describe('App', function() {
             it("should push new Router object to it's stack", function() {
                 var router = this.app.buildRouter({url: '/'});
                 this.app.routers.should.include(router);
+            });
+
+            it("should emit `build-router` event with a new Router", function() {
+                var router = this.app.buildRouter({url: '/'});
+                this.appEmitSpy.withArgs('build-router', router).should.have.been.calledOnce;
             });
         });
 
