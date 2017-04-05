@@ -25,7 +25,9 @@ describe('errorHandler middleware', function() {
         var app = this.app = this.appManager.buildApp(this.config);
 
         this.appSetStatusSpy = sinon.spy(this.app, '$setStatus');
+        this.appEmitSpy = sinon.spy(this.app, 'emit');
         this.loggerStub = sinon.stub(logger, 'err');
+        this.errorSetUIDSpy = sinon.spy(RequestError.prototype, 'setUID');
         this.errorHandlerSpy = sinon.spy(errorHandler, 'errorHandler');
 
         this.res = {
@@ -55,10 +57,12 @@ describe('errorHandler middleware', function() {
 
     beforeEach(function() {
         this.appSetStatusSpy.reset();
+        this.appEmitSpy.reset();
         this.res.status.reset();
         this.res.json.reset();
         this.next.reset();
         this.loggerStub.reset();
+        this.errorSetUIDSpy.reset();
         this.errorHandlerSpy.reset();
 
         this.res.status.returns(this.res);
@@ -67,6 +71,8 @@ describe('errorHandler middleware', function() {
 
     after(function() {
         this.appSetStatusSpy.restore();
+        this.errorSetUIDSpy.restore();
+        this.appEmitSpy.restore();
     });
 
     it('should call the `next` callback when we get an err which is equal to "undefined" value', function() {
@@ -96,6 +102,27 @@ describe('errorHandler middleware', function() {
         this.res.json.should.have.been.calledWith(error);
     });
 
+    it('should set correct status code and emit the `error-response` event when we get RequestError and at least one listener is registered for the event', function() {
+        var error = new RequestError({
+            message: 'test message'
+        });
+
+        var errResponseListenerSpy = sinon.spy();
+        this.app.on('error-response', errResponseListenerSpy);
+
+        errorHandler.call(this.app, error, this.req, this.res, this.next);
+
+        this.res.status.should.have.been.calledOnce;
+        this.res.status.should.have.been.calledWith(error.code);
+
+
+        this.res.status.should.have.been.calledBefore(errResponseListenerSpy);
+        errResponseListenerSpy.should.have.been.calledOnce;
+        errResponseListenerSpy.should.have.been.calledWith(error, this.res);
+
+        this.app.removeAllListeners('error-response');
+    });
+
     it('should return json response with 500 status code when we get ServiceError', function() {
         var error = new ServiceError({});
 
@@ -113,6 +140,7 @@ describe('errorHandler middleware', function() {
 
         errorHandler.call(this.app, error, this.req, this.res, this.next);
 
+        this.errorSetUIDSpy.should.have.been.calledBefore(this.loggerStub);
         this.loggerStub.should.have.been.calledOnce;
         this.loggerStub.should.have.been.calledWithExactly(error);
     });

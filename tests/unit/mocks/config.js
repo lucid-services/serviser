@@ -6,6 +6,11 @@ module.exports = Config;
  *
  */
 function Config() {
+    this.stores = {
+        literal: {
+            store: {}
+        }
+    };
 }
 
 

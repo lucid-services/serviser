@@ -169,13 +169,33 @@ describe('Router', function() {
     });
 
     describe('$buildExpressRouter', function() {
+        before(function() {
+            this.expressRouterStub = sinon.stub(this.app, '$buildExpressRouter', function() {
+                var router = Express.Router();
+                sinon.spy(router, 'get');
+                sinon.spy(router, 'post');
+
+                return router;
+            });
+
+            this.routeBuildSpy = sinon.spy(Route.prototype, 'build');
+        });
+
+        after(function() {
+            this.expressRouterStub.restore();
+            this.routeBuildSpy.restore();
+        });
+
+        beforeEach(function() {
+            this.routeBuildSpy.reset();
+        });
+
         it('should return new express.Router object', function() {
             var router = this.router.$buildExpressRouter();
             expect(this.matchers.expressRouter(router)).to.be.true;
         });
 
         it('should call the `build` method on every Route object create from the Router', function() {
-            var routeBuildSpy = sinon.spy(Route.prototype, 'build');
 
             this.router.buildRoute({url: '/', type: 'get'});
             this.router.buildRoute({url: '/user', type: 'get'});
@@ -183,8 +203,26 @@ describe('Router', function() {
 
             var expressRouter = this.router.$buildExpressRouter();
 
-            routeBuildSpy.should.have.been.calledThrice;
-            routeBuildSpy.should.always.have.been.calledWith(expressRouter);
+            this.routeBuildSpy.should.have.been.calledThrice;
+            this.routeBuildSpy.should.always.have.been.calledWith();
+        });
+
+        it("should call correct express method and route's url and a middleware function as arguments", function() {
+
+            var getRoute = this.router.buildRoute({url: '/user/data', type: 'get'});
+            var postRoute = this.router.buildRoute({url: '/user/logout', type: 'post'});
+
+            var expressRouter = this.router.$buildExpressRouter();
+
+            expressRouter.get.should.have.been.calledOnce;
+            expressRouter.get.should.have.been.calledWithExactly(
+                getRoute.options.url, this.routeBuildSpy.firstCall.returnValue
+            );
+
+            expressRouter.post.should.have.been.calledOnce;
+            expressRouter.post.should.have.been.calledWithExactly(
+                postRoute.options.url, this.routeBuildSpy.secondCall.returnValue
+            );
         });
     });
 });

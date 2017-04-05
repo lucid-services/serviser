@@ -4,16 +4,9 @@ Promise.config({
 });
 
 exports.database = {
-    sequelizeBuilder: require('./lib/database/sequelize.js')
+    sequelizeBuilder: require('./lib/database/sequelize.js'),
+    CouchbaseCluster: require('./lib/database/couchbase.js')
 };
-
-try{
-    exports.Couchbase    = require('couchbase');
-    exports.CouchbaseODM = require('kouchbase-odm');
-    exports.database.CouchbaseCluster = require('./lib/database/couchbase.js');
-} catch(e) {
-    //muted
-}
 
 exports.Express          = require('express');
 exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
