@@ -5,6 +5,7 @@ var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Promise        = require('bluebird');
 var request        = require('request-promise');
+var API_CODES      = require('bi-api-errors').DEPOT;
 
 var UnauthorizedError       = require('../../../lib/error/unauthorizedError.js');
 var ServiceError            = require('../../../lib/error/serviceError.js');
@@ -198,7 +199,7 @@ describe('client middleware', function() {
                     statusCode: 400,
                 },
                 error: {
-                    apiCode: 'depot.clientNotFound'
+                    apiCode: API_CODES.CLIENT_NOT_FOUND
                 }
             }));
             this.context.route.uid = 'notRelevant';
@@ -266,7 +267,7 @@ describe('client middleware', function() {
                     statusCode: 400,
                 },
                 error: {
-                    apiCode: 'depot.clientNotFound'
+                    apiCode: API_CODES.CLIENT_NOT_FOUND
                 }
             }));
 
