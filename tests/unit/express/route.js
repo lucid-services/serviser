@@ -463,7 +463,7 @@ describe('Route', function() {
             this.configGetStub = sinon.stub(this.config, 'get');
 
             this.configGetStub.withArgs('root').returns(this.appRoot);
-            this.configGetStub.withArgs('services:private-depot').returns(this.depot);
+            this.configGetStub.withArgs('services:privateDepot').returns(this.depot);
         });
 
         afterEach(function() {
