@@ -1,4 +1,4 @@
-## FUTURE
+## v0.10.2
 
 * [FIXED] `restrictByClient` looks for `bi-depot` settings under `services.privateDepot` key instead of `services.private-depot`
 
