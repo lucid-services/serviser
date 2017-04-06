@@ -22,10 +22,8 @@ exports.objectFilter     = require('./lib/objectFilter.js');
 exports.serviceIntegrity = require('./lib/serviceIntegrity.js');
 exports.staticData       = require('./lib/staticData');
 
-exports.models          = {
-    odm: {
-        Client: require('./lib/models/odm/client.js')
-    }
+exports.models = {
+    odm: {}
 };
 
 exports.error       = {

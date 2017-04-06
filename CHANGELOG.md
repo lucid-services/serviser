@@ -1,3 +1,5 @@
+## v0.10.1
+
 ## v0.10.0
 
 * [CHANGED] renamed `Route.prototype.restrictByOrigin` method to `restrictClientOrigin`
