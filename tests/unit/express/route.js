@@ -6,17 +6,17 @@ var Express        = require('express');
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
-var AppManager             = require('../../../lib/express/appManager.js');
-var Router                 = require('../../../lib/express/router.js');
-var Route                  = require('../../../lib/express/route.js');
-var Response               = require('../../../lib/express/response.js');
-var RouteError             = require('../../../lib/error/routeError.js');
-var RequestError           = require('../../../lib/error/requestError.js');
-var ValidationError        = require('../../../lib/error/validationError.js');
-var ForbiddenError         = require('../../../lib/error/forbiddenError.js');
-var UnauthorizedError      = require('../../../lib/error/unauthorizedError.js');
-var Config                 = require('../mocks/config.js');
-var clientMiddleware       = require('../../../lib/middleware/client.js');
+var AppManager        = require('../../../lib/express/appManager.js');
+var Router            = require('../../../lib/express/router.js');
+var Route             = require('../../../lib/express/route.js');
+var Response          = require('../../../lib/express/response.js');
+var RouteError        = require('../../../lib/error/routeError.js');
+var RequestError      = require('../../../lib/error/requestError.js');
+var ValidationError   = require('../../../lib/error/validationError.js');
+var ForbiddenError    = require('../../../lib/error/forbiddenError.js');
+var UnauthorizedError = require('../../../lib/error/unauthorizedError.js');
+var Config            = require('../mocks/config.js');
+var clientMiddleware  = require('../../../lib/middleware/client.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
