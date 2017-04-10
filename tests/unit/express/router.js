@@ -152,13 +152,9 @@ describe('Router', function() {
             this.route.should.be.instanceof(this.router.Route);
         });
 
-        it('should emit the `build-route` event with new route object', function(done) {
-            var self = this;
-            process.nextTick(function() {
-                self.buildRouteSpy.should.have.been.calledOnce;
-                self.buildRouteSpy.should.have.been.calledWith(self.route);
-                done();
-            });
+        it('should emit the `build-route` event with new route object', function() {
+            this.buildRouteSpy.should.have.been.calledOnce;
+            this.buildRouteSpy.should.have.been.calledWith(this.route);
         });
 
         it("should add builded route to it's (router's) routes stack", function() {

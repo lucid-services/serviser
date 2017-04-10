@@ -57,7 +57,7 @@ describe('App', function() {
             expect(tCase).to.throw(Error);
         });
 
-        it('should throw an Error when a Router is trying to register a Route with duplicate uid (route name which is already registered)', function(done) {
+        it('should throw an Error when a Router is trying to register a Route with duplicate uid (route name which is already registered)', function() {
             var self = this;
 
             var app = self.appManager.buildApp(self.config, {name: '0'});
@@ -70,24 +70,16 @@ describe('App', function() {
                 url: '/'
             });
 
-            var uncaughtExceptionSpy = sinon.spy();
-            var listenersBck = process.listeners('uncaughtException');
-            process.removeAllListeners('uncaughtException');
-            process.prependOnceListener('uncaughtException', uncaughtExceptionSpy);
 
-            router2.buildRoute({
-                name: 'get',
-                type: 'get',
-                url: '/'
-            });
+            function tCase() {
+                router2.buildRoute({
+                    name: 'get',
+                    type: 'get',
+                    url: '/'
+                });
+            }
 
-            process.nextTick(function() {
-                uncaughtExceptionSpy.should.have.been.calledOnce;
-                uncaughtExceptionSpy.should.have.been.calledWith(sinon.match.instanceOf(Error));
-                process.removeListener('uncaughtException', uncaughtExceptionSpy);
-                process.addListener('uncaughtException', listenersBck[0]);
-                done();
-            });
+            expect(tCase).to.throw(Error);
         });
     });
 
@@ -357,13 +349,9 @@ describe('App', function() {
                 this.app.routers.should.include(router);
             });
 
-            it("should emit `build-router` event with a new Router", function(done) {
-                var self = this;
+            it("should emit `build-router` event with a new Router", function() {
                 var router = this.app.buildRouter({url: '/'});
-                process.nextTick(function() {
-                    self.appEmitSpy.withArgs('build-router', router).should.have.been.calledOnce;
-                    done();
-                });
+                this.appEmitSpy.withArgs('build-router', router).should.have.been.calledOnce;
             });
         });
 
