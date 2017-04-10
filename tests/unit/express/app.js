@@ -47,11 +47,45 @@ describe('App', function() {
     });
 
     describe('constructor', function() {
+        it('should throw an Error when we try to create an App with no `name` option set', function() {
+            var self = this;
+
+            function tCase() {
+                self.appManager.buildApp(self.config, {});
+            }
+
+            expect(tCase).to.throw(Error);
+        });
+
+        it('should throw an Error when a Router is trying to register a Route with duplicate uid (route name which is already registered)', function() {
+            var self = this;
+
+            var app = self.appManager.buildApp(self.config, {name: '0'});
+            var router1 = app.buildRouter({url: '/', version: 1});
+            var router2 = app.buildRouter({url: '/group', version: 1});
+
+            router1.buildRoute({
+                name: 'get',
+                type: 'get',
+                url: '/'
+            });
+
+
+            function tCase() {
+                router2.buildRoute({
+                    name: 'get',
+                    type: 'get',
+                    url: '/'
+                });
+            }
+
+            expect(tCase).to.throw(Error);
+        });
     });
 
     describe('methods', function() {
         beforeEach(function() {
-            var app = this.app = this.appManager.buildApp(this.config);
+            var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
             this.getExpressInjectorSpy = sinon.spy(ExpressValidator, 'getExpressInjector');
 
@@ -108,6 +142,7 @@ describe('App', function() {
         afterEach(function() {
             delete this.app;
 
+            this.appEmitSpy.restore();
             this.getExpressInjectorSpy.restore();
         });
 

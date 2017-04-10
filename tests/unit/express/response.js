@@ -55,7 +55,7 @@ describe('Response', function() {
             this.config = new Config();
 
             this.appManager = new AppManager(this.models);
-            var app = this.app = this.appManager.buildApp(this.config);
+            var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
             this.router = this.app.buildRouter({url: '/', version: 1.0});
         });
 

@@ -41,6 +41,7 @@ describe('AppManager', function() {
     describe('buildApp', function() {
         before(function() {
             this.options = {
+                name: '1',
                 validator: {
                     failOnFirstErr: false
                 }

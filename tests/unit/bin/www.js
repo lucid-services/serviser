@@ -48,8 +48,8 @@ describe('www', function() {
         var self = this;
         var doneCalled = false;
 
-        this.appManager.buildApp(this.config);
-        this.appManager.buildApp(this.config);
+        this.appManager.buildApp(this.config, {name: '1'});
+        this.appManager.buildApp(this.config, {name: '2'});
 
         www(this.appManager, this.config);
 

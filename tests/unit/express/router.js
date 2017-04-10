@@ -21,28 +21,19 @@ chai.should();
 
 describe('Router', function() {
 
-    before(function() {
+    beforeEach(function() {
         this.models = {odm: {}, orm: {}};
         this.config = new Config();
 
         this.appManager = new AppManager(this.models);
-        var app = this.app = this.appManager.buildApp(this.config);
+        var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
         this.matchers = {
             expressRouter: function routerMatcher(router) {
                 return Express.Router.isPrototypeOf(router);
             }
         };
-    });
 
-    after(function() {
-        delete this.models;
-        delete this.config;
-        delete this.appManager;
-        delete this.app;
-    });
-
-    beforeEach(function() {
         this.router = this.app.buildRouter({
             url: '/',
             routeNameFormat: '{method}{Name}'
@@ -50,7 +41,10 @@ describe('Router', function() {
     });
 
     afterEach(function() {
-        this.app.routers.splice(this.app.routers.indexOf(this.router), 1);
+        delete this.models;
+        delete this.config;
+        delete this.appManager;
+        delete this.app;
     });
 
     it("should throw a RouterError if we don't provide an url", function() {
@@ -169,7 +163,7 @@ describe('Router', function() {
     });
 
     describe('$buildExpressRouter', function() {
-        before(function() {
+        beforeEach(function() {
             this.expressRouterStub = sinon.stub(this.app, '$buildExpressRouter', function() {
                 var router = Express.Router();
                 sinon.spy(router, 'get');
@@ -181,7 +175,7 @@ describe('Router', function() {
             this.routeBuildSpy = sinon.spy(Route.prototype, 'build');
         });
 
-        after(function() {
+        afterEach(function() {
             this.expressRouterStub.restore();
             this.routeBuildSpy.restore();
         });
