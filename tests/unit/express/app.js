@@ -81,6 +81,18 @@ describe('App', function() {
 
             expect(tCase).to.throw(Error);
         });
+
+        it('should throw an Error when we try to build an App with non-unique `name`', function() {
+            var self = this;
+
+            self.appManager.buildApp(self.config, {name: 'unique'});
+
+            function tCase() {
+                self.appManager.buildApp(self.config, {name: 'unique'});
+            }
+
+            expect(tCase).to.throw(Error);
+        });
     });
 
     describe('methods', function() {

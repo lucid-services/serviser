@@ -88,7 +88,7 @@ describe('www', function() {
         var apps = this.appManager.apps;
 
         this.appManager.buildApp(this.config, {name: 'unittest-app'});
-        this.appManager.buildApp(this.config, {name: 'unittest-app'});
+        this.appManager.buildApp(this.config, {name: 'unittest-app2'});
 
         www(this.appManager, this.config);
 
