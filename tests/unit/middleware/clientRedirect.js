@@ -21,13 +21,13 @@ var Config         = require('../mocks/config.js');
 
 describe('Route.prototype.restrictClientRedirect', function () {
 
-    before(function() {
+    beforeEach(function() {
         var self = this;
         this.models = {};
         this.config = new Config();
 
         this.appManager = new AppManager(this.models);
-        var app = this.app = this.appManager.buildApp(this.config);
+        var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
         this.router = app.buildRouter({url: '/', version: 1.0});
 
         this.buildClient = function(data) {
@@ -36,9 +36,7 @@ describe('Route.prototype.restrictClientRedirect', function () {
                 secret: '$c80848cdc6c22b77d4a8ae9de520610'
             }, data);
         };
-    });
 
-    beforeEach(function() {
         this.route = this.router.buildRoute({
             type: 'get',
             url: '/'

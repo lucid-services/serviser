@@ -6,17 +6,17 @@ var Express        = require('express');
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
-var AppManager             = require('../../../lib/express/appManager.js');
-var Router                 = require('../../../lib/express/router.js');
-var Route                  = require('../../../lib/express/route.js');
-var Response               = require('../../../lib/express/response.js');
-var RouteError             = require('../../../lib/error/routeError.js');
-var RequestError           = require('../../../lib/error/requestError.js');
-var ValidationError        = require('../../../lib/error/validationError.js');
-var ForbiddenError         = require('../../../lib/error/forbiddenError.js');
-var UnauthorizedError      = require('../../../lib/error/unauthorizedError.js');
-var Config                 = require('../mocks/config.js');
-var clientMiddleware       = require('../../../lib/middleware/client.js');
+var AppManager        = require('../../../lib/express/appManager.js');
+var Router            = require('../../../lib/express/router.js');
+var Route             = require('../../../lib/express/route.js');
+var Response          = require('../../../lib/express/response.js');
+var RouteError        = require('../../../lib/error/routeError.js');
+var RequestError      = require('../../../lib/error/requestError.js');
+var ValidationError   = require('../../../lib/error/validationError.js');
+var ForbiddenError    = require('../../../lib/error/forbiddenError.js');
+var UnauthorizedError = require('../../../lib/error/unauthorizedError.js');
+var Config            = require('../mocks/config.js');
+var clientMiddleware  = require('../../../lib/middleware/client.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -31,12 +31,12 @@ chai.should();
 
 describe('Route', function() {
 
-    before(function() {
+    beforeEach(function() {
         this.models = {odm: {Client: {}}, orm: {}};
         this.config = new Config();
 
         this.appManager = new AppManager(this.models);
-        var app = this.app = this.appManager.buildApp(this.config);
+        var app = this.app = this.appManager.buildApp(this.config, {name: 'public'});
 
         this.buildRoute = function(routerOptions, routeOptions) {
             var router = this.app.buildRouter(routerOptions);
@@ -45,7 +45,7 @@ describe('Route', function() {
 
     });
 
-    after(function() {
+    afterEach(function() {
         delete this.models;
         delete this.config;
         delete this.appManager;
@@ -53,11 +53,11 @@ describe('Route', function() {
     });
 
     describe('constructor', function() {
-        before(function() {
+        beforeEach(function() {
             this.router = this.app.buildRouter({url: '/', version: 1.0});
         });
 
-        after(function() {
+        afterEach(function() {
             this.app.routers.splice(this.app.routers.indexOf(this.router), 1);
             delete this.router;
         });
@@ -136,7 +136,7 @@ describe('Route', function() {
 
         describe("default route's name (should be created if route name is not explicitly set)", function() {
 
-            before(function() {
+            beforeEach(function() {
                 var self = this;
                 this.getNameForRoute = getNameForRoute;
 
@@ -195,7 +195,7 @@ describe('Route', function() {
             it('should not include version string in returned name', function() {
                 this.shouldNotIncludeKeywordsInRouteNames([
                     ['/api/s2s/v1.0/user', '/apps/:app'],
-                    ['/api/s2s/{version}/user', '/apps/:app']
+                    ['/api/s2s/{version}/owner', '/apps/:app']
                 ], [
                     'v1.0'
                 ]);
@@ -376,13 +376,13 @@ describe('Route', function() {
     });
 
     describe('validate', function() {
-        before(function() {
+        beforeEach(function() {
             this.validatorMiddlewareStub = sinon.stub();
             this.validatorStub = sinon.stub(Validator, 'getExpressMiddleware')
                 .returns(this.validatorMiddlewareStub);
         });
 
-        after(function() {
+        afterEach(function() {
             this.validatorStub.restore();
         });
 
@@ -481,7 +481,7 @@ describe('Route', function() {
                 depot: {
                     host: this.depot.host,
                     ssl: this.depot.ssl,
-                    serviceName: 'bi-service'
+                    serviceName: this.app.options.name + '-bi-service'
                 }
             });
         });
@@ -704,7 +704,7 @@ describe('Route', function() {
     });
 
     describe('getAllSteps', function() {
-        before(function() {
+        beforeEach(function() {
             this.route = this.buildRoute({
                 url: '/',
                 version: '1.0'
