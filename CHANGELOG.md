@@ -1,4 +1,4 @@
-## FUTURE
+## v0.10.3
 
 * [FIXED] an `Error` is throwed when a `Router` is trying to register a `Route` with non-unique route `uid`. `uid` should be unique in context of an `App`
 * [FIXED] an `Error` is throwed when a App defines non-unique `name` option
