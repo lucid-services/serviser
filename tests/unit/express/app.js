@@ -416,6 +416,29 @@ describe('App', function() {
                         sinon.match.string,
                         sinon.match(self.matchers.expressRouter)
                     ).should.have.been.calledThrice;
+
+                    expressUseSpy.should.have.been.calledWith('/');
+                    expressUseSpy.should.have.been.calledWith('/group');
+                    expressUseSpy.should.have.been.calledWith('/user');
+                });
+            });
+
+            it('should attach all routers to the root path when `baseUrl` config value is provided', function() {
+                this.configGetStub.withArgs('baseUrl').onFirstCall().returns('127.0.0.1:3000/root/path');
+                this.configGetStub.withArgs('baseUrl').onSecondCall().returns('api.domain.com/root/path/');
+
+                var expressUseSpy = sinon.spy(this.app.expressApp, 'use').withArgs(
+                    sinon.match.string,
+                    sinon.match(this.matchers.expressRouter)
+                );
+
+                this.app.buildRouter({url: '/user'});
+                this.app.buildRouter({url: '/group'});
+                this.app.build();
+
+                return this.nextTick(function() {
+                    expressUseSpy.should.have.been.calledWith('/root/path/user');
+                    expressUseSpy.should.have.been.calledWith('/root/path/group');
                 });
             });
         });
