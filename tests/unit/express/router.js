@@ -90,7 +90,7 @@ describe('Router', function() {
         });
 
         it('should replace multiple consecutive occurances of "/" character with single one', function() {
-            var url = '//some//url/string';
+            var url = '///some//url/string';
             var normalized = this.router.$normalizeUrl(url);
             normalized.should.be.equal('/some/url/string');
         });

@@ -423,22 +423,37 @@ describe('App', function() {
                 });
             });
 
-            it('should attach all routers to the root path when `baseUrl` config value is provided', function() {
-                this.configGetStub.withArgs('baseUrl').onFirstCall().returns('127.0.0.1:3000/root/path');
-                this.configGetStub.withArgs('baseUrl').onSecondCall().returns('api.domain.com/root/path/');
+            [
+                {
+                    baseUrl: '127.0.0.1:3000/root/path',
+                    routerUrl: '/user',
+                    expectedBinding: '/root/path/user'
+                },
+                {
+                    baseUrl: 'api.domain.com/root/path/',
+                    routerUrl: '/user',
+                    expectedBinding: '/root/path/user'
+                },
+                {
+                    baseUrl: '127.0.0.1:3000',
+                    routerUrl: '/user',
+                    expectedBinding: '/user'
+                }
+            ].forEach(function(data, index) {
+                it(`should attach all routers to the root path when \`baseUrl\` config value is provided (${index})`, function() {
+                    this.configGetStub.withArgs('baseUrl').returns(data.baseUrl);
 
-                var expressUseSpy = sinon.spy(this.app.expressApp, 'use').withArgs(
-                    sinon.match.string,
-                    sinon.match(this.matchers.expressRouter)
-                );
+                    var expressUseSpy = sinon.spy(this.app.expressApp, 'use').withArgs(
+                        sinon.match.string,
+                        sinon.match(this.matchers.expressRouter)
+                    );
 
-                this.app.buildRouter({url: '/user'});
-                this.app.buildRouter({url: '/group'});
-                this.app.build();
+                    this.app.buildRouter({url: data.routerUrl});
+                    this.app.build();
 
-                return this.nextTick(function() {
-                    expressUseSpy.should.have.been.calledWith('/root/path/user');
-                    expressUseSpy.should.have.been.calledWith('/root/path/group');
+                    return this.nextTick(function() {
+                        expressUseSpy.should.have.been.calledWith(data.expectedBinding);
+                    });
                 });
             });
         });
