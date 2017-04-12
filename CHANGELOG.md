@@ -1,3 +1,7 @@
+## v0.10.4
+
+* [FIXED] - client middleware - invalid api code key was being accessed when an error occured
+
 ## v0.10.3
 
 * [FIXED] an `Error` is throwed when a `Router` is trying to register a `Route` with non-unique route `uid`. `uid` should be unique in context of an `App`
