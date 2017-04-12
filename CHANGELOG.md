@@ -1,4 +1,4 @@
-## FUTURE
+## v0.11.1
 
 * [FIXED] - `baseUrl` path string was being parsed incorrectly which led to routers being binded to incorrect endpoint
 * [FIXED] - `connect-flash` package was being incorrectly initialized when `Route.prototype.useSession` is called this led to a request hangup
