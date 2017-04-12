@@ -1,3 +1,8 @@
+## v0.11.0
+
+* [FIXED] - `res.filter(data)` - should ensure native `ValidationError` of `json-ispector` package is thrown when validation/filtering fails
+* [ADDED] - support `baseUrl` App config option value that contains path string eg.: '127.0.0.1/root/app/path'
+
 ## v0.10.4
 
 * [FIXED] - client middleware - invalid api code key was being accessed when an error occured

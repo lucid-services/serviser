@@ -199,7 +199,7 @@ describe('client middleware', function() {
                     statusCode: 400,
                 },
                 error: {
-                    apiCode: API_CODES.CLIENT_NOT_FOUND
+                    api_code: API_CODES.CLIENT_NOT_FOUND
                 }
             }));
             this.context.route.uid = 'notRelevant';
@@ -267,7 +267,7 @@ describe('client middleware', function() {
                     statusCode: 400,
                 },
                 error: {
-                    apiCode: API_CODES.CLIENT_NOT_FOUND
+                    api_code: API_CODES.CLIENT_NOT_FOUND
                 }
             }));
 
