@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] - client middleware - invalid api code key was being accessed when an error occured
 * [ADDED] - support `baseUrl` App config option value that contains path string eg.: '127.0.0.1/root/app/path'
 
 ## v0.10.3
