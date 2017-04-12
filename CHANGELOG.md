@@ -1,3 +1,7 @@
+## FUTURE
+
+* [REMOVED] - `connect-flash` peer dependency. The module was being explicitly loaded during session initialization `Route.prototype.useSession`
+
 ## v0.11.1
 
 * [FIXED] - `baseUrl` path string was being parsed incorrectly which led to routers being binded to incorrect endpoint

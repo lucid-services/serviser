@@ -7,7 +7,6 @@ var https            = require('https');
 var Express          = require('express');
 var logger           = require('bi-logger');
 var Session          = require('express-session');
-var Flash            = require('connect-flash');
 var CouchbaseODM     = require('kouchbase-odm');
 var ExpressValidator = require('bi-json-inspector');
 
@@ -242,7 +241,7 @@ describe('App', function() {
         });
 
         describe('useSession', function() {
-            it('should connect Session & Flash middlewares to express app', function() {
+            it('should connect Session middlewares to express app', function() {
                 var appUseSpy = sinon.spy(this.app, 'use');
                 var memcachedMock = new MemcachedStore();
 
@@ -252,7 +251,7 @@ describe('App', function() {
 
                 this.app.storage.session.should.be.equal(memcachedMock);
 
-                //TODO verify that actuall flash & session middleware was provided to the function
+                //TODO verify that actuall session middleware was provided to the function
                 sinon.assert.alwaysCalledWith(appUseSpy, sinon.match.func);
                 appUseSpy.calledTwice;
             });
