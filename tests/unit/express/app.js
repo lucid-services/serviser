@@ -1,3 +1,4 @@
+var nconf            = require('nconf');
 var sinon            = require('sinon');
 var chai             = require('chai');
 var chaiAsPromised   = require('chai-as-promised');
@@ -440,15 +441,26 @@ describe('App', function() {
                 }
             ].forEach(function(data, index) {
                 it(`should attach all routers to the root path when \`baseUrl\` config value is provided (${index})`, function() {
-                    this.configGetStub.withArgs('baseUrl').returns(data.baseUrl);
+                    var config = new nconf.Provider({
+                        store: {
+                            type: 'literal',
+                            store: {
+                                baseUrl: data.baseUrl
+                            }
+                        }
+                    });
 
-                    var expressUseSpy = sinon.spy(this.app.expressApp, 'use').withArgs(
+                    var app = this.appManager.buildApp(config, {
+                        name: Date.now() + index
+                    });
+
+                    var expressUseSpy = sinon.spy(app.expressApp, 'use').withArgs(
                         sinon.match.string,
                         sinon.match(this.matchers.expressRouter)
                     );
 
-                    this.app.buildRouter({url: data.routerUrl});
-                    this.app.build();
+                    app.buildRouter({url: data.routerUrl});
+                    app.build();
 
                     return this.nextTick(function() {
                         expressUseSpy.should.have.been.calledWith(data.expectedBinding);

@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [REMOVED] - `connect-flash` peer dependency. The module was being explicitly loaded during session initialization `Route.prototype.useSession`
+* [FIXED] - implementation of handling the `baseUrl` config value. Routers are now aware of the root base path value. This way we don't break API for modules which depend on it.
 
 ## v0.11.1
 

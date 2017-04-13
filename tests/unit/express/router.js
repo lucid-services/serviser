@@ -34,6 +34,8 @@ describe('Router', function() {
             }
         };
 
+        this.configGetStub = sinon.stub(this.config, 'get');
+
         this.router = this.app.buildRouter({
             url: '/',
             routeNameFormat: '{method}{Name}'
@@ -41,6 +43,7 @@ describe('Router', function() {
     });
 
     afterEach(function() {
+        this.configGetStub.restore();
         delete this.models;
         delete this.config;
         delete this.appManager;
@@ -66,6 +69,12 @@ describe('Router', function() {
         spy.should.have.been.calledWithExactly(url);
 
         spy.restore();
+    });
+
+    it('should prepend App\'s base path (if set) to router\'s url', function() {
+        this.configGetStub.withArgs('basePath').returns('/root/path');
+        var router = this.app.buildRouter({ url: '/of/some/endpoint2' });
+        router.options.url.should.be.equal('/root/path/of/some/endpoint2');
     });
 
     describe('setRouteNameFormat', function() {
