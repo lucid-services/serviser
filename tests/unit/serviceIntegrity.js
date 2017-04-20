@@ -86,7 +86,6 @@ describe('serviceIntegrity', function() {
                     node          : true,
                     postgres      : true,
                     couchbase     : true,
-                    services      : true,
                     configuration : true,
                     session       : true
                 });
@@ -145,7 +144,6 @@ describe('serviceIntegrity', function() {
                         postgres      : postgresError,
                         couchbase     : true,
                         configuration : true,
-                        services      : true,
                         session       : true
                     });
                 });
