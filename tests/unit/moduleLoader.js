@@ -377,6 +377,17 @@ describe('moduleLoader', function() {
             this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
         });
 
+        it('should call defined callback for every required module', function() {
+            var cbSpy = sinon.spy();
+            moduleLoader.loadModules(
+                this.tmpDir.name + '/modules/',
+                { cb: cbSpy }
+            );
+
+            cbSpy.should.have.callCount(9);
+            this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
+        });
+
         it('should skip directories & files which are listed in the `except` collection option ', function() {
             var options = {
                 except: [

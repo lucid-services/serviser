@@ -4,6 +4,7 @@
 * [FIXED] - implementation of handling the `baseUrl` config value. Routers are now aware of the root base path value. This way we don't break API for modules which depend on it.
 * [ADDED] - http json response fallback when request fails and the custom `error-response` event listener is registered
 * [REMOVED] - startup availability check of dependent web services
+* [ADDED] - `moduleLoader.loadModules` accepts optional `cb` function option which will be called and provided with each required module
 
 ## v0.11.1
 
