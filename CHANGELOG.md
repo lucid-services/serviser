@@ -5,6 +5,7 @@
 * [ADDED] - http json response fallback when request fails and the custom `error-response` event listener is registered
 * [REMOVED] - startup availability check of dependent web services
 * [ADDED] - `moduleLoader.loadModules` accepts optional `cb` function option which will be called and provided with each required module
+* [ADDED] - `serviceIntegrity.inspect` method accepts optional `inspectors` option
 
 ## v0.11.1
 
