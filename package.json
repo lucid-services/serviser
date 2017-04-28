@@ -27,6 +27,7 @@
     "async": "^2.0.1",
     "bi-api-errors": "^1.10.0",
     "bi-json-inspector": "^1.0.0-rc.3c",
+    "bi-service-sdk": "^0.5.x",
     "bi-logger": "^1.0.0",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
