@@ -1,3 +1,4 @@
+var m                = require('module');
 var nconf            = require('nconf');
 var sinon            = require('sinon');
 var chai             = require('chai');
@@ -10,6 +11,7 @@ var logger           = require('bi-logger');
 var Session          = require('express-session');
 var CouchbaseODM     = require('kouchbase-odm');
 var ExpressValidator = require('bi-json-inspector');
+var BIServiceSDK     = require('bi-service-sdk').BIServiceSDK;
 
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
@@ -338,6 +340,170 @@ describe('App', function() {
                 useSpy.should.have.been.calledWithExactly.apply(useSpy.should.have.been, args);
                 returnVal.should.be.equal(useSpy.getCall(0).returnValue);
             });
+        });
+
+        describe('useSDK', function() {
+            before(function() {
+                //
+                function SDKMock(options) {
+                    BIServiceSDK.call(this, options);
+
+                    this.version = 'v1.0';
+                }
+                SDKMock.prototype = Object.create(BIServiceSDK.prototype);
+                SDKMock.prototype.constructor = SDKMock;
+
+                //
+                function SDKMock2(options) {
+                    BIServiceSDK.call(this, options);
+
+                    this.version = 'v2.0';
+                }
+                SDKMock2.prototype = Object.create(BIServiceSDK.prototype);
+                SDKMock2.prototype.constructor = SDKMock2;
+
+                this.SDKMock  = SDKMock;
+                this.SDKMock2 = SDKMock2;
+
+                this.moduleRequireStub = sinon.stub(m.prototype, 'require');
+            });
+
+            after(function() {
+                this.moduleRequireStub.restore();
+            });
+
+            it('should connect provided SDK object to the app', function() {
+                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
+                var key = 'sdk-name';
+
+                this.app.useSDK(key, sdk);
+
+                this.app.sdk.should.have.property(key);
+                this.app.sdk[key].should.have.property(sdk.version);
+                this.app.sdk[key][sdk.version].should.be.equal(sdk);
+            });
+
+            it('should connect all versions of a SDK to the app', function() {
+
+                var key = 'sdk-name';
+
+                this.configGetStub.withArgs(`services:${key}`).returns({
+                    npm: 'sdk-fake-pckg-name',
+                    host: '127.0.0.1',
+                    ssl: false
+                });
+
+                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
+                    'v1.0': this.SDKMock,
+                    'v2.0': this.SDKMock2,
+                });
+
+                this.app.useSDK(key);
+
+                this.app.sdk.should.have.property(key);
+                this.app.sdk[key].should.have.property('v1.0');
+                this.app.sdk[key].should.have.property('v2.0');
+                this.app.sdk[key]['v1.0'].should.be.instanceof(this.SDKMock);
+                this.app.sdk[key]['v2.0'].should.be.instanceof(this.SDKMock2);
+            });
+
+            it('should return an object of connected sdk versions of related type', function() {
+                var key = 'sdk-name';
+
+                //connect one sdk version
+                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
+
+                this.app.useSDK(key, sdk).should.be.eql({
+                    'v1.0': sdk
+                });
+
+                //connect another sdk version
+                this.configGetStub.withArgs(`services:${key}`).returns({
+                    npm: 'sdk-fake-pckg-name',
+                    host: '127.0.0.1',
+                    ssl: false
+                });
+
+                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
+                    'v2.0': this.SDKMock2,
+                });
+
+                var versions = this.app.useSDK(key);
+                versions.should.have.property(sdk.version, sdk);
+                versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
+            });
+
+            it('should throw an Error when received sdk object is not instanceof BIServiceSDK', function() {
+                var self = this;
+
+                function testCase() {
+                    self.app.useSDK('sdk-name', Object.create({version: 'v1.0'}));
+                }
+
+                expect(testCase).to.throw(Error);
+            });
+
+            it('should throw an Error when required config option values are not found', function() {
+                var self = this;
+                var key = 'sdk-name';
+
+                //connect another sdk version
+                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
+                    'v1.0': this.SDKMock,
+                });
+
+                this.configGetStub.withArgs(`services:${key}`).returns(null);
+
+                //npm services config object is required
+                expect(testCase).to.throw(Error);
+
+                this.configGetStub.withArgs(`services:${key}`).returns({
+                    npm: null,
+                    host: '127.0.0.1',
+                    ssl: false
+                });
+
+                //npm services config option is required
+                expect(testCase).to.throw(Error);
+
+                function testCase() {
+                    self.app.useSDK(key);
+                };
+            });
+
+            it('should not overwrite any already connected SDKs', function() {
+
+                var key = 'sdk-name';
+
+                this.configGetStub.withArgs(`services:${key}`).returns({
+                    npm: 'sdk-fake-pckg-name',
+                    host: '127.0.0.1',
+                    ssl: false
+                });
+
+                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
+                    'v1.0': this.SDKMock,
+                    'v2.0': this.SDKMock2,
+                });
+
+                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
+                var sdk2 = new this.SDKMock({baseURL: 'http://127.0.0.1'});
+
+
+                this.app.useSDK(key, sdk).should.be.eql({
+                    'v1.0': sdk
+                });
+
+                this.app.useSDK(key, sdk2).should.be.eql({
+                    'v1.0': sdk
+                });
+
+                var versions = this.app.useSDK(key);
+
+                versions.should.have.property('v1.0', sdk);
+                versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
+            });
+
         });
 
         describe('$buildExpressRouter', function() {

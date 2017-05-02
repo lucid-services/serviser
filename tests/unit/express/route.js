@@ -98,13 +98,31 @@ describe('Route', function() {
             var spy = sinon.spy(Route.prototype, '$formatUid');
             var route = this.router.buildRoute({url: '/', type: 'get'});
 
-            spy.should.have.been.calledOnce;
             spy.should.have.been.calledWithExactly(
                 this.router.options.routeNameFormat
             );
             route.uid.should.be.a('string');
 
             spy.restore();
+        });
+
+        it('should set default `sdkMethodName` option value if we dont explicitly provide one', function() {
+            var route = this.router.buildRoute({
+                url: '/sdk',
+                type: 'get'
+            });
+
+            route.description.sdkMethodName.should.be.equal('getSdk');
+        });
+
+        it('should accept `sdkMethodName` string option', function() {
+            var route = this.router.buildRoute({
+                url: '/sdk',
+                type: 'get',
+                sdkMethodName: 'someMethodName'
+            });
+
+            route.description.sdkMethodName.should.be.equal('someMethodName');
         });
 
         it('should accept `summary` & `desc` string options (for swagger doc)', function() {
