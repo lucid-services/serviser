@@ -214,6 +214,29 @@ describe('client middleware', function() {
                 });
         });
 
+        it('should fail with an Error', function() {
+            var fn = clientMiddleware({
+                dataDestinations: ['query'],
+                depot: {
+                    host: 'depot.bistudio.com',
+                    ssl: false,
+                    serviceName: 'bi-service'
+                }
+            });
+            var self = this;
+
+            this.req.query = {
+                client_id: this.clientRecord.id,
+            };
+
+            var err = new Error('test');
+            this.requestGetStub.returns(Promise.reject(err));
+            this.context.route.uid = 'notRelevant';
+
+            return fn.call(this.context, this.req, this.res)
+                .should.be.rejectedWith(err);
+        });
+
         it('should fail with UnauthorizedError', function() {
             var fn = clientMiddleware({clientSecret: true});
             var self = this;

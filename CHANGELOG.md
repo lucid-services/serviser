@@ -1,3 +1,14 @@
+## v0.12.0
+
+* [ADDED] - `App.prototype.useSDK` method which integrates with `services` app `config` section
+* [ADDED] - `Route` constructor takes new optional `sdkMethodName` option
+* [REMOVED] - `connect-flash` peer dependency. The module was being explicitly loaded during session initialization `Route.prototype.useSession`
+* [FIXED] - implementation of handling the `baseUrl` config value. Routers are now aware of the root base path value. This way we don't break API for modules which depend on it.
+* [ADDED] - http json response fallback when request fails and the custom `error-response` event listener is registered
+* [REMOVED] - startup availability check of dependent web services
+* [ADDED] - `moduleLoader.loadModules` accepts optional `cb` function option which will be called and provided with each required module
+* [ADDED] - `serviceIntegrity.inspect` method accepts optional `inspectors` option
+
 ## v0.11.1
 
 * [FIXED] - `baseUrl` path string was being parsed incorrectly which led to routers being binded to incorrect endpoint

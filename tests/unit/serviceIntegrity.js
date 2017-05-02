@@ -82,7 +82,11 @@ describe('serviceIntegrity', function() {
 
             it('should return resolved promise', function() {
 
-                return serviceIntegrity.inspect(this.app).should.become({
+                return serviceIntegrity.inspect(this.app, {
+                    inspectors: {
+                        services: serviceIntegrity.inspectDependentServices(this.app)
+                    }
+                }).should.become({
                     node          : true,
                     postgres      : true,
                     couchbase     : true,
@@ -145,7 +149,6 @@ describe('serviceIntegrity', function() {
                         postgres      : postgresError,
                         couchbase     : true,
                         configuration : true,
-                        services      : true,
                         session       : true
                     });
                 });
