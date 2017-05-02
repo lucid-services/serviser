@@ -1,4 +1,4 @@
-## FUTURE
+## v0.12.0
 
 * [ADDED] - `App.prototype.useSDK` method which integrates with `services` app `config` section
 * [ADDED] - `Route` constructor takes new optional `sdkMethodName` option
