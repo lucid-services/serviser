@@ -168,7 +168,7 @@ describe('client middleware', function() {
             var self = this;
 
             this.req.headers = {
-                client_id: this.clientRecord.id,
+                'client-id': this.clientRecord.id,
             };
 
             this.requestGetStub.returns(Promise.resolve(this.clientRecord));
