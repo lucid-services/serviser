@@ -1,4 +1,4 @@
-## FUTURE
+## v0.12.1
 
 * [FIXED] - `clientMiddleware` should search for `client-id` & `client-secret` headers instead of `client_id` & `client_secret`
 
