@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `clientMiddleware` should search for `client-id` & `client-secret` headers instead of `client_id` & `client_secret`
+
 ## v0.12.0
 
 * [ADDED] - `App.prototype.useSDK` method which integrates with `services` app `config` section
