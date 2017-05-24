@@ -18,6 +18,7 @@ var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
 var App              = require('../../../lib/express/app.js');
 var Router           = require('../../../lib/express/router.js');
+var Route            = require('../../../lib/express/route.js');
 var AppStatus        = require('../../../lib/express/appStatus.js');
 var sequelizeBuilder = require('../../../lib/database/sequelize.js');
 var Config           = require('../mocks/config.js');
@@ -538,6 +539,32 @@ describe('App', function() {
                 versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
             });
 
+        });
+
+        describe('getRoute', function() {
+            beforeEach(function() {
+                this.app = this.appManager.buildApp(this.config, {name: 'getRouteTest'});
+
+                this.app.buildRouter({
+                    url: '/',
+                    version: 1
+                }).buildRoute({
+                    type: 'get',
+                    url: '/test'
+                });
+            });
+
+            it('should return Route object', function() {
+                this.app.getRoute('getTest_v1.0').should.be.instanceof(Route);
+            });
+
+            it('should throw Error when Route with gived uid is not found', function() {
+                var app = this.app;
+
+                expect(function() {
+                    app.getRoute('nonExistingUid');
+                }).to.throw(Error);
+            });
         });
 
         describe('$buildExpressRouter', function() {

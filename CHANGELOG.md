@@ -1,3 +1,12 @@
+## FUTURE
+
+* [CHANGED] - `clientMiddleware` requires `privateDepot` SDK to be connected to an app
+* [ADDED] - `App.prototype.useCacheStore` method
+* [ADDED] - a service startup should fail when an app is in ERROR state after it's been initialized and is about to start listening on a port
+* [ADDED] - `Route.prototype.getUrl` method
+* [ADDED] - `App.prototype.getRoute` method
+* [ADDED] - `getUrl` function for templates
+
 ## v0.12.1
 
 * [FIXED] - `clientMiddleware` should search for `client-id` & `client-secret` headers instead of `client_id` & `client_secret`

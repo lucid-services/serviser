@@ -41,7 +41,7 @@ describe('Route', function() {
         var app = this.app = this.appManager.buildApp(this.config, {name: 'public'});
 
         this.buildRoute = function(routerOptions, routeOptions) {
-            var router = this.app.buildRouter(routerOptions);
+            var router = app.buildRouter(routerOptions);
             return router.buildRoute(routeOptions);
         }
 
@@ -239,6 +239,38 @@ describe('Route', function() {
 
                 name.should.be.equal('UserApps');
             });
+        });
+    });
+
+    describe('getUrl', function() {
+        before(function() {
+            this.route = this.buildRoute({
+                version: 1,
+                url: '/path/to'
+            }, {
+                type: 'get',
+                url: '/endpoint/{seg}/resource/{id}'
+            });
+        });
+
+        it('should return route endpoint without host', function() {
+            this.route.getUrl().should.be.equal('/path/to/endpoint/{seg}/resource/{id}');
+        });
+
+        it('should return route endpoint with replaced path segments', function() {
+            this.route.getUrl({
+                seg: 'seg',
+                id: '1'
+            }).should.be.equal('/path/to/endpoint/seg/resource/1');
+        });
+
+        it('should return route url with query parameters', function() {
+            this.route.getUrl({
+                seg: 'seg',
+                id: '1'
+            }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+            );
         });
     });
 
