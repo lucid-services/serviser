@@ -5,6 +5,7 @@ var sinonChai      = require("sinon-chai");
 var Express        = require('express');
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
+var BIServiceSDK   = require('bi-service-sdk').BIServiceSDK;
 
 var AppManager        = require('../../../lib/express/appManager.js');
 var Router            = require('../../../lib/express/router.js');
@@ -16,6 +17,7 @@ var ValidationError   = require('../../../lib/error/validationError.js');
 var ForbiddenError    = require('../../../lib/error/forbiddenError.js');
 var UnauthorizedError = require('../../../lib/error/unauthorizedError.js');
 var Config            = require('../mocks/config.js');
+var DepotSDK          = require('../mocks/depotSDK.js');
 var clientMiddleware  = require('../../../lib/middleware/client.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
@@ -39,7 +41,7 @@ describe('Route', function() {
         var app = this.app = this.appManager.buildApp(this.config, {name: 'public'});
 
         this.buildRoute = function(routerOptions, routeOptions) {
-            var router = this.app.buildRouter(routerOptions);
+            var router = app.buildRouter(routerOptions);
             return router.buildRoute(routeOptions);
         }
 
@@ -237,6 +239,38 @@ describe('Route', function() {
 
                 name.should.be.equal('UserApps');
             });
+        });
+    });
+
+    describe('getUrl', function() {
+        before(function() {
+            this.route = this.buildRoute({
+                version: 1,
+                url: '/path/to'
+            }, {
+                type: 'get',
+                url: '/endpoint/{seg}/resource/{id}'
+            });
+        });
+
+        it('should return route endpoint without host', function() {
+            this.route.getUrl().should.be.equal('/path/to/endpoint/{seg}/resource/{id}');
+        });
+
+        it('should return route endpoint with replaced path segments', function() {
+            this.route.getUrl({
+                seg: 'seg',
+                id: '1'
+            }).should.be.equal('/path/to/endpoint/seg/resource/1');
+        });
+
+        it('should return route url with query parameters', function() {
+            this.route.getUrl({
+                seg: 'seg',
+                id: '1'
+            }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+            );
         });
     });
 
@@ -472,16 +506,14 @@ describe('Route', function() {
                 type: 'get'
             });
             this.appRoot = process.cwd();
-            this.depot = {
-                host: 'depot.com',
-                ssl: true
-            };
+            this.app.useSDK('privateDepot', new DepotSDK({
+                baseURL: 'http://127.0.0.1'
+            }));
 
             this.clientMiddlewareSpy = sinon.spy(clientMiddleware, 'middleware');
             this.configGetStub = sinon.stub(this.config, 'get');
 
             this.configGetStub.withArgs('root').returns(this.appRoot);
-            this.configGetStub.withArgs('services:privateDepot').returns(this.depot);
         });
 
         afterEach(function() {
@@ -497,8 +529,6 @@ describe('Route', function() {
             this.clientMiddlewareSpy.should.have.been.calledOnce;
             this.clientMiddlewareSpy.should.have.been.calledWith({
                 depot: {
-                    host: this.depot.host,
-                    ssl: this.depot.ssl,
                     serviceName: this.app.options.name + '-bi-service'
                 }
             });

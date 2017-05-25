@@ -1,27 +1,29 @@
-var m                = require('module');
-var nconf            = require('nconf');
-var sinon            = require('sinon');
-var chai             = require('chai');
-var chaiAsPromised   = require('chai-as-promised');
-var sinonChai        = require("sinon-chai");
-var http             = require('http');
-var https            = require('https');
-var Express          = require('express');
-var logger           = require('bi-logger');
-var Session          = require('express-session');
-var CouchbaseODM     = require('kouchbase-odm');
-var ExpressValidator = require('bi-json-inspector');
-var BIServiceSDK     = require('bi-service-sdk').BIServiceSDK;
+var m                   = require('module');
+var nconf               = require('nconf');
+var sinon               = require('sinon');
+var chai                = require('chai');
+var chaiAsPromised      = require('chai-as-promised');
+var sinonChai           = require("sinon-chai");
+var http                = require('http');
+var https               = require('https');
+var Express             = require('express');
+var logger              = require('bi-logger');
+var Session             = require('express-session');
+var CouchbaseODM        = require('kouchbase-odm');
+var ExpressValidator    = require('bi-json-inspector');
+var BIServiceSDK        = require('bi-service-sdk').BIServiceSDK;
+var CacheStoreInterface = require('bi-cache-store-interface');
 
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
 var App              = require('../../../lib/express/app.js');
 var Router           = require('../../../lib/express/router.js');
+var Route            = require('../../../lib/express/route.js');
 var AppStatus        = require('../../../lib/express/appStatus.js');
 var sequelizeBuilder = require('../../../lib/database/sequelize.js');
 var Config           = require('../mocks/config.js');
 var Server           = require('../mocks/server.js');
-var MemcachedStore   = require('../mocks/memcachedStore.js');
+var MemcachedStoreMock   = require('../mocks/memcachedStore.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -243,10 +245,43 @@ describe('App', function() {
             });
         });
 
+        describe('useCacheStore', function() {
+            before(function() {
+                function CacheStore() {
+                    CacheStoreInterface.call(this);
+                }
+
+                CacheStore.prototype = Object.create(CacheStoreInterface.prototype);
+                CacheStore.prototype.constructor = CacheStore;
+
+                CacheStore.prototype.fetch = function(id){};
+                CacheStore.prototype.settle = function(id,data,ttl){};
+                CacheStore.prototype.get = sinon.stub();
+                CacheStore.prototype.set = sinon.stub();
+
+                this.CacheStore = CacheStore;
+            });
+
+            it('should connect cache store to express app', function() {
+                var cacheStore = new this.CacheStore();
+
+                this.app.useCacheStore(cacheStore);
+                this.app.storage.cache.should.be.equal(cacheStore);
+            });
+
+            it('should return connected memcached object when the app is already connected to to memcached', function() {
+                var memcachedMock = new this.CacheStore();
+                var memcachedMock2 = new this.CacheStore();
+
+                this.app.useCacheStore(memcachedMock);
+                this.app.useCacheStore(memcachedMock2).should.be.equal(memcachedMock);
+            });
+        });
+
         describe('useSession', function() {
             it('should connect Session middlewares to express app', function() {
                 var appUseSpy = sinon.spy(this.app, 'use');
-                var memcachedMock = new MemcachedStore();
+                var memcachedMock = new MemcachedStoreMock();
 
                 this.configGetStub.returns({});
 
@@ -260,8 +295,8 @@ describe('App', function() {
             });
 
             it('should return connected memcached object when the app is already connected to to memcached', function() {
-                var memcachedMock = new MemcachedStore();
-                var memcachedMock2 = new MemcachedStore();
+                var memcachedMock = new MemcachedStoreMock();
+                var memcachedMock2 = new MemcachedStoreMock();
 
                 this.configGetStub.returns({});
                 this.app.useSession(memcachedMock);
@@ -504,6 +539,32 @@ describe('App', function() {
                 versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
             });
 
+        });
+
+        describe('getRoute', function() {
+            beforeEach(function() {
+                this.app = this.appManager.buildApp(this.config, {name: 'getRouteTest'});
+
+                this.app.buildRouter({
+                    url: '/',
+                    version: 1
+                }).buildRoute({
+                    type: 'get',
+                    url: '/test'
+                });
+            });
+
+            it('should return Route object', function() {
+                this.app.getRoute('getTest_v1.0').should.be.instanceof(Route);
+            });
+
+            it('should throw Error when Route with gived uid is not found', function() {
+                var app = this.app;
+
+                expect(function() {
+                    app.getRoute('nonExistingUid');
+                }).to.throw(Error);
+            });
         });
 
         describe('$buildExpressRouter', function() {

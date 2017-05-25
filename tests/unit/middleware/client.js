@@ -1,12 +1,14 @@
-var _              = require('lodash');
-var sinon          = require('sinon');
-var chai           = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var sinonChai      = require("sinon-chai");
-var Promise        = require('bluebird');
-var request        = require('request-promise');
-var API_CODES      = require('bi-api-errors').DEPOT;
+var _               = require('lodash');
+var sinon           = require('sinon');
+var chai            = require('chai');
+var chaiAsPromised  = require('chai-as-promised');
+var sinonChai       = require("sinon-chai");
+var Promise         = require('bluebird');
+var API_CODES       = require('bi-api-errors').DEPOT;
+var BIServiceSDK    = require('bi-service-sdk').BIServiceSDK;
+var SDKRequestError = require('bi-service-sdk').SDKRequestError;
 
+var DepotSDK                = require('../mocks/depotSDK.js');
 var UnauthorizedError       = require('../../../lib/error/unauthorizedError.js');
 var ServiceError            = require('../../../lib/error/serviceError.js');
 var clientMiddleware        = require('../../../lib/middleware/client.js');
@@ -25,22 +27,28 @@ describe('client middleware', function() {
     before(function() {
         this.res = {};
         this.req = {};
-        this.requestGetStub = sinon.stub(request, 'get');
-    });
-
-    after(function() {
-        this.requestGetStub.restore();
     });
 
     beforeEach(function() {
         this.req = {};
-        this.requestGetStub.reset();
+        this.depotSDKStub = new DepotSDK({baseURL: '127.0.0.1'});
 
         this.context = {
             route: {
-                Router: { App: { storage: {} } }
+                Router: {
+                    App: {
+                        storage: {},
+                        sdk: {
+                            privateDepot: {
+                                'v1.0': this.depotSDKStub
+                            }
+                        }
+                    }
+                }
             }
         };
+
+        this.requestGetStub = this.depotSDKStub.getServiceClient;
 
         this.clientRecord = {
             name: 'test1',
@@ -71,7 +79,7 @@ describe('client middleware', function() {
 
         this.context.route.uid = undefined;
 
-        this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+        this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
 
         return fn.call(this.context, this.req, this.res).should.be.rejectedWith(ServiceError);
     });
@@ -85,7 +93,7 @@ describe('client middleware', function() {
         };
 
         this.context.route.uid = undefined;
-        this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+        this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
 
         return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
             self.clientRecord.http_rules.ip.should.have.lengthOf(1);
@@ -116,7 +124,7 @@ describe('client middleware', function() {
                 client_secret: this.clientRecord.secret
             };
             this.context.route.uid = 'notRelevant';
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
                 self.req.client.should.be.equal(self.clientRecord);
@@ -136,7 +144,7 @@ describe('client middleware', function() {
                 clientSecret: this.clientRecord.secret
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
@@ -155,7 +163,7 @@ describe('client middleware', function() {
                 client_secret: 'some-invalid-value'
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
@@ -171,7 +179,7 @@ describe('client middleware', function() {
                 'client-id': this.clientRecord.id,
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
@@ -194,24 +202,14 @@ describe('client middleware', function() {
                 client_id: this.clientRecord.id,
             };
 
-            this.requestGetStub.returns(Promise.reject({
-                response: {
-                    statusCode: 400,
-                },
-                error: {
-                    api_code: API_CODES.CLIENT_NOT_FOUND
-                }
-            }));
+            this.requestGetStub.returns(Promise.reject(new SDKRequestError({
+                code: 400,
+                apiCode: API_CODES.CLIENT_NOT_FOUND
+            })));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res)
-                .should.be.rejectedWith(UnauthorizedError).then(function() {
-                    self.requestGetStub.should.have.been.calledWith(sinon.match(function(val) {
-                        val.should.have.property('simple', true);
-                        val.should.have.property('uri', 'http://depot.bistudio.com/api/v1.0/services/bi-service/clients/undefined');
-                        return true;
-                    }));
-                });
+                .should.be.rejectedWith(UnauthorizedError);
         });
 
         it('should fail with an Error', function() {
@@ -246,7 +244,7 @@ describe('client middleware', function() {
                 client_secret: 'some-invalid-value'
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data:this.clientRecord}));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res).should.be.rejectedWith(UnauthorizedError);
@@ -267,7 +265,7 @@ describe('client middleware', function() {
             };
             this.req.method = 'get';
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
             this.context.route.uid = 'notRelevant';
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
@@ -285,14 +283,10 @@ describe('client middleware', function() {
                 client_id: 'some-invalid-value'
             };
 
-            this.requestGetStub.returns(Promise.reject({
-                response: {
-                    statusCode: 400,
-                },
-                error: {
-                    api_code: API_CODES.CLIENT_NOT_FOUND
-                }
-            }));
+            this.requestGetStub.returns(Promise.reject(new SDKRequestError({
+                code: 400,
+                apiCode: API_CODES.CLIENT_NOT_FOUND
+            })));
 
             this.context.route.uid = 'notrelevant';
 
@@ -309,7 +303,7 @@ describe('client middleware', function() {
                 client_id: this.clientRecord.id
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data:this.clientRecord}));
             this.context.route.uid = 'getUser_v1.0';
 
             return fn.call(this.context, this.req, this.res).should.be.fulfilled.then(function() {
@@ -325,7 +319,7 @@ describe('client middleware', function() {
                 client_id: this.clientRecord.id
             };
 
-            this.requestGetStub.returns(Promise.resolve(this.clientRecord));
+            this.requestGetStub.returns(Promise.resolve({data: this.clientRecord}));
             this.context.route.uid = 'forbiden-scope-id';
 
             return fn.call(this.context, this.req, this.res).should.be.rejectedWith(UnauthorizedError);
