@@ -1,4 +1,4 @@
-## FUTURE
+## v0.13.0
 
 * [CHANGED] - `clientMiddleware` requires `privateDepot` SDK to be connected to an app
 * [ADDED] - `App.prototype.useCacheStore` method
