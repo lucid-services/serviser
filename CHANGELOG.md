@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - fix hardcoded `postgres` dialect when checking integrity of sequelize (added support for `mysql` & `mariadb` dialects)
+
 ## v0.13.0
 
 * [CHANGED] - `clientMiddleware` requires `privateDepot` SDK to be connected to an app
