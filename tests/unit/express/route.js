@@ -274,6 +274,43 @@ describe('Route', function() {
         });
     });
 
+    describe('getAbsoluteUrl', function() {
+
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                version: 1,
+                url: '/path/to'
+            }, {
+                type: 'get',
+                url: '/endpoint/{seg}/resource/{id}'
+            });
+
+            this.configGetStub = sinon.stub(this.config, 'get');
+            this.configGetStub.withArgs('protocol').returns('http:');
+            this.configGetStub.withArgs('host').returns('127.0.0.1:3000');
+        });
+
+        it('should return absolute route endpoint', function() {
+            this.route.getAbsoluteUrl().should.be.equal('http://127.0.0.1:3000/path/to/endpoint/{seg}/resource/{id}');
+        });
+
+        it('should return absolute route endpoint with replaced path segments', function() {
+            this.route.getAbsoluteUrl({
+                seg: 'seg',
+                id: '1'
+            }).should.be.equal('http://127.0.0.1:3000/path/to/endpoint/seg/resource/1');
+        });
+
+        it('should return route url with query parameters', function() {
+            this.route.getAbsoluteUrl({
+                seg: 'seg',
+                id: '1'
+            }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+            );
+        });
+    });
+
     describe('$formatUid', function() {
 
         it("should return route's uid formated according to provided schema", function() {

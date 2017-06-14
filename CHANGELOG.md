@@ -1,3 +1,9 @@
+## FUTURE
+
+* [FIXED] - logging of sequelize sql queries was forced to be turned on
+* [ADDED] - `App.prototype.getHost` - return `$protocol+$host` url
+* [ADDED] - `Route.prototype.getAbsoluteUrl`
+
 ## v0.13.1
 
 * [FIXED] - fix hardcoded `postgres` dialect when checking integrity of sequelize (added support for `mysql` & `mariadb` dialects)
