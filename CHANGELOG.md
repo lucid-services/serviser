@@ -1,4 +1,4 @@
-## FUTURE
+## v0.13.2
 
 * [FIXED] - export `ForbiddenError` from the module
 
