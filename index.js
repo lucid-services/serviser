@@ -34,5 +34,6 @@ exports.error       = {
     RouteError          : require('./lib/error/routeError.js'),
     ServiceError        : require('./lib/error/serviceError.js'),
     ValidationError     : require('./lib/error/serviceError.js'),
+    ForbiddenError      : require('./lib/error/forbiddenError.js'),
     UnauthorizedError   : require('./lib/error/unauthorizedError.js')
 };
