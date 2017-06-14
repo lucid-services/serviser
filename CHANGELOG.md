@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - export `ForbiddenError` from the module
+
 ## v0.13.1
 
 * [FIXED] - fix hardcoded `postgres` dialect when checking integrity of sequelize (added support for `mysql` & `mariadb` dialects)
