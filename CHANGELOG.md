@@ -1,3 +1,12 @@
+## v0.14.0
+
+* [REMOVED] - `Route.prototype.restrictByClient` - extracted to stand-alone package `bi-service-oauth-client`
+* [REMOVED] - `Route.prototype.restrictClientOrigin` - extracted to stand-alone package `bi-service-oauth-client`
+* [REMOVED] - `Route.prototype.restrictClientRedirect` - extracted to stand-alone package `bi-service-oauth-client`
+* [FIXED] - logging of sequelize sql queries was forced to be turned on
+* [ADDED] - `App.prototype.getHost` - return `$protocol+$host` url
+* [ADDED] - `Route.prototype.getAbsoluteUrl`
+
 ## v0.13.2
 
 * [FIXED] - export `ForbiddenError` from the module

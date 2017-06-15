@@ -2,10 +2,8 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var Express        = require('express');
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
-var BIServiceSDK   = require('bi-service-sdk').BIServiceSDK;
 
 var AppManager        = require('../../../lib/express/appManager.js');
 var Router            = require('../../../lib/express/router.js');
@@ -14,11 +12,7 @@ var Response          = require('../../../lib/express/response.js');
 var RouteError        = require('../../../lib/error/routeError.js');
 var RequestError      = require('../../../lib/error/requestError.js');
 var ValidationError   = require('../../../lib/error/validationError.js');
-var ForbiddenError    = require('../../../lib/error/forbiddenError.js');
-var UnauthorizedError = require('../../../lib/error/unauthorizedError.js');
 var Config            = require('../mocks/config.js');
-var DepotSDK          = require('../mocks/depotSDK.js');
-var clientMiddleware  = require('../../../lib/middleware/client.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -274,6 +268,43 @@ describe('Route', function() {
         });
     });
 
+    describe('getAbsoluteUrl', function() {
+
+        beforeEach(function() {
+            this.route = this.buildRoute({
+                version: 1,
+                url: '/path/to'
+            }, {
+                type: 'get',
+                url: '/endpoint/{seg}/resource/{id}'
+            });
+
+            this.configGetStub = sinon.stub(this.config, 'get');
+            this.configGetStub.withArgs('protocol').returns('http:');
+            this.configGetStub.withArgs('host').returns('127.0.0.1:3000');
+        });
+
+        it('should return absolute route endpoint', function() {
+            this.route.getAbsoluteUrl().should.be.equal('http://127.0.0.1:3000/path/to/endpoint/{seg}/resource/{id}');
+        });
+
+        it('should return absolute route endpoint with replaced path segments', function() {
+            this.route.getAbsoluteUrl({
+                seg: 'seg',
+                id: '1'
+            }).should.be.equal('http://127.0.0.1:3000/path/to/endpoint/seg/resource/1');
+        });
+
+        it('should return route url with query parameters', function() {
+            this.route.getAbsoluteUrl({
+                seg: 'seg',
+                id: '1'
+            }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+            );
+        });
+    });
+
     describe('$formatUid', function() {
 
         it("should return route's uid formated according to provided schema", function() {
@@ -493,150 +524,6 @@ describe('Route', function() {
 
         it('should return self (Route object)', function() {
             this.route.validate(this.schema, 'query').should.be.equal(this.route);
-        });
-    });
-
-    describe('restrictByClient', function() {
-        beforeEach(function() {
-            this.route = this.buildRoute({
-                url: '/',
-                version: 1.0
-            }, {
-                url: '/',
-                type: 'get'
-            });
-            this.appRoot = process.cwd();
-            this.app.useSDK('privateDepot', new DepotSDK({
-                baseURL: 'http://127.0.0.1'
-            }));
-
-            this.clientMiddlewareSpy = sinon.spy(clientMiddleware, 'middleware');
-            this.configGetStub = sinon.stub(this.config, 'get');
-
-            this.configGetStub.withArgs('root').returns(this.appRoot);
-        });
-
-        afterEach(function() {
-            this.clientMiddlewareSpy.restore();
-            this.configGetStub.restore();
-        });
-
-        it('should call route.$clientMiddleware builder function with provided options object', function() {
-            var options = {};
-
-            this.route.restrictByClient(options);
-
-            this.clientMiddlewareSpy.should.have.been.calledOnce;
-            this.clientMiddlewareSpy.should.have.been.calledWith({
-                depot: {
-                    serviceName: this.app.options.name + '-bi-service'
-                }
-            });
-        });
-
-        it("should push client middleware with provided options to the route's stack", function() {
-            this.route.restrictByClient();
-
-            this.route.steps.should.include({
-                name: 'client',
-                fn: this.clientMiddlewareSpy.firstCall.returnValue,
-                args: []
-            });
-        });
-
-        it('should call `respondsWith` method with `UnauthorizedError` constructor', function() {
-            var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
-
-            this.route.restrictByClient({});
-            respondsWithSpy.should.have.been.calledWith(UnauthorizedError);
-
-            respondsWithSpy.restore();
-        });
-
-        it('should return self (Route object)', function() {
-            this.route.restrictByClient().should.be.equal(this.route);
-        });
-    });
-
-    describe('restrictClientOrigin', function() {
-        beforeEach(function() {
-            this.route = this.buildRoute({
-                url: '/',
-                version: 1.0
-            }, {
-                url: '/',
-                type: 'get'
-            });
-        });
-
-        it("should add restrict origin middleware to the route's stack", function() {
-            this.route.restrictClientOrigin();
-
-            this.route.steps[0].should.have.property('name', 'restrictOrigin');
-            this.route.steps[0].should.have.property('fn').that.is.a('function');
-        });
-
-        it('should call `respondsWith` method with `ForbiddenError` constructor', function() {
-            var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
-
-            this.route.restrictClientOrigin();
-            respondsWithSpy.should.have.been.calledWith(ForbiddenError);
-
-            respondsWithSpy.restore();
-        });
-
-        it('should call `validate` method with function schema definition', function() {
-            var validateSpy = sinon.spy(this.route, 'validate');
-
-            this.route.restrictClientOrigin();
-            validateSpy.should.have.been.calledWith(sinon.match.func, 'headers');
-
-            validateSpy.restore();
-        });
-
-        it('should return self (Route object)', function() {
-            this.route.restrictClientOrigin().should.be.equal(this.route);
-        });
-    });
-
-    describe('restrictClientRedirect', function() {
-        beforeEach(function() {
-            this.route = this.buildRoute({
-                url: '/restrictClientRedirect',
-                version: 1.0
-            }, {
-                url: '/',
-                type: 'get'
-            });
-        });
-
-        it("should add restrict redirect middleware to the route's stack", function() {
-            this.route.restrictClientRedirect({properties: ['redirect_url']});
-
-            this.route.steps[0].should.have.property('name', 'restrictClientRedirect');
-            this.route.steps[0].should.have.property('fn').that.is.a('function');
-        });
-
-        it('should call `respondsWith` method with `ForbiddenError` constructor', function() {
-            var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
-
-            this.route.restrictClientRedirect({properties: ['redirect_url']});
-            respondsWithSpy.should.have.been.calledWith(ForbiddenError);
-
-            respondsWithSpy.restore();
-        });
-
-        it('should call `validate` method with function schema definition', function() {
-            var validateSpy = sinon.spy(this.route, 'validate');
-
-            this.route.restrictClientRedirect({properties: ['redirect_url']});
-            validateSpy.should.have.been.calledWith(sinon.match.func, 'query');
-
-            validateSpy.restore();
-        });
-
-        it('should return self (Route object)', function() {
-            this.route.restrictClientRedirect({properties: ['redirect_url']}).should.be.equal(this.route);
         });
     });
 
