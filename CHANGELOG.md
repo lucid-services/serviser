@@ -1,4 +1,4 @@
-## FUTURE
+## v0.14.0
 
 * [REMOVED] - `Route.prototype.restrictByClient` - extracted to stand-alone package `bi-service-oauth-client`
 * [REMOVED] - `Route.prototype.restrictClientOrigin` - extracted to stand-alone package `bi-service-oauth-client`
