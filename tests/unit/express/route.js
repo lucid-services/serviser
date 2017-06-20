@@ -237,34 +237,67 @@ describe('Route', function() {
     });
 
     describe('getUrl', function() {
-        before(function() {
-            this.route = this.buildRoute({
-                version: 1,
-                url: '/path/to'
-            }, {
-                type: 'get',
-                url: '/endpoint/{seg}/resource/{id}'
+        describe('without router url', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/'
+                }, {
+                    type: 'get',
+                    url: '/endpoint/:seg/resource/:id(\d+)'
+                });
+            });
+
+            it('should return route endpoint without host', function() {
+                this.route.getUrl().should.be.equal('/endpoint/:seg/resource/:id');
+            });
+
+            it('should return route endpoint with replaced path segments', function() {
+                this.route.getUrl({
+                    seg: 'seg',
+                    id: '1'
+                }).should.be.equal('/endpoint/seg/resource/1');
+            });
+
+            it('should return route url with query parameters', function() {
+                this.route.getUrl({
+                    seg: 'seg',
+                    id: '1'
+                }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                    '/endpoint/seg/resource/1?key=value&another=queryvalue'
+                );
             });
         });
+        describe('with router url', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/path/to'
+                }, {
+                    type: 'get',
+                    url: '/endpoint/:seg/resource/:id'
+                });
+            });
 
-        it('should return route endpoint without host', function() {
-            this.route.getUrl().should.be.equal('/path/to/endpoint/{seg}/resource/{id}');
-        });
+            it('should return route endpoint without host', function() {
+                this.route.getUrl().should.be.equal('/path/to/endpoint/:seg/resource/:id');
+            });
 
-        it('should return route endpoint with replaced path segments', function() {
-            this.route.getUrl({
-                seg: 'seg',
-                id: '1'
-            }).should.be.equal('/path/to/endpoint/seg/resource/1');
-        });
+            it('should return route endpoint with replaced path segments', function() {
+                this.route.getUrl({
+                    seg: 'seg',
+                    id: '1'
+                }).should.be.equal('/path/to/endpoint/seg/resource/1');
+            });
 
-        it('should return route url with query parameters', function() {
-            this.route.getUrl({
-                seg: 'seg',
-                id: '1'
-            }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
-            );
+            it('should return route url with query parameters', function() {
+                this.route.getUrl({
+                    seg: 'seg',
+                    id: '1'
+                }, {key: 'value', another: 'queryvalue'}).should.be.equal(
+                    '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+                );
+            });
         });
     });
 
@@ -276,7 +309,7 @@ describe('Route', function() {
                 url: '/path/to'
             }, {
                 type: 'get',
-                url: '/endpoint/{seg}/resource/{id}'
+                url: '/endpoint/:seg/resource/:id'
             });
 
             this.configGetStub = sinon.stub(this.config, 'get');
@@ -285,7 +318,7 @@ describe('Route', function() {
         });
 
         it('should return absolute route endpoint', function() {
-            this.route.getAbsoluteUrl().should.be.equal('http://127.0.0.1:3000/path/to/endpoint/{seg}/resource/{id}');
+            this.route.getAbsoluteUrl().should.be.equal('http://127.0.0.1:3000/path/to/endpoint/:seg/resource/:id');
         });
 
         it('should return absolute route endpoint with replaced path segments', function() {
