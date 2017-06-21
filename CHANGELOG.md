@@ -1,4 +1,4 @@
-## FUTURE
+## v0.14.1
 
 * [FIXED] - `Route.prototype.getUrl` - express-like regex matching part of url segment should be stripped (`/path/:id(\d+)` => `/path/:id`)
 * [FIXED] - `Route.prototype.getUrl` - incorrect url path segment substitution
