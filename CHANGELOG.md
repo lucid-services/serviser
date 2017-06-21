@@ -1,3 +1,8 @@
+## v0.14.1
+
+* [FIXED] - `Route.prototype.getUrl` - express-like regex matching part of url segment should be stripped (`/path/:id(\d+)` => `/path/:id`)
+* [FIXED] - `Route.prototype.getUrl` - incorrect url path segment substitution
+
 ## v0.14.0
 
 * [REMOVED] - `Route.prototype.restrictByClient` - extracted to stand-alone package `bi-service-oauth-client`
