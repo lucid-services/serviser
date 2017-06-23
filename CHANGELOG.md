@@ -1,3 +1,7 @@
+## v0.14.2
+
+* [FIXED] - bumped `bi-json-inspector@1.0.0-rc.4` which fixes security bug related to untrusted validation data source
+
 ## v0.14.1
 
 * [FIXED] - `Route.prototype.getUrl` - express-like regex matching part of url segment should be stripped (`/path/:id(\d+)` => `/path/:id`)
