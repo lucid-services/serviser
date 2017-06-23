@@ -1,4 +1,4 @@
-## FUTURE
+## v0.14.2
 
 * [FIXED] - bumped `bi-json-inspector@1.0.0-rc.4` which fixes security bug related to untrusted validation data source
 
