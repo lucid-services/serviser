@@ -728,6 +728,17 @@ describe('Route', function() {
             });
         });
 
+        it('should assign `routeUID` to the `req` object (node http(s) IncomingMessage) ', function() {
+            var self = this;
+
+            this.route.main(function(req, res) {
+                req.should.have.property('routeUID', self.route.uid);
+            });
+
+            var middleware = this.route.build();
+            return middleware(this.req, this.res, this.next).should.be.fulfilled;
+        });
+
         it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function(done) {
             var self = this;
             var res = {

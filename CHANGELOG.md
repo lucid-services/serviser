@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - a `ServiceError` is provided with route uid of a route which is called upon a request
+
 ## v0.14.2
 
 * [FIXED] - bumped `bi-json-inspector@1.0.0-rc.4` which fixes security bug related to untrusted validation data source

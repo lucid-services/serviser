@@ -36,7 +36,8 @@ describe('errorHandler middleware', function() {
         };
 
         this.req = {
-            UID: 1341234
+            UID: 1341234,
+            routeUID: 'uid',
         };
 
         this.next = sinon.spy();
@@ -151,6 +152,14 @@ describe('errorHandler middleware', function() {
         this.errorSetUIDSpy.should.have.been.calledBefore(this.loggerStub);
         this.loggerStub.should.have.been.calledOnce;
         this.loggerStub.should.have.been.calledWithExactly(error);
+    });
+
+    it('should set origin ServiceError `context.routeUID`', function() {
+        var error = new ServiceError();
+
+        errorHandler.call(this.app, error, this.req, this.res, this.next);
+
+        error.context.should.have.property('routeUID', 'uid');
     });
 
     it('should set status of application to the `ERROR` status when we get a ServiceError', function() {
