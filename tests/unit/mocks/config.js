@@ -6,11 +6,23 @@ module.exports = Config;
  *
  */
 function Config(data) {
+    var store = data || {};
+
     this.stores = {
         literal: {
-            store: data || {}
+            store: store
         }
     };
+
+    this.nconf = {
+        stores: {
+            defaults: {
+                store: store
+            }
+        }
+    };
+
+    this._store = store;
 }
 
 
@@ -22,6 +34,6 @@ function Config(data) {
  * @return {undefined}
  */
 Config.prototype.get = function(key) {
-    return this.stores.literal.store[key];
+    return this._store[key];
 };
 

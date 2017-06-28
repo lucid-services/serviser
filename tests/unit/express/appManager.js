@@ -2,6 +2,7 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var sinonChai      = require("sinon-chai");
 
+var Service    = require('../../../lib/service.js');
 var AppManager = require('../../../lib/express/appManager.js');
 var Config     = require('../mocks/config.js');
 
@@ -13,14 +14,13 @@ chai.should();
 describe('AppManager', function() {
 
     before(function() {
-        this.models = {};
         this.config = new Config();
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         this.appManagerEmitSpy = sinon.spy(this.appManager, 'emit');
     });
 
     after(function() {
-        delete this.models;
         delete this.config;
         delete this.appManger;
         this.appManagerEmitSpy.restore();
@@ -56,7 +56,6 @@ describe('AppManager', function() {
 
         it('should return new instance of App with correct initialization argument values', function() {
             this.app.config.should.be.equal(this.config);
-            this.app.models.should.be.equal(this.models);
             this.app.appManager.should.be.equal(this.appManager);
             this.app.options.validator.should.have.property('failOnFirstErr', this.options.validator.failOnFirstErr);
         });

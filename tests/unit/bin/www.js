@@ -4,6 +4,7 @@ var sinonChai = require("sinon-chai");
 var Promise   = require('bluebird');
 
 var AppManager = require('../../../lib/express/appManager.js');
+var Service    = require('../../../lib/service.js');
 var App        = require('../../../lib/express/app.js');
 var Config     = require('../mocks/config.js');
 var service    = require('../../../index.js');
@@ -17,7 +18,6 @@ chai.should();
 describe('www', function() {
 
     before('prepare', function() {
-        this.models = {odm: {}, orm: {}};
         this.config = new Config();
 
         this.appListenStub = sinon.stub(App.prototype, 'listen');
@@ -25,7 +25,8 @@ describe('www', function() {
     });
 
     beforeEach(function() {
-        this.appManager = new AppManager(this.models);
+        this.service    = new Service(this.config);
+        this.appManager = this.service.appManager;
     });
 
     afterEach(function() {
@@ -38,7 +39,6 @@ describe('www', function() {
         this.appListenStub.restore();
         this.serviceIntegrityStub.restore();
 
-        delete this.models;
         delete this.config;
         delete this.appManager;
         delete this.app;

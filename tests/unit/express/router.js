@@ -4,6 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Express        = require('express');
 
+var Service    = require('../../../lib/service.js');
 var AppManager = require('../../../lib/express/appManager.js');
 var Router     = require('../../../lib/express/router.js');
 var Route      = require('../../../lib/express/route.js');
@@ -22,10 +23,10 @@ chai.should();
 describe('Router', function() {
 
     beforeEach(function() {
-        this.models = {odm: {}, orm: {}};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
         this.matchers = {
@@ -44,7 +45,6 @@ describe('Router', function() {
 
     afterEach(function() {
         this.configGetStub.restore();
-        delete this.models;
         delete this.config;
         delete this.appManager;
         delete this.app;

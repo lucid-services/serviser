@@ -5,6 +5,7 @@ var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
+var Service           = require('../../../lib/service.js');
 var AppManager        = require('../../../lib/express/appManager.js');
 var Router            = require('../../../lib/express/router.js');
 var Route             = require('../../../lib/express/route.js');
@@ -28,10 +29,10 @@ chai.should();
 describe('Route', function() {
 
     beforeEach(function() {
-        this.models = {odm: {Client: {}}, orm: {}};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: 'public'});
 
         this.buildRoute = function(routerOptions, routeOptions) {
@@ -42,7 +43,6 @@ describe('Route', function() {
     });
 
     afterEach(function() {
-        delete this.models;
         delete this.config;
         delete this.appManager;
         delete this.app;

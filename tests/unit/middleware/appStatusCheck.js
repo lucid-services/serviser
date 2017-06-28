@@ -1,8 +1,8 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
-var logger    = require('bi-logger');
 
+var Service        = require('../../../lib/service.js');
 var appStatusCheck = require('../../../lib/middleware/appStatusCheck.js');
 var AppManager     = require('../../../lib/express/appManager.js');
 var AppStatus      = require('../../../lib/express/appStatus.js');
@@ -17,10 +17,10 @@ chai.should();
 describe('appStatusCheck middleware', function() {
 
     before(function() {
-        this.models = {};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
         this.res = {};

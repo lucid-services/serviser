@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [REMOVED] - `App.prototype.clone` method
 * [ADDED] - a `ServiceError` is provided with route uid of a route which is called upon a request
 
 ## v0.14.2
