@@ -1,8 +1,8 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
-var logger    = require('bi-logger');
 
+var Service            = require('../../../lib/service.js');
 var RouteNotFoundError = require('../../../lib/error/routeNotFoundError.js');
 var routeNotFound      = require('../../../lib/middleware/routeNotFound.js');
 var AppManager         = require('../../../lib/express/appManager.js');
@@ -16,10 +16,10 @@ chai.should();
 describe('routeNotFound middleware', function() {
 
     before(function() {
-        this.models = {};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
         this.res = {};

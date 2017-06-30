@@ -3,6 +3,7 @@ var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 var logger    = require('bi-logger');
 
+var Service      = require('../../../lib/service.js');
 var errorHandler = require('../../../lib/middleware/errorHandler.js');
 var AppManager   = require('../../../lib/express/appManager.js');
 var AppStatus    = require('../../../lib/express/appStatus.js');
@@ -18,15 +19,15 @@ chai.should();
 describe('errorHandler middleware', function() {
 
     before(function() {
-        this.models = {};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
         this.appSetStatusSpy = sinon.spy(this.app, '$setStatus');
         this.appEmitSpy = sinon.spy(this.app, 'emit');
-        this.loggerStub = sinon.stub(logger, 'err');
+        this.loggerStub = sinon.stub(logger, 'error');
         this.errorSetUIDSpy = sinon.spy(RequestError.prototype, 'setUID');
         this.errorHandlerSpy = sinon.spy(errorHandler, 'errorHandler');
 
@@ -36,7 +37,8 @@ describe('errorHandler middleware', function() {
         };
 
         this.req = {
-            UID: 1341234
+            UID: 1341234,
+            routeUID: 'uid',
         };
 
         this.next = sinon.spy();
@@ -151,6 +153,14 @@ describe('errorHandler middleware', function() {
         this.errorSetUIDSpy.should.have.been.calledBefore(this.loggerStub);
         this.loggerStub.should.have.been.calledOnce;
         this.loggerStub.should.have.been.calledWithExactly(error);
+    });
+
+    it('should set origin ServiceError `context.routeUID`', function() {
+        var error = new ServiceError();
+
+        errorHandler.call(this.app, error, this.req, this.res, this.next);
+
+        error.context.should.have.property('routeUID', 'uid');
     });
 
     it('should set status of application to the `ERROR` status when we get a ServiceError', function() {

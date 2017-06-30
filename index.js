@@ -8,19 +8,23 @@ exports.database = {
     CouchbaseCluster: require('./lib/database/couchbase.js')
 };
 
-exports.Express          = require('express');
-exports.EXPRESS_VERSION  = parseInt(require('express/package.json').version[0]);
-exports.AppManager       = require('./lib/express/appManager.js');
-exports.App              = require('./lib/express/app.js');
-exports.AppStatus        = require('./lib/express/appStatus.js');
-exports.Response         = require('./lib/express/response.js');
-exports.Router           = require('./lib/express/router.js');
-exports.Route            = require('./lib/express/route.js');
-exports.RequestType      = require('./lib/express/requestType.js');
-exports.moduleLoader     = require('./lib/moduleLoader.js');
-exports.objectFilter     = require('./lib/objectFilter.js');
-exports.serviceIntegrity = require('./lib/serviceIntegrity.js');
-exports.staticData       = require('./lib/staticData');
+exports.Express              = require('express');
+exports.EXPRESS_VERSION      = parseInt(require('express/package.json').version[0]);
+exports.VERSION              = require('./package.json').version;
+exports.AppManager           = require('./lib/express/appManager.js');
+exports.App                  = require('./lib/express/app.js');
+exports.Service              = require('./lib/service.js');
+exports.ResourceManager      = require('./lib/resourceManager.js');
+exports.RemoteServiceManager = require('./lib/remoteServiceManager.js');
+exports.AppStatus            = require('./lib/express/appStatus.js');
+exports.Response             = require('./lib/express/response.js');
+exports.Router               = require('./lib/express/router.js');
+exports.Route                = require('./lib/express/route.js');
+exports.RequestType          = require('./lib/express/requestType.js');
+exports.moduleLoader         = require('./lib/moduleLoader.js');
+exports.objectFilter         = require('./lib/objectFilter.js');
+exports.serviceIntegrity     = require('./lib/serviceIntegrity.js');
+exports.staticData           = require('./lib/staticData');
 
 exports.models = {
     odm: {}

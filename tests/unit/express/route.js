@@ -5,6 +5,7 @@ var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
+var Service           = require('../../../lib/service.js');
 var AppManager        = require('../../../lib/express/appManager.js');
 var Router            = require('../../../lib/express/router.js');
 var Route             = require('../../../lib/express/route.js');
@@ -28,10 +29,10 @@ chai.should();
 describe('Route', function() {
 
     beforeEach(function() {
-        this.models = {odm: {Client: {}}, orm: {}};
         this.config = new Config();
 
-        this.appManager = new AppManager(this.models);
+        this.service = new Service(this.config);
+        this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: 'public'});
 
         this.buildRoute = function(routerOptions, routeOptions) {
@@ -42,7 +43,6 @@ describe('Route', function() {
     });
 
     afterEach(function() {
-        delete this.models;
         delete this.config;
         delete this.appManager;
         delete this.app;
@@ -726,6 +726,17 @@ describe('Route', function() {
                 self.next.should.have.been.calledWith(error);
                 spy.should.have.callCount(0);
             });
+        });
+
+        it('should assign `routeUID` to the `req` object (node http(s) IncomingMessage) ', function() {
+            var self = this;
+
+            this.route.main(function(req, res) {
+                req.should.have.property('routeUID', self.route.uid);
+            });
+
+            var middleware = this.route.build();
+            return middleware(this.req, this.res, this.next).should.be.fulfilled;
         });
 
         it("should trigger request response and stop furher processing of the request if we've got `Response` object as fulfillment value of a route middleware", function(done) {

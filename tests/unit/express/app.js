@@ -14,6 +14,7 @@ var ExpressValidator    = require('bi-json-inspector');
 var BIServiceSDK        = require('bi-service-sdk').BIServiceSDK;
 var CacheStoreInterface = require('bi-cache-store-interface');
 
+var Service          = require('../../../lib/service.js');
 var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
 var App              = require('../../../lib/express/app.js');
@@ -37,15 +38,14 @@ chai.should();
 describe('App', function() {
 
     beforeEach(function() {
-        this.models = {};
         this.config = new Config();
         this.configGetStub = sinon.stub(this.config, 'get');
 
-        this.appManager = new AppManager(this.models);
+        this.service  = new Service(this.config);
+        this.appManager = this.service.appManager;
     });
 
     afterEach(function() {
-        delete this.models;
         delete this.config;
         delete this.appManager;
     });
@@ -245,39 +245,6 @@ describe('App', function() {
             });
         });
 
-        describe('useCacheStore', function() {
-            before(function() {
-                function CacheStore() {
-                    CacheStoreInterface.call(this);
-                }
-
-                CacheStore.prototype = Object.create(CacheStoreInterface.prototype);
-                CacheStore.prototype.constructor = CacheStore;
-
-                CacheStore.prototype.fetch = function(id){};
-                CacheStore.prototype.settle = function(id,data,ttl){};
-                CacheStore.prototype.get = sinon.stub();
-                CacheStore.prototype.set = sinon.stub();
-
-                this.CacheStore = CacheStore;
-            });
-
-            it('should connect cache store to express app', function() {
-                var cacheStore = new this.CacheStore();
-
-                this.app.useCacheStore(cacheStore);
-                this.app.storage.cache.should.be.equal(cacheStore);
-            });
-
-            it('should return connected memcached object when the app is already connected to to memcached', function() {
-                var memcachedMock = new this.CacheStore();
-                var memcachedMock2 = new this.CacheStore();
-
-                this.app.useCacheStore(memcachedMock);
-                this.app.useCacheStore(memcachedMock2).should.be.equal(memcachedMock);
-            });
-        });
-
         describe('useSession', function() {
             it('should connect Session middlewares to express app', function() {
                 var appUseSpy = sinon.spy(this.app, 'use');
@@ -287,77 +254,9 @@ describe('App', function() {
 
                 this.app.useSession(memcachedMock);
 
-                this.app.storage.session.should.be.equal(memcachedMock);
-
                 //TODO verify that actuall session middleware was provided to the function
                 sinon.assert.alwaysCalledWith(appUseSpy, sinon.match.func);
                 appUseSpy.calledTwice;
-            });
-
-            it('should return connected memcached object when the app is already connected to to memcached', function() {
-                var memcachedMock = new MemcachedStoreMock();
-                var memcachedMock2 = new MemcachedStoreMock();
-
-                this.configGetStub.returns({});
-                this.app.useSession(memcachedMock);
-                this.app.useSession(memcachedMock2).should.be.equal(memcachedMock);
-            });
-        });
-
-        describe('useCouchbase', function() {
-            before(function() {
-                this.couchbaseCluster = new CouchbaseCluster({
-                    buckets: {
-                        main: {
-                            bucket: 'main'
-                        }
-                    }
-                });
-                this.couchbaseODM = new CouchbaseODM();
-            });
-
-            it('should assign CouchbaseCluster to the app', function() {
-                this.app.useCouchbase(this.couchbaseCluster);
-                this.app.storage.couchbase.should.be.equal(this.couchbaseCluster);
-            });
-
-            it('should return the CouchbaseCluster object passed to the method as an argument', function() {
-                var cluster = this.app.useCouchbase(this.couchbaseCluster);
-                cluster.should.be.equal(this.couchbaseCluster);
-            });
-
-            it("should create & assign new CouchbaseCluster object to the app if we hadn't provided one", function() {
-                this.configGetStub.returns({
-                    host: 'localhost',
-                    buckets: {
-                        main: {
-                            bucket: 'main'
-                        }
-                    }
-                });
-                this.app.useCouchbase();
-                this.app.storage.couchbase.should.be.an.instanceof(CouchbaseCluster);
-            });
-
-            it('should assign CouchbaseODM object to the app when we provide one as a argument', function() {
-                this.app.useCouchbase(this.couchbaseCluster, this.couchbaseODM);
-                this.app.couchbaseODM.should.be.equal(this.couchbaseODM);
-            });
-        });
-
-        describe('useSequelize', function() {
-            before(function() {
-                this.sequelize = sequelizeBuilder({dialect: 'postgres'});
-            });
-
-            it('should assign Sequelize object which we provided to the app', function() {
-                this.app.useSequelize(this.sequelize);
-                this.app.sequelize.should.be.equal(this.sequelize);
-            });
-
-            it('should create & assign new Sequelize object if we hadnt provided one', function() {
-                this.app.useSequelize();
-                this.app.sequelize.should.be.an.instanceof(sequelizeBuilder.Sequelize);
             });
         });
 
@@ -375,170 +274,6 @@ describe('App', function() {
                 useSpy.should.have.been.calledWithExactly.apply(useSpy.should.have.been, args);
                 returnVal.should.be.equal(useSpy.getCall(0).returnValue);
             });
-        });
-
-        describe('useSDK', function() {
-            before(function() {
-                //
-                function SDKMock(options) {
-                    BIServiceSDK.call(this, options);
-
-                    this.version = 'v1.0';
-                }
-                SDKMock.prototype = Object.create(BIServiceSDK.prototype);
-                SDKMock.prototype.constructor = SDKMock;
-
-                //
-                function SDKMock2(options) {
-                    BIServiceSDK.call(this, options);
-
-                    this.version = 'v2.0';
-                }
-                SDKMock2.prototype = Object.create(BIServiceSDK.prototype);
-                SDKMock2.prototype.constructor = SDKMock2;
-
-                this.SDKMock  = SDKMock;
-                this.SDKMock2 = SDKMock2;
-
-                this.moduleRequireStub = sinon.stub(m.prototype, 'require');
-            });
-
-            after(function() {
-                this.moduleRequireStub.restore();
-            });
-
-            it('should connect provided SDK object to the app', function() {
-                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
-                var key = 'sdk-name';
-
-                this.app.useSDK(key, sdk);
-
-                this.app.sdk.should.have.property(key);
-                this.app.sdk[key].should.have.property(sdk.version);
-                this.app.sdk[key][sdk.version].should.be.equal(sdk);
-            });
-
-            it('should connect all versions of a SDK to the app', function() {
-
-                var key = 'sdk-name';
-
-                this.configGetStub.withArgs(`services:${key}`).returns({
-                    npm: 'sdk-fake-pckg-name',
-                    host: '127.0.0.1',
-                    ssl: false
-                });
-
-                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
-                    'v1.0': this.SDKMock,
-                    'v2.0': this.SDKMock2,
-                });
-
-                this.app.useSDK(key);
-
-                this.app.sdk.should.have.property(key);
-                this.app.sdk[key].should.have.property('v1.0');
-                this.app.sdk[key].should.have.property('v2.0');
-                this.app.sdk[key]['v1.0'].should.be.instanceof(this.SDKMock);
-                this.app.sdk[key]['v2.0'].should.be.instanceof(this.SDKMock2);
-            });
-
-            it('should return an object of connected sdk versions of related type', function() {
-                var key = 'sdk-name';
-
-                //connect one sdk version
-                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
-
-                this.app.useSDK(key, sdk).should.be.eql({
-                    'v1.0': sdk
-                });
-
-                //connect another sdk version
-                this.configGetStub.withArgs(`services:${key}`).returns({
-                    npm: 'sdk-fake-pckg-name',
-                    host: '127.0.0.1',
-                    ssl: false
-                });
-
-                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
-                    'v2.0': this.SDKMock2,
-                });
-
-                var versions = this.app.useSDK(key);
-                versions.should.have.property(sdk.version, sdk);
-                versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
-            });
-
-            it('should throw an Error when received sdk object is not instanceof BIServiceSDK', function() {
-                var self = this;
-
-                function testCase() {
-                    self.app.useSDK('sdk-name', Object.create({version: 'v1.0'}));
-                }
-
-                expect(testCase).to.throw(Error);
-            });
-
-            it('should throw an Error when required config option values are not found', function() {
-                var self = this;
-                var key = 'sdk-name';
-
-                //connect another sdk version
-                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
-                    'v1.0': this.SDKMock,
-                });
-
-                this.configGetStub.withArgs(`services:${key}`).returns(null);
-
-                //npm services config object is required
-                expect(testCase).to.throw(Error);
-
-                this.configGetStub.withArgs(`services:${key}`).returns({
-                    npm: null,
-                    host: '127.0.0.1',
-                    ssl: false
-                });
-
-                //npm services config option is required
-                expect(testCase).to.throw(Error);
-
-                function testCase() {
-                    self.app.useSDK(key);
-                };
-            });
-
-            it('should not overwrite any already connected SDKs', function() {
-
-                var key = 'sdk-name';
-
-                this.configGetStub.withArgs(`services:${key}`).returns({
-                    npm: 'sdk-fake-pckg-name',
-                    host: '127.0.0.1',
-                    ssl: false
-                });
-
-                this.moduleRequireStub.withArgs('sdk-fake-pckg-name').returns({
-                    'v1.0': this.SDKMock,
-                    'v2.0': this.SDKMock2,
-                });
-
-                var sdk = new this.SDKMock({baseURL: 'http://127.0.0.1'});
-                var sdk2 = new this.SDKMock({baseURL: 'http://127.0.0.1'});
-
-
-                this.app.useSDK(key, sdk).should.be.eql({
-                    'v1.0': sdk
-                });
-
-                this.app.useSDK(key, sdk2).should.be.eql({
-                    'v1.0': sdk
-                });
-
-                var versions = this.app.useSDK(key);
-
-                versions.should.have.property('v1.0', sdk);
-                versions.should.have.property('v2.0').that.is.instanceof(this.SDKMock2);
-            });
-
         });
 
         describe('getRoute', function() {
@@ -717,58 +452,6 @@ describe('App', function() {
             });
         });
 
-        describe('clone', function() {
-            before(function() {
-                this.shouldHaveSameListeners = function(app, app2, event) {
-                    app.listeners(event).should.be.eql(app2.listeners(event));
-                };
-            });
-
-            it('should return new instance of App', function() {
-                var app = this.app.clone();
-                app.should.not.be.equal(this.app);
-                app.should.be.an.instanceof(App);
-            });
-
-            it('(cloned app) should have the exact same initialization options as the original app', function() {
-                var app = this.app.clone();
-                app.appManager.should.be.equal(this.app.appManager);
-                app.config.should.be.equal(this.app.config);
-                app.models.should.be.equal(this.app.models);
-                app.options.should.be.eql(this.app.options);
-            });
-
-            it('should correctly copy one-time listeners (app.once())', function() {
-                var appOnSpy = sinon.spy(App.prototype, 'on');
-                var oneTimeListenerSpy = sinon.spy();
-
-                this.app.once('pre-build', oneTimeListenerSpy);
-
-                var app = this.app.clone();
-                appOnSpy.should.have.been.calledWithExactly('pre-build', oneTimeListenerSpy);
-            });
-
-            it('(cloned app) should have copy of `pre-init` event listeners', function() {
-                var app = this.app.clone();
-                this.shouldHaveSameListeners(app, this.app, 'pre-init');
-            });
-
-            it('(cloned app) should have copy of `post-init` event listeners', function() {
-                var app = this.app.clone();
-                this.shouldHaveSameListeners(app, this.app, 'post-init');
-            });
-
-            it('(cloned app) should have copy of `pre-build` event listeners', function() {
-                var app = this.app.clone();
-                this.shouldHaveSameListeners(app, this.app, 'pre-build');
-            });
-
-            it('(cloned app) should have copy of `post-build` event listeners', function() {
-                var app = this.app.clone();
-                this.shouldHaveSameListeners(app, this.app, 'post-build');
-            });
-        });
-
         describe('listen', function() {
             afterEach(function() {
                 this.app.server.close();
@@ -817,7 +500,7 @@ describe('App', function() {
             });
 
             it('should emit the `error` event on server error', function(done) {
-                var loggerStub = sinon.stub(logger, 'err');
+                var loggerStub = sinon.stub(logger, 'error');
 
                 var server = this.app.listen('0.0.0.0');
 

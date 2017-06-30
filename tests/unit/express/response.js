@@ -5,6 +5,7 @@ var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 
+var Service         = require('../../../lib/service.js');
 var Response        = require('../../../lib/express/response.js');
 var AppManager      = require('../../../lib/express/appManager.js');
 var Router          = require('../../../lib/express/router.js');
@@ -54,7 +55,8 @@ describe('Response', function() {
             this.models = {odm: {}, orm: {}};
             this.config = new Config();
 
-            this.appManager = new AppManager(this.models);
+            this.service = new Service(this.config);
+            this.appManager = this.service.appManager;
             var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
             this.router = this.app.buildRouter({url: '/', version: 1.0});
         });
