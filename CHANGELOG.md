@@ -1,7 +1,17 @@
 ## FUTURE
 
 * [REMOVED] - `App.prototype.clone` method
+* [REMOVED] - `App.prototype.useSDK` method
+* [REMOVED] - `App.prototype.useCouchbase` method
+* [REMOVED] - `App.prototype.useSequelize` method
+* [REMOVED] - `App.prototype.useCacheStore` method
+* [REMOVED] - bin/www module
 * [ADDED] - a `ServiceError` is provided with route uid of a route which is called upon a request
+* [ADDED] - `Sequelize.prototype.inspectIntegrity` method
+* [ADDED] - `CouchbaseCluster.prototype.inspectIntegrity` method
+* [ADDED] - `Service` class
+* [ADDED] - `RemoteServiceManager` class
+* [ADDED] - `ResourceManager` class
 
 ## v0.14.2
 
