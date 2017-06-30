@@ -58,7 +58,7 @@ describe('RemoteServiceManager', function() {
         });
     });
 
-    describe.only('get', function() {
+    describe('get', function() {
         beforeEach(function() {
             this.manager = new RemoteServiceManager();
         });
@@ -79,7 +79,7 @@ describe('RemoteServiceManager', function() {
         });
     });
 
-    describe.only('buildRemoteService', function() {
+    describe('buildRemoteService', function() {
         before(function() {
             this.managerPath = path.resolve(__dirname + '/../../lib/remoteServiceManager.js');
             this.managerModule = m._cache[this.managerPath];
