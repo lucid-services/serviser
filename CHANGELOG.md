@@ -1,4 +1,4 @@
-## FUTURE
+## v0.15.0
 
 * [REMOVED] - `App.prototype.clone` method
 * [REMOVED] - `App.prototype.useSDK` method
