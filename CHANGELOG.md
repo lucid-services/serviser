@@ -1,4 +1,4 @@
-## FUTURE
+## v0.15.1
 
 * [FIXED] - `ServiceError.prototype.toLogger` didnt return json object (always returned undefined)
 
