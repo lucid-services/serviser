@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `ServiceError.prototype.toLogger` didnt return json object (always returned undefined)
+
 ## v0.15.0
 
 * [REMOVED] - `App.prototype.clone` method
