@@ -44,6 +44,7 @@
     "request-promise": "^4.2.0",
     "semver": "^5.1.0",
     "sequelize": "^3.27.0",
+    "type-is": "~1.6.15",
     "stack-trace": "0.0.9"
   },
   "devDependencies": {
