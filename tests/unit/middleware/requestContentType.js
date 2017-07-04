@@ -11,7 +11,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 chai.should();
 
-describe.only('requestContentType middleware', function() {
+describe('requestContentType middleware', function() {
 
     beforeEach(function() {
         this.config = new Config();
@@ -29,25 +29,29 @@ describe.only('requestContentType middleware', function() {
     [
         {
             type: 'application/json',
-            supported: ['json']
+            supported: {
+                json: {}
+            }
         },
         {
             type: 'application/json',
-            supported: ['application/json']
+            supported: {
+                json: {
+                    type: 'application/json'
+                }
+            }
         },
         {
             type: 'application/x-www-form-urlencoded',
-            supported: ['urlencoded']
+            supported: {
+                urlencoded: {}
+            }
         }
     ].forEach(function(item, index) {
         it(`should PASS req content-type validation (${index})`, function() {
-            var cfg = {};
-            item.supported.forEach(function(val) {
-                cfg[val] = {};
-            });
 
             var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
-            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(cfg);
+            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
 
             var context = {config: this.config};
             reqContentType.call(context, this.req, this.res, this.next);
@@ -62,29 +66,33 @@ describe.only('requestContentType middleware', function() {
     [
         {
             type: 'json',
-            supported: ['application/json']
+            supported: {
+                json: {type: 'application/json'}
+            }
         },
         {
             type: 'urlencoded',
-            supported: ['application/x-www-form-urlencoded']
+            supported: {
+                urlencoded: {type: 'application/x-www-form-urlencoded'}
+            }
         },
         {
             type: 'application/json',
-            supported: ['application/x-www-form-urlencoded']
+            supported: {
+                urlencoded: {type: 'application/x-www-form-urlencoded'}
+            }
         },
         {
             type: 'application/x-www-form-urlencoded',
-            supported: ['application/json']
+            supported: {
+                json: {type: 'application/json'}
+            }
         }
     ].forEach(function(item, index) {
         it(`should FAIL req content-type validation (${index})`, function() {
-            var cfg = {};
-            item.supported.forEach(function(val) {
-                cfg[val] = {};
-            });
 
             var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
-            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(cfg);
+            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
 
             var context = {config: this.config};
             reqContentType.call(context, this.req, this.res, this.next);
