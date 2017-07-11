@@ -18,6 +18,21 @@ Server.prototype.constructor = Server;
 /**
  * listen
  *
+ * @param {Integer} val
+ * @param {Function} callback
+ *
+ * @return {Server}
+ */
+Server.prototype.setTimeout = function(val, callback) {
+    this.timeout = val;
+    if (callback)
+        this.on('timeout', callback);
+    return this;
+};
+
+/**
+ * listen
+ *
  * @return {Server}
  */
 Server.prototype.listen = function() {
