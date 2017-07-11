@@ -1,4 +1,4 @@
-## FUTURE
+## v0.15.3
 
 * [FIXED] - `requestContentType` middleware should not fail when no `Content-Type` header is received on GET request
 
