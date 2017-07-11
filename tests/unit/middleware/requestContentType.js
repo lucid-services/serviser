@@ -29,12 +29,14 @@ describe('requestContentType middleware', function() {
     [
         {
             type: 'application/json',
+            method: 'POST',
             supported: {
                 json: {}
             }
         },
         {
             type: 'application/json',
+            method: 'POST',
             supported: {
                 json: {
                     type: 'application/json'
@@ -43,8 +45,16 @@ describe('requestContentType middleware', function() {
         },
         {
             type: 'application/x-www-form-urlencoded',
+            method: 'POST',
             supported: {
                 urlencoded: {}
+            }
+        },
+        {
+            type: undefined,
+            method: 'GET',
+            supported: {
+                json: {}
             }
         }
     ].forEach(function(item, index) {
@@ -52,6 +62,7 @@ describe('requestContentType middleware', function() {
 
             var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
             var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
+            this.req.method = item.method;
 
             var context = {config: this.config};
             reqContentType.call(context, this.req, this.res, this.next);
@@ -66,33 +77,38 @@ describe('requestContentType middleware', function() {
     [
         {
             type: 'json',
+            method: 'GET',
             supported: {
                 json: {type: 'application/json'}
             }
         },
         {
             type: 'urlencoded',
+            method: 'POST',
             supported: {
                 urlencoded: {type: 'application/x-www-form-urlencoded'}
             }
         },
         {
             type: 'application/json',
+            method: 'POST',
             supported: {
                 urlencoded: {type: 'application/x-www-form-urlencoded'}
             }
         },
         {
             type: 'application/x-www-form-urlencoded',
+            method: 'POST',
             supported: {
                 json: {type: 'application/json'}
             }
-        }
+        },
     ].forEach(function(item, index) {
         it(`should FAIL req content-type validation (${index})`, function() {
 
             var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
             var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
+            this.req.method = item.method;
 
             var context = {config: this.config};
             reqContentType.call(context, this.req, this.res, this.next);

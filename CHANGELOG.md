@@ -1,3 +1,7 @@
+## v0.15.3
+
+* [FIXED] - `requestContentType` middleware should not fail when no `Content-Type` header is received on GET request
+
 ## v0.15.2
 
 * [FIXED] - service `set-up` events should be emitted before a file with app definitions is fetched
