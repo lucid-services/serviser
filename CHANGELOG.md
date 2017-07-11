@@ -1,4 +1,4 @@
-## FUTURE
+## v0.15.2
 
 * [FIXED] - service `set-up` events should be emitted before a file with app definitions is fetched
 * [ADDED] - `apps:$name:request:timeout` config option
