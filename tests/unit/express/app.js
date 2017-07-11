@@ -452,6 +452,23 @@ describe('App', function() {
             });
         });
 
+        describe('$getTimeoutInterval', function() {
+            it('should return `request:timeout` config value', function() {
+                var stub = this.configGetStub.withArgs('request:timeout').returns(5000);
+
+                this.app.$getTimeoutInterval(10000).should.be.equal(5000);
+
+                stub.should.have.been.calledOnce;
+            });
+
+            it('should return received default value if the request:timeout config option is not set', function() {
+                var stub = this.configGetStub.withArgs('request:timeout').returns(undefined);
+
+                this.app.$getTimeoutInterval(10000).should.be.equal(10000);
+                stub.should.have.been.calledOnce;
+            });
+        });
+
         describe('listen', function() {
             afterEach(function() {
                 this.app.server.close();
@@ -466,6 +483,19 @@ describe('App', function() {
 
                 spy.should.have.been.calledOnce;
                 spy.should.have.been.calledWithExactly('80', '127.0.0.1', 500);
+
+                stub.restore();
+            });
+
+            it('should call the http.Server.setTimeout method', function() {
+                var server = new Server;
+                var spy = sinon.spy(server, 'setTimeout');
+                var stub = sinon.stub(http, 'createServer').returns(server);
+
+                this.app.listen('80', '127.0.0.1', 500, {ssl: false});
+
+                spy.should.have.been.calledOnce;
+                spy.should.have.been.calledWithExactly(10000);
 
                 stub.restore();
             });

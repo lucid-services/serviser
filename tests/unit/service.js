@@ -235,7 +235,7 @@ describe('Service', function() {
                 return this.service.$setup().then(function() {
                     self.emitSpy.should.have.been.calledOnce;
                     self.emitSpy.should.have.been.calledWith('set-up');
-                    self.emitSpy.should.have.been.calledAfter(self.requireStub);
+                    self.emitSpy.should.have.been.calledBefore(self.requireStub);
                     self.emitSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
                 }).should.be.resolved;
             });

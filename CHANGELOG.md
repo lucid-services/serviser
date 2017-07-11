@@ -1,3 +1,11 @@
+## v0.15.2
+
+* [FIXED] - service `set-up` events should be emitted before a file with app definitions is fetched
+* [ADDED] - `apps:$name:request:timeout` config option
+* [ADDED] - `port` option to `database/sequelize` builder function
+* [ADDED] - req `Content-Type` validation
+* [REMOVED] - default (`ejs`) `view engine` express option is not set
+
 ## v0.15.1
 
 * [FIXED] - `ServiceError.prototype.toLogger` didnt return json object (always returned undefined)
