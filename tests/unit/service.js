@@ -180,7 +180,6 @@ describe('Service', function() {
             beforeEach(function() {
                 this.service = new Service(this.config);
 
-                this.requireStub = sinon.stub(this.serviceModule, 'require');
                 this.inspectIntegrityStub = sinon.stub(this.service.resourceManager, 'inspectIntegrity');
                 this.emitAsyncSeriesSpy = sinon.spy(this.service, 'emitAsyncSeries');
                 this.emitSpy = sinon.spy(Service, 'emitAsyncSeries');
@@ -193,7 +192,6 @@ describe('Service', function() {
             });
 
             afterEach(function() {
-                this.requireStub.restore();
                 this.inspectIntegrityStub.restore();
                 this.emitAsyncSeriesSpy.restore();
                 this.emitSpy.restore();
@@ -219,23 +217,12 @@ describe('Service', function() {
                 }).should.be.resolved;
             });
 
-            it('should try to require project/root/lib/app.js module with app service definitions', function() {
-                var self = this;
-
-                return this.service.$setup().then(function() {
-                    self.requireStub.should.have.been.calledOnce;
-                    self.requireStub.should.have.been.calledWith('/project/root/lib/app.js');
-                    self.requireStub.should.have.been.calledAfter(self.emitAsyncSeriesSpy);
-                }).should.be.resolved;
-            });
-
             it('should synchrounously emit the `set-up` event on Service constructor', function() {
                 var self = this;
 
                 return this.service.$setup().then(function() {
                     self.emitSpy.should.have.been.calledOnce;
                     self.emitSpy.should.have.been.calledWith('set-up');
-                    self.emitSpy.should.have.been.calledBefore(self.requireStub);
                     self.emitSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
                 }).should.be.resolved;
             });

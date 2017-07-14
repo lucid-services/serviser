@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [CHANGED] - `lib/app.js` module with application definitions is no longer required automatically on `service.$setup`
 * [ADDED] - service configuration inspection before startup
 
 ## v0.15.3
