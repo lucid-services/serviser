@@ -1,4 +1,5 @@
-var _ = require('lodash');
+var _       = require('lodash');
+var Promise = require('bluebird');
 
 module.exports = Config;
 
@@ -54,6 +55,24 @@ Config.prototype.getOrFail = function(key) {
         throw new Error(`Cant find config value of "${key}"`);
     }
     return val;
+};
+
+
+/**
+ * @param {Object|Array} schema
+ * @return {Object|Array}
+ */
+Config.prototype.setInspectionSchema = function(schema) {
+    this._schema = schema;
+    return this._schema;
+};
+
+
+/**
+ * @return {Promise}
+ */
+Config.prototype.inspectIntegrity = function() {
+    return Promise.resolve();
 };
 
 /**
