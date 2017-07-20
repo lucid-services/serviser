@@ -11,6 +11,7 @@ var Promise        = require('bluebird');
 var Service              = require('../../lib/service.js');
 var AppManager           = require('../../lib/express/appManager.js');
 var App                  = require('../../lib/express/app.js');
+var AppStatus            = require('../../lib/express/appStatus.js');
 var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
 var ResourceManager      = require('../../lib/resourceManager.js');
 var Config               = require('./mocks/config.js');
@@ -278,6 +279,35 @@ describe('Service', function() {
                 this.service.$initLogger();
 
                 this.reinitializeSpy.should.have.callCount(0);
+            });
+        });
+
+        describe('$initAppWatcher', function() {
+            before(function() {
+                this.service = new Service(this.config);
+            });
+
+            it('should emit the `listeing` event once all applications are initialized (status INIT -> status OK)', function(done) {
+                var app1 = this.service.appManager.buildApp(
+                    this.config,
+                    {name: 'app1'}
+                );
+                var app2 = this.service.appManager.buildApp(
+                    this.config,
+                    {name: 'app2'}
+                );
+
+                setTimeout(function() {
+                    app1.$setStatus(AppStatus.OK);
+                }, 100);
+
+                setTimeout(function() {
+                    app2.$setStatus(AppStatus.OK);
+                }, 200);
+
+                this.service.on('listening', function() {
+                    done();
+                });
             });
         });
     });
