@@ -1,5 +1,3 @@
-var m                   = require('module');
-var nconf               = require('nconf');
 var sinon               = require('sinon');
 var chai                = require('chai');
 var chaiAsPromised      = require('chai-as-promised');
@@ -8,20 +6,13 @@ var http                = require('http');
 var https               = require('https');
 var Express             = require('express');
 var logger              = require('bi-logger');
-var Session             = require('express-session');
-var CouchbaseODM        = require('kouchbase-odm');
 var ExpressValidator    = require('bi-json-inspector');
-var BIServiceSDK        = require('bi-service-sdk').BIServiceSDK;
-var CacheStoreInterface = require('bi-cache-store-interface');
 
 var Service          = require('../../../lib/service.js');
-var CouchbaseCluster = require('../../../lib/database/couchbase.js');
 var AppManager       = require('../../../lib/express/appManager.js');
-var App              = require('../../../lib/express/app.js');
 var Router           = require('../../../lib/express/router.js');
 var Route            = require('../../../lib/express/route.js');
 var AppStatus        = require('../../../lib/express/appStatus.js');
-var sequelizeBuilder = require('../../../lib/database/sequelize.js');
 var Config           = require('../mocks/config.js');
 var Server           = require('../mocks/server.js');
 var MemcachedStoreMock   = require('../mocks/memcachedStore.js');
@@ -424,13 +415,8 @@ describe('App', function() {
                 }
             ].forEach(function(data, index) {
                 it(`should attach all routers to the root path when \`baseUrl\` config value is provided (${index})`, function() {
-                    var config = new nconf.Provider({
-                        store: {
-                            type: 'literal',
-                            store: {
-                                baseUrl: data.baseUrl
-                            }
-                        }
+                    var config = new Config({
+                        baseUrl: data.baseUrl
                     });
 
                     var app = this.appManager.buildApp(config, {
