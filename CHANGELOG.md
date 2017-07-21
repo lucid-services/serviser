@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [CHANGED] - `Service.prototype.start` method has been renamed to `listen`
 * [CHANGED] - use `bi-config` public interface to `set` values in config store
 * [CHANGED] - `sequelize` support has been extracted to its own `bi-service-sequelize` package
 * [REMOVED] - fixed (locked) loading of `lib/validation/{name}AppDefinitions` module when no validations were received

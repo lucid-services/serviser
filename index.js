@@ -3,7 +3,7 @@ Promise.config({
     cancellation: true, //used for canceling promise chain in case of early request response
 });
 
-module.exports = require('./lib/service.js');
+exports = module.exports = require('./lib/service.js');
 
 exports.database = {
     CouchbaseCluster: require('./lib/database/couchbase.js')
