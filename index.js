@@ -6,7 +6,6 @@ Promise.config({
 module.exports = require('./lib/service.js');
 
 exports.database = {
-    sequelizeBuilder: require('./lib/database/sequelize.js'),
     CouchbaseCluster: require('./lib/database/couchbase.js')
 };
 
@@ -24,7 +23,6 @@ exports.Router               = require('./lib/express/router.js');
 exports.Route                = require('./lib/express/route.js');
 exports.RequestType          = require('./lib/express/requestType.js');
 exports.moduleLoader         = require('./lib/moduleLoader.js');
-exports.objectFilter         = require('./lib/objectFilter.js');
 
 exports.error       = {
     IncompleteDataError : require('./lib/error/incompleteDataError.js'),

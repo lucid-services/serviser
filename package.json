@@ -16,8 +16,6 @@
     "kouchbase-odm": ">=2.0.0-rc.1 <3",
     "bi-service-sdk": ">=0.6.3",
     "bi-config": "^1.0.0",
-    "pg": "^4.5.0",
-    "pg-hstore": "2.3.*",
     "couchbase": "^2.1.6",
     "cookie-parser": "1.4.*",
     "memcached": "2.2.*",
@@ -25,7 +23,6 @@
     "connect-memcached": "0.2.*"
   },
   "dependencies": {
-    "async": "^2.0.1",
     "bi-api-errors": "^1.10.0",
     "bi-cache-store-interface": "^1.0.1",
     "bi-json-inspector": "^1.0.0-rc.4",
@@ -42,8 +39,6 @@
     "raw-body": "2.1.*",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
-    "semver": "^5.1.0",
-    "sequelize": "^3.27.0",
     "type-is": "~1.6.15",
     "stack-trace": "0.0.9"
   },
@@ -57,8 +52,6 @@
     "kouchbase-odm": ">=2.0.0-rc.1 <3",
     "mocha": "^2.5.3",
     "nconf": "^0.8.4",
-    "pg": "^4.5.0",
-    "pg-hstore": "2.3.*",
     "rewire": "^2.5.2",
     "sinon": "^1.17.3",
     "sinon-as-promised": "^4.0.0",
