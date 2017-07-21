@@ -8,6 +8,7 @@
 * [ADDED] - Service#listening event - emitted once when all service apps are ready to receive connections
 * [ADDED] - service configuration inspection before startup
 * [ADDED] - `Service.prototype.close` aka. shutdown all service apps
+* [ADDED] - `App.prototype.close` aka. shutdown http server
 
 ## v0.15.3
 
