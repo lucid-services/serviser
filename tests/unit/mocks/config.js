@@ -3,7 +3,6 @@ var Promise = require('bluebird');
 
 module.exports = Config;
 
-
 /**
  * Config
  *
@@ -28,6 +27,18 @@ function Config(data) {
     this._store = store;
 }
 
+/**
+ * @param {String} key
+ * @param {mixed} value
+ *
+ * @return {mixed}
+ */
+Config.prototype.set = function(key, value) {
+    if (key !== undefined) {
+        var keys = (key || '').split(':');
+        return _.set(this._store, keys, value);
+    }
+};
 
 /**
  * get

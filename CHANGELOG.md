@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [CHANGED] - use `bi-config` public interface to `set` values in config store
 * [CHANGED] - `sequelize` support has been extracted to its own `bi-service-sequelize` package
 * [REMOVED] - fixed (locked) loading of `lib/validation/{name}AppDefinitions` module when no validations were received
 * [REMOVED] - fixed (locked) loading of `lib/app.js` module which may or may not be present. Responsibility of loading all application files is delegated to the user.
