@@ -37,8 +37,12 @@ function Config(data) {
  * @return {mixed}
  */
 Config.prototype.get = function(key) {
-    var keys = (key || '').split(':');
-    return _.get(this._store, keys);
+    if (key === undefined) {
+        return this._store;
+    } else {
+        var keys = (key || '').split(':');
+        return _.get(this._store, keys);
+    }
 };
 
 /**

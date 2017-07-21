@@ -132,7 +132,6 @@ describe('Service', function() {
         describe('buildApp', function() {
             beforeEach(function() {
 
-                this.requireStub = sinon.stub(this.serviceModule, 'require');
                 this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
@@ -155,7 +154,6 @@ describe('Service', function() {
 
             afterEach(function() {
                 this.setProjectRootStub.restore();
-                this.requireStub.restore();
                 this.setProjectNameStub.restore();
             });
 
@@ -165,15 +163,11 @@ describe('Service', function() {
                 }).should.be.instanceof(App);
             });
 
-            it('should try to require app validator definitions from default location', function() {
-                var validatorDefinitions = {};
-                var stub = this.requireStub.withArgs('/project/root/lib/validation/privateAppDefinitions')
-                .returns(validatorDefinitions);
-
+            it('should create an app object with proper Config object', function() {
                 var app = this.service.buildApp('private');
-                app.should.be.instanceof(App);
-                stub.should.have.been.calledOnce;
-                app.options.validator.definitions.should.be.eql(validatorDefinitions);
+
+                app.config.should.be.instanceof(Config);
+                app.config.get().should.be.eql(this.appsConfig.private);
             });
         });
 

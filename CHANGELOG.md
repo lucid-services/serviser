@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [REMOVED] - fixed loading of `lib/validation/{name}AppDefinitions` module when no validations were received
 * [REMOVED] - fixed loading of `lib/app.js` module which may or may not be present. Responsibility of loading all application files is delegated to the user.
 * [ADDED] - Service#listening event - emitted once when all service apps are ready to receive connections
 * [ADDED] - service configuration inspection before startup
