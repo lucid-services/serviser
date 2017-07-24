@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.0
 
 * [CHANGED] - `Service.prototype.start` method has been renamed to `listen`
 * [CHANGED] - use `bi-config` public interface to `set` values in config store
