@@ -34,6 +34,10 @@ describe('App', function() {
 
         this.service  = new Service(this.config);
         this.appManager = this.service.appManager;
+
+        this.service.on('error', function() {
+            //muted as we don't test Service object here
+        });
     });
 
     afterEach(function() {
@@ -182,7 +186,7 @@ describe('App', function() {
                 var self = this;
                 var app = this.app;
 
-                app.$setStatus(AppStatus.ERROR);
+                app.$setStatus(AppStatus.ERROR, new Error('test error'));
 
                 return this.nextTick(function() {
                     self.statusChangedSpy.reset();
@@ -456,8 +460,10 @@ describe('App', function() {
         });
 
         describe('listen', function() {
-            afterEach(function() {
-                this.app.server.close();
+            afterEach(function(done) {
+                this.app.server.close(function(err) {
+                    done(err);
+                });
             });
 
             it('should call the http.Server.listen method', function() {
@@ -486,19 +492,26 @@ describe('App', function() {
                 stub.restore();
             });
 
-            it('should return new instance of http Server', function() {
-                var server = this.app.listen('0.0.0.0');
-                server.should.be.an.instanceof(http.Server);
-            });
+            //it('should return new instance of http Server', function(done) {
+                //this.app.once('listening', function() {
+                    //done();
+                //});
 
-            it('should return new instance of https Server', function() {
-                var server = this.app.listen('0.0.0.0', {ssl: true});
-                server.should.be.an.instanceof(https.Server);
-            });
+                //var server = this.app.listen('0.0.0.0');
+                //server.should.be.an.instanceof(http.Server);
+            //});
 
-            it('should throw an Error if we try to call listen more than once', function() {
-                this.app.listen('0.0.0.0');
-                expect(this.app.listen.bind(this.app, '0.0.0.0')).to.throw(Error);
+            //it('should return new instance of https Server', function() {
+                //var server = this.app.listen('0.0.0.0', {ssl: true});
+                //server.should.be.an.instanceof(https.Server);
+            //});
+
+            it('should throw an Error if we try to call listen more than once', function(done) {
+                this.app.once('listening', function() {
+                    expect(this.listen.bind(this, '127.0.0.1:9998')).to.throw(Error);
+                    done();
+                });
+                this.app.listen('127.0.0.1:9998');
             });
 
             it('should emit the `listening` event', function(done) {
@@ -507,27 +520,64 @@ describe('App', function() {
                     return done(err);
                 });
 
-                this.app.on('listening', function(app) {
+                this.app.once('listening', function(app) {
                     app.should.be.equal(self.app);
                     return done();
                 });
 
-                this.app.listen('0.0.0.0');
+                this.app.listen('127.0.0.1:9998');
             });
 
             it('should emit the `error` event on server error', function(done) {
                 var loggerStub = sinon.stub(logger, 'error');
 
-                var server = this.app.listen('0.0.0.0');
+                var server = this.app.listen('127.0.0.1:9998');
 
-                server.on('error', function(err) {
+                this.app.once('error', function(err) {
                     err.should.be.an.instanceof(Error);
-                    server.close();
                     loggerStub.restore();
                     return done();
                 });
 
-                server.emit('error', new Error);
+                this.app.once('listening', function() {
+                    server.emit('error', new Error('test error'));
+                })
+            });
+        });
+
+        describe('close', function() {
+
+            it('should close active server (app) which is listening for connections', function(done) {
+                this.app.on('listening', function(app) {
+                    app.server.listening.should.be.equal(true);
+                    this.close().should.be.fulfilled.then(function() {
+                        app.server.listening.should.be.equal(false);
+                    }).should.notify(done);
+                });
+
+                this.app.listen('127.0.0.1:9998');
+            });
+
+            it('should return resolved promise when the app (server) is not listening for connections (aka already closed)', function() {
+                expect(this.app.server).to.be.equal(null);
+                return this.app.close().should.be.fulfilled;
+            });
+
+            it('should return rejected promise with an error when the `server.close` method yields the Error', function(done) {
+                var error = new Error('test error');
+
+                this.app.on('listening', function(app) {
+                    app.server.listening.should.be.equal(true);
+                    var serverCloseStub = sinon.stub(app.server, 'close').yields(error);
+
+                    this.close().should.be.rejected.then(function(err) {
+                        err.should.be.equal(error);
+                        serverCloseStub.restore();
+                        return app.close();
+                    }).should.notify(done);
+                });
+
+                this.app.listen('127.0.0.1:9998');
             });
         });
     });

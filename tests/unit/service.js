@@ -17,7 +17,7 @@ var ResourceManager      = require('../../lib/resourceManager.js');
 var Config               = require('./mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
-require('sinon-as-promised');
+require('sinon-as-promised', Promise);
 
 var expect = chai.expect;
 
@@ -299,9 +299,91 @@ describe('Service', function() {
                     app2.$setStatus(AppStatus.OK);
                 }, 200);
 
-                this.service.on('listening', function() {
+                this.service.once('error', function(err) {
+                    done(err);
+                });
+
+                this.service.once('listening', function() {
                     done();
                 });
+            });
+        });
+
+        describe('listen', function() {
+            beforeEach(function() {
+                this.service = new Service(this.config);
+                this.config.set('exitOnInitError', false);
+
+                var conf1 = this.config.createLiteralProvider();
+                var conf2 = this.config.createLiteralProvider();
+
+                this.app1 = this.service.appManager.buildApp(conf1, {name: 'app1'});
+                this.app2 = this.service.appManager.buildApp(conf2, {name: 'app2'});
+
+                this.appListenStub = sinon.stub(App.prototype, 'listen').returns({});
+            });
+
+            afterEach(function() {
+                this.appListenStub.restore();
+            });
+
+            it('should return resolved Promise once all apps are initializey to receive connections', function() {
+                var self = this;
+
+                setTimeout(function() {
+                    self.app1.$setStatus(AppStatus.OK);
+                }, 25);
+
+                setTimeout(function() {
+                    self.app2.$setStatus(AppStatus.OK);
+                }, 50);
+
+                return this.service.listen().should.be.fulfilled;
+            });
+
+            it('should return rejected Promise when an Error occurs during initialization of apps', function() {
+                var self = this;
+                var error = new Error('test error');
+
+                setTimeout(function() {
+                    self.app1.$setStatus(AppStatus.OK);
+                }, 25);
+
+                setTimeout(function() {
+                    self.app2.$setStatus(AppStatus.ERROR, error);
+                }, 80);
+
+                return this.service.listen().should.be.rejectedWith(error);
+            });
+        });
+
+        describe('close', function() {
+            beforeEach(function() {
+                this.service = new Service(this.config);
+
+                var conf1 = this.config.createLiteralProvider();
+                var conf2 = this.config.createLiteralProvider();
+
+                this.app1 = this.service.appManager.buildApp(conf1, {name: 'app1'});
+                this.app2 = this.service.appManager.buildApp(conf2, {name: 'app2'});
+
+                this.appCloseSpy = sinon.spy(App.prototype, 'close');
+            });
+
+            afterEach(function() {
+                this.appCloseSpy.restore();
+            });
+
+            it('should return fulfilled promise', function() {
+                return this.service.close().should.be.fulfilled;
+            });
+
+            it('should return call app.close() on each app', function() {
+                var self = this;
+
+                return this.service.close().then(function() {
+                    self.appCloseSpy.should.have.been.calledTwice;
+                }).should.be.fulfilled;
             });
         });
     });
