@@ -1,3 +1,15 @@
+## v0.16.0
+
+* [CHANGED] - `Service.prototype.start` method has been renamed to `listen`
+* [CHANGED] - use `bi-config` public interface to `set` values in config store
+* [CHANGED] - `sequelize` support has been extracted to its own `bi-service-sequelize` package
+* [REMOVED] - fixed (locked) loading of `lib/validation/{name}AppDefinitions` module when no validations were received
+* [REMOVED] - fixed (locked) loading of `lib/app.js` module which may or may not be present. Responsibility of loading all application files is delegated to the user.
+* [ADDED] - Service#listening event - emitted once when all service apps are ready to receive connections
+* [ADDED] - service configuration inspection before startup
+* [ADDED] - `Service.prototype.close` aka. shutdown all service apps
+* [ADDED] - `App.prototype.close` aka. shutdown http server
+
 ## v0.15.3
 
 * [FIXED] - `requestContentType` middleware should not fail when no `Content-Type` header is received on GET request

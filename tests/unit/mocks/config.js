@@ -1,7 +1,7 @@
-var _ = require('lodash');
+var _       = require('lodash');
+var Promise = require('bluebird');
 
 module.exports = Config;
-
 
 /**
  * Config
@@ -27,6 +27,18 @@ function Config(data) {
     this._store = store;
 }
 
+/**
+ * @param {String} key
+ * @param {mixed} value
+ *
+ * @return {mixed}
+ */
+Config.prototype.set = function(key, value) {
+    if (key !== undefined) {
+        var keys = (key || '').split(':');
+        return _.set(this._store, keys, value);
+    }
+};
 
 /**
  * get
@@ -36,8 +48,12 @@ function Config(data) {
  * @return {mixed}
  */
 Config.prototype.get = function(key) {
-    var keys = (key || '').split(':');
-    return _.get(this._store, keys);
+    if (key === undefined) {
+        return this._store;
+    } else {
+        var keys = (key || '').split(':');
+        return _.get(this._store, keys);
+    }
 };
 
 /**
@@ -54,6 +70,24 @@ Config.prototype.getOrFail = function(key) {
         throw new Error(`Cant find config value of "${key}"`);
     }
     return val;
+};
+
+
+/**
+ * @param {Object|Array} schema
+ * @return {Object|Array}
+ */
+Config.prototype.setInspectionSchema = function(schema) {
+    this._schema = schema;
+    return this._schema;
+};
+
+
+/**
+ * @return {Promise}
+ */
+Config.prototype.inspectIntegrity = function() {
+    return Promise.resolve();
 };
 
 /**

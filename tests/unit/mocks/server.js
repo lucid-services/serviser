@@ -42,10 +42,23 @@ Server.prototype.listen = function() {
 /**
  * close
  *
+ * @param {Function} cb
  * @return {Server}
  */
-Server.prototype.close = function() {
+Server.prototype.close = function(cb) {
+    if (typeof cb === 'function') {
+        cb();
+    }
     return this;
+};
+
+
+/**
+ * @param {Integer} timeout
+ * @return {undefined}
+ */
+Server.prototype.setTimeout = function(timeout) {
+    this._timeout = timeout;
 };
 
 

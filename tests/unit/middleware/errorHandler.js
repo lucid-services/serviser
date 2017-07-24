@@ -73,6 +73,7 @@ describe('errorHandler middleware', function() {
 
     after(function() {
         this.appSetStatusSpy.restore();
+        this.loggerStub.restore();
         this.errorSetUIDSpy.restore();
         this.appEmitSpy.restore();
     });

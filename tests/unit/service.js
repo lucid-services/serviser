@@ -11,12 +11,13 @@ var Promise        = require('bluebird');
 var Service              = require('../../lib/service.js');
 var AppManager           = require('../../lib/express/appManager.js');
 var App                  = require('../../lib/express/app.js');
+var AppStatus            = require('../../lib/express/appStatus.js');
 var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
 var ResourceManager      = require('../../lib/resourceManager.js');
 var Config               = require('./mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
-require('sinon-as-promised');
+require('sinon-as-promised', Promise);
 
 var expect = chai.expect;
 
@@ -131,7 +132,6 @@ describe('Service', function() {
         describe('buildApp', function() {
             beforeEach(function() {
 
-                this.requireStub = sinon.stub(this.serviceModule, 'require');
                 this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
@@ -154,7 +154,6 @@ describe('Service', function() {
 
             afterEach(function() {
                 this.setProjectRootStub.restore();
-                this.requireStub.restore();
                 this.setProjectNameStub.restore();
             });
 
@@ -164,15 +163,11 @@ describe('Service', function() {
                 }).should.be.instanceof(App);
             });
 
-            it('should try to require app validator definitions from default location', function() {
-                var validatorDefinitions = {};
-                var stub = this.requireStub.withArgs('/project/root/lib/validation/privateAppDefinitions')
-                .returns(validatorDefinitions);
-
+            it('should create an app object with proper Config object', function() {
                 var app = this.service.buildApp('private');
-                app.should.be.instanceof(App);
-                stub.should.have.been.calledOnce;
-                app.options.validator.definitions.should.be.eql(validatorDefinitions);
+
+                app.config.should.be.instanceof(Config);
+                app.config.get().should.be.eql(this.appsConfig.private);
             });
         });
 
@@ -180,7 +175,6 @@ describe('Service', function() {
             beforeEach(function() {
                 this.service = new Service(this.config);
 
-                this.requireStub = sinon.stub(this.serviceModule, 'require');
                 this.inspectIntegrityStub = sinon.stub(this.service.resourceManager, 'inspectIntegrity');
                 this.emitAsyncSeriesSpy = sinon.spy(this.service, 'emitAsyncSeries');
                 this.emitSpy = sinon.spy(Service, 'emitAsyncSeries');
@@ -193,7 +187,6 @@ describe('Service', function() {
             });
 
             afterEach(function() {
-                this.requireStub.restore();
                 this.inspectIntegrityStub.restore();
                 this.emitAsyncSeriesSpy.restore();
                 this.emitSpy.restore();
@@ -219,23 +212,12 @@ describe('Service', function() {
                 }).should.be.resolved;
             });
 
-            it('should try to require project/root/lib/app.js module with app service definitions', function() {
-                var self = this;
-
-                return this.service.$setup().then(function() {
-                    self.requireStub.should.have.been.calledOnce;
-                    self.requireStub.should.have.been.calledWith('/project/root/lib/app.js');
-                    self.requireStub.should.have.been.calledAfter(self.emitAsyncSeriesSpy);
-                }).should.be.resolved;
-            });
-
             it('should synchrounously emit the `set-up` event on Service constructor', function() {
                 var self = this;
 
                 return this.service.$setup().then(function() {
                     self.emitSpy.should.have.been.calledOnce;
                     self.emitSpy.should.have.been.calledWith('set-up');
-                    self.emitSpy.should.have.been.calledBefore(self.requireStub);
                     self.emitSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
                 }).should.be.resolved;
             });
@@ -291,6 +273,117 @@ describe('Service', function() {
                 this.service.$initLogger();
 
                 this.reinitializeSpy.should.have.callCount(0);
+            });
+        });
+
+        describe('$initAppWatcher', function() {
+            before(function() {
+                this.service = new Service(this.config);
+            });
+
+            it('should emit the `listeing` event once all applications are initialized (status INIT -> status OK)', function(done) {
+                var app1 = this.service.appManager.buildApp(
+                    this.config,
+                    {name: 'app1'}
+                );
+                var app2 = this.service.appManager.buildApp(
+                    this.config,
+                    {name: 'app2'}
+                );
+
+                setTimeout(function() {
+                    app1.$setStatus(AppStatus.OK);
+                }, 100);
+
+                setTimeout(function() {
+                    app2.$setStatus(AppStatus.OK);
+                }, 200);
+
+                this.service.once('error', function(err) {
+                    done(err);
+                });
+
+                this.service.once('listening', function() {
+                    done();
+                });
+            });
+        });
+
+        describe('listen', function() {
+            beforeEach(function() {
+                this.service = new Service(this.config);
+                this.config.set('exitOnInitError', false);
+
+                var conf1 = this.config.createLiteralProvider();
+                var conf2 = this.config.createLiteralProvider();
+
+                this.app1 = this.service.appManager.buildApp(conf1, {name: 'app1'});
+                this.app2 = this.service.appManager.buildApp(conf2, {name: 'app2'});
+
+                this.appListenStub = sinon.stub(App.prototype, 'listen').returns({});
+            });
+
+            afterEach(function() {
+                this.appListenStub.restore();
+            });
+
+            it('should return resolved Promise once all apps are initializey to receive connections', function() {
+                var self = this;
+
+                setTimeout(function() {
+                    self.app1.$setStatus(AppStatus.OK);
+                }, 25);
+
+                setTimeout(function() {
+                    self.app2.$setStatus(AppStatus.OK);
+                }, 50);
+
+                return this.service.listen().should.be.fulfilled;
+            });
+
+            it('should return rejected Promise when an Error occurs during initialization of apps', function() {
+                var self = this;
+                var error = new Error('test error');
+
+                setTimeout(function() {
+                    self.app1.$setStatus(AppStatus.OK);
+                }, 25);
+
+                setTimeout(function() {
+                    self.app2.$setStatus(AppStatus.ERROR, error);
+                }, 80);
+
+                return this.service.listen().should.be.rejectedWith(error);
+            });
+        });
+
+        describe('close', function() {
+            beforeEach(function() {
+                this.service = new Service(this.config);
+
+                var conf1 = this.config.createLiteralProvider();
+                var conf2 = this.config.createLiteralProvider();
+
+                this.app1 = this.service.appManager.buildApp(conf1, {name: 'app1'});
+                this.app2 = this.service.appManager.buildApp(conf2, {name: 'app2'});
+
+                this.appCloseSpy = sinon.spy(App.prototype, 'close');
+            });
+
+            afterEach(function() {
+                this.appCloseSpy.restore();
+            });
+
+            it('should return fulfilled promise', function() {
+                return this.service.close().should.be.fulfilled;
+            });
+
+            it('should return call app.close() on each app', function() {
+                var self = this;
+
+                return this.service.close().then(function() {
+                    self.appCloseSpy.should.have.been.calledTwice;
+                }).should.be.fulfilled;
             });
         });
     });
