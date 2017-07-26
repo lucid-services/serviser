@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - `AppManager.prototype.get` method
+
 ## v0.16.0
 
 * [CHANGED] - `Service.prototype.start` method has been renamed to `listen`
