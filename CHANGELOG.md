@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.1
 
 * [ADDED] - `AppManager.prototype.get` method
 * [FIXED] - make sure that an `App` can write to its `Config`
