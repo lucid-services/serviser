@@ -1,12 +1,12 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
+var Config    = require('bi-config');
 
 var Service            = require('../../../lib/service.js');
 var RouteNotFoundError = require('../../../lib/error/routeNotFoundError.js');
 var routeNotFound      = require('../../../lib/middleware/routeNotFound.js');
 var AppManager         = require('../../../lib/express/appManager.js');
-var Config             = require('../mocks/config.js');
 
 var expect = chai.expect;
 
@@ -16,7 +16,7 @@ chai.should();
 describe('routeNotFound middleware', function() {
 
     before(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;

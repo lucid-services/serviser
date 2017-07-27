@@ -4,13 +4,13 @@ var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
+var Config         = require('bi-config');
 
 var Service         = require('../../../lib/service.js');
 var Response        = require('../../../lib/express/response.js');
 var AppManager      = require('../../../lib/express/appManager.js');
 var Router          = require('../../../lib/express/router.js');
 var Route           = require('../../../lib/express/route.js');
-var Config          = require('../mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -53,7 +53,7 @@ describe('Response', function() {
     describe('wrapped response object - (the object is provided to route method definitions)', function() {
         before(function() {
             this.models = {odm: {}, orm: {}};
-            this.config = new Config();
+            this.config = new Config.Config;
 
             this.service = new Service(this.config);
             this.appManager = this.service.appManager;

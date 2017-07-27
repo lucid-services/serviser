@@ -3,13 +3,13 @@ var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Express        = require('express');
+var Config         = require('bi-config');
 
 var Service    = require('../../../lib/service.js');
 var AppManager = require('../../../lib/express/appManager.js');
 var Router     = require('../../../lib/express/router.js');
 var Route      = require('../../../lib/express/route.js');
 var RouterError= require('../../../lib/error/routerError.js');
-var Config     = require('../mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -23,7 +23,7 @@ chai.should();
 describe('Router', function() {
 
     beforeEach(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;

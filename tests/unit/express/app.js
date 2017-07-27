@@ -7,13 +7,13 @@ var https               = require('https');
 var Express             = require('express');
 var logger              = require('bi-logger');
 var ExpressValidator    = require('bi-json-inspector');
+var Config              = require('bi-config');
 
 var Service          = require('../../../lib/service.js');
 var AppManager       = require('../../../lib/express/appManager.js');
 var Router           = require('../../../lib/express/router.js');
 var Route            = require('../../../lib/express/route.js');
 var AppStatus        = require('../../../lib/express/appStatus.js');
-var Config           = require('../mocks/config.js');
 var Server           = require('../mocks/server.js');
 var MemcachedStoreMock   = require('../mocks/memcachedStore.js');
 
@@ -29,8 +29,7 @@ chai.should();
 describe('App', function() {
 
     beforeEach(function() {
-        this.config = new Config();
-        this.configGetStub = sinon.stub(this.config, 'get');
+        this.config = new Config.Config;
 
         this.service  = new Service(this.config);
         this.appManager = this.service.appManager;
@@ -118,7 +117,7 @@ describe('App', function() {
 
             this.appEmitSpy = sinon.spy(app, 'emit');
 
-            this.configGetStub.withArgs('couchbase').returns({
+            this.config.set('couchbase', {
                 host: 'localhost',
                 buckets: {
                     main: {
@@ -242,10 +241,9 @@ describe('App', function() {
 
         describe('useSession', function() {
             it('should connect Session middlewares to express app', function() {
+                this.config.set('session', {});
                 var appUseSpy = sinon.spy(this.app, 'use');
                 var memcachedMock = new MemcachedStoreMock();
-
-                this.configGetStub.returns({});
 
                 this.app.useSession(memcachedMock);
 
@@ -299,7 +297,8 @@ describe('App', function() {
 
         describe('getHost', function() {
             beforeEach(function() {
-                this.config = new Config({baseUrl: 'http://service.bistudio.com/root'});
+                this.config = new Config.Config();
+                this.config.set(null, {baseUrl: 'http://service.bistudio.com/root'});
                 this.app = this.appManager.buildApp(this.config, {name: 'getHost'});
             });
 
@@ -419,7 +418,8 @@ describe('App', function() {
                 }
             ].forEach(function(data, index) {
                 it(`should attach all routers to the root path when \`baseUrl\` config value is provided (${index})`, function() {
-                    var config = new Config({
+                    var config = new Config.Config();
+                    config.set(null, {
                         baseUrl: data.baseUrl
                     });
 
@@ -444,18 +444,13 @@ describe('App', function() {
 
         describe('$getTimeoutInterval', function() {
             it('should return `request:timeout` config value', function() {
-                var stub = this.configGetStub.withArgs('request:timeout').returns(5000);
-
+                this.config.set('request:timeout', 5000);
                 this.app.$getTimeoutInterval(10000).should.be.equal(5000);
-
-                stub.should.have.been.calledOnce;
             });
 
             it('should return received default value if the request:timeout config option is not set', function() {
-                var stub = this.configGetStub.withArgs('request:timeout').returns(undefined);
-
+                this.config.set('request:timeout', undefined);
                 this.app.$getTimeoutInterval(10000).should.be.equal(10000);
-                stub.should.have.been.calledOnce;
             });
         });
 

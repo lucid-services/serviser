@@ -1,10 +1,11 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var sinonChai      = require("sinon-chai");
+var sinon     = require('sinon');
+var chai      = require('chai');
+var sinonChai = require("sinon-chai");
+var Config    = require('bi-config');
 
 var Service    = require('../../../lib/service.js');
 var AppManager = require('../../../lib/express/appManager.js');
-var Config     = require('../mocks/config.js');
+var App        = require('../../../lib/express/app.js');
 
 var expect = chai.expect;
 
@@ -13,16 +14,16 @@ chai.should();
 
 describe('AppManager', function() {
 
-    before(function() {
-        this.config = new Config();
+    beforeEach(function() {
+        this.config = new Config.Config;
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;
         this.appManagerEmitSpy = sinon.spy(this.appManager, 'emit');
     });
 
-    after(function() {
+    afterEach(function() {
         delete this.config;
-        delete this.appManger;
+        delete this.appManager;
         this.appManagerEmitSpy.restore();
     });
 
@@ -36,10 +37,49 @@ describe('AppManager', function() {
 
             expect(testcase).to.throw(Error);
         });
+
+        it('should fail when an another app with same name is already registered', function() {
+            var self = this;
+            var app = new App(this.appManager, this.config, {name: 'app'});
+            var app2 = new App(this.appManager, this.config, {name: 'app'});
+            //
+            this.appManager.add(app);
+            //
+            expect(function() {
+                self.appManager.add(app2);
+            }).to.throw(Error);
+        });
+
+        it('should register given App', function() {
+            var self = this;
+            var app = new App(this.appManager, this.config, {name: 'app'});
+            //
+            this.appManager.add(app);
+            //
+            this.appManager.apps.should.include(app);
+        });
+    });
+
+    describe('get', function() {
+
+        it('should return App object', function() {
+            var app = new App(this.appManager, this.config, {name: 'app'});
+            this.appManager.add(app);
+
+            this.appManager.get('app').should.be.equal(app);
+        });
+
+        it('should fail when an App with provided name does not exists', function() {
+            var self = this;
+
+            expect(function() {
+                self.appManager.get('app');
+            }).to.throw(Error);
+        });
     });
 
     describe('buildApp', function() {
-        before(function() {
+        beforeEach(function() {
             this.options = {
                 name: '1',
                 validator: {
@@ -49,7 +89,7 @@ describe('AppManager', function() {
             this.app = this.appManager.buildApp(this.config, this.options);
         });
 
-        after(function() {
+        afterEach(function() {
             delete this.options;
             delete this.app;
         });

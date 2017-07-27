@@ -1,3 +1,4 @@
+var _              = require('lodash');
 var m              = require('module');
 var path           = require('path');
 var sinon          = require('sinon');
@@ -7,6 +8,7 @@ var sinonChai      = require("sinon-chai");
 var logger         = require('bi-logger');
 var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
+var Config         = require('bi-config');
 
 var Service              = require('../../lib/service.js');
 var AppManager           = require('../../lib/express/appManager.js');
@@ -14,7 +16,6 @@ var App                  = require('../../lib/express/app.js');
 var AppStatus            = require('../../lib/express/appStatus.js');
 var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
 var ResourceManager      = require('../../lib/resourceManager.js');
-var Config               = require('./mocks/config.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised', Promise);
@@ -33,7 +34,7 @@ describe('Service', function() {
     });
 
     beforeEach(function() {
-        this.config = new Config;
+        this.config = new Config.Config;
     });
 
     describe('constructor', function() {
@@ -75,8 +76,19 @@ describe('Service', function() {
     describe('methods', function() {
         describe('$initLogger', function() {
             before(function() {
-                this.logOpt = {
-                    exitOnErr: false,
+                this.loggerReinitializeSpy = sinon.spy(logger, 'reinitialize');
+            });
+
+            afterEach(function() {
+                this.loggerReinitializeSpy.reset();
+            });
+
+            after(function() {
+                this.loggerReinitializeSpy.restore();
+            });
+
+            it('should reinitialize static `bi-logger` module with options received from the bi-config', function() {
+                var logOpt = {
                     transports: [
                         {
                             type: 'file',
@@ -86,26 +98,15 @@ describe('Service', function() {
                         }
                     ]
                 };
-
-                this.loggerReinitializeSpy = sinon.spy(logger, 'reinitialize');
-                this.configGetStub = sinon.stub(this.config, 'get');
-                this.configGetStub.withArgs('logs').returns(this.logOpt);
-
+                //
+                this.config.set('logs', logOpt);
+                //
                 this.service = new Service(this.config);
-            });
-
-            afterEach(function() {
-                this.loggerReinitializeSpy.reset();
-            });
-
-            after(function() {
-                this.loggerReinitializeSpy.restore();
-                this.configGetStub.restore();
-            });
-
-            it('should reinitialize static `bi-logger` module with options received from the bi-config', function() {
+                //
                 this.loggerReinitializeSpy.should.have.been.calledOnce;
-                this.loggerReinitializeSpy.should.have.been.calledWith(this.logOpt);
+                this.loggerReinitializeSpy.should.have.been.calledWith(
+                    _.assign({exitOnError: true}, logOpt)
+                );
             });
         });
 
@@ -148,8 +149,8 @@ describe('Service', function() {
                     },
                 };
 
-                this.config._store.root = '/project/root';
-                this.config._store.apps = this.appsConfig;
+                this.config.set('root', '/project/root');
+                this.config.set('apps', this.appsConfig);
             });
 
             afterEach(function() {
@@ -166,8 +167,9 @@ describe('Service', function() {
             it('should create an app object with proper Config object', function() {
                 var app = this.service.buildApp('private');
 
-                app.config.should.be.instanceof(Config);
-                app.config.get().should.be.eql(this.appsConfig.private);
+                app.config.should.be.instanceof(Config.Config);
+                app.config.get().should.have.property('baseUrl', this.appsConfig.private.baseUrl);
+                app.config.get().should.have.property('listen', this.appsConfig.private.listen);
             });
         });
 
@@ -183,7 +185,7 @@ describe('Service', function() {
 
                 this.inspectIntegrityStub.returns(Promise.resolve());
 
-                this.config._store.root = '/project/root';
+                this.config.set('root', '/project/root');
             });
 
             afterEach(function() {
@@ -230,21 +232,13 @@ describe('Service', function() {
         });
 
         describe('$initLogger', function() {
-            before(function() {
-                this.service = new Service(this.config);
-
-                this.reinitializeSpy = sinon.spy(logger, 'reinitialize');
-                this.configGetStub = sinon.stub(this.config, 'get');
-            });
-
             beforeEach(function() {
-                this.reinitializeSpy.reset();
-                this.configGetStub.reset();
+                this.service = new Service(this.config);
+                this.reinitializeSpy = sinon.spy(logger, 'reinitialize');
             });
 
-            after(function() {
+            afterEach(function() {
                 this.reinitializeSpy.restore();
-                this.configGetStub.restore();
             });
 
             it('should call the `reinitialize` method on bi-logger module', function() {
@@ -259,7 +253,7 @@ describe('Service', function() {
                         }
                     ]
                 };
-                var stub = this.configGetStub.withArgs('logs').returns(logsConf);
+                this.config.set('logs', logsConf);
 
                 this.service.$initLogger();
 
@@ -268,10 +262,8 @@ describe('Service', function() {
             });
 
             it('should should NOT call the `reinitialize` method on bi-logger module', function() {
-                var stub = this.configGetStub.withArgs('logs').returns(undefined);
-
+                this.config.set('logs', undefined);
                 this.service.$initLogger();
-
                 this.reinitializeSpy.should.have.callCount(0);
             });
         });

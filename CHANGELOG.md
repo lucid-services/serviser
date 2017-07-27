@@ -1,3 +1,8 @@
+## v0.16.1
+
+* [ADDED] - `AppManager.prototype.get` method
+* [FIXED] - make sure that an `App` can write to its `Config`
+
 ## v0.16.0
 
 * [CHANGED] - `Service.prototype.start` method has been renamed to `listen`
