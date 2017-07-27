@@ -1,13 +1,13 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
+var Config    = require('bi-config');
 
 var Service        = require('../../../lib/service.js');
 var appStatusCheck = require('../../../lib/middleware/appStatusCheck.js');
 var AppManager     = require('../../../lib/express/appManager.js');
 var AppStatus      = require('../../../lib/express/appStatus.js');
 var ServiceError   = require('../../../lib/error/serviceError.js');
-var Config         = require('../mocks/config.js');
 
 var expect = chai.expect;
 
@@ -17,7 +17,7 @@ chai.should();
 describe('appStatusCheck middleware', function() {
 
     before(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;

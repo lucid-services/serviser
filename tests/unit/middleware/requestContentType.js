@@ -1,10 +1,10 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
+var Config    = require('bi-config');
 
 var RequestError    = require('../../../lib/error/requestError.js');
 var reqContentType  = require('../../../lib/middleware/requestContentType.js');
-var Config          = require('../mocks/config.js');
 
 var expect = chai.expect;
 
@@ -14,7 +14,7 @@ chai.should();
 describe('requestContentType middleware', function() {
 
     beforeEach(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.res = {};
         this.req = {

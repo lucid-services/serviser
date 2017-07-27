@@ -4,6 +4,7 @@ var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
+var Config         = require('bi-config');
 
 var Service           = require('../../../lib/service.js');
 var AppManager        = require('../../../lib/express/appManager.js');
@@ -13,7 +14,6 @@ var Response          = require('../../../lib/express/response.js');
 var RouteError        = require('../../../lib/error/routeError.js');
 var RequestError      = require('../../../lib/error/requestError.js');
 var ValidationError   = require('../../../lib/error/validationError.js');
-var Config            = require('../mocks/config.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -29,7 +29,7 @@ chai.should();
 describe('Route', function() {
 
     beforeEach(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;

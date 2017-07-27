@@ -7,9 +7,9 @@
   "author": "Bohemia Interactive",
   "private": false,
   "scripts": {
-    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec 'tests/**/*.js' -t 5000",
-    "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/**/*.js'",
-    "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/unit/**/*.js'",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec --parse-pos-args false 'tests/**/*.js' -t 5000",
+    "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false  'tests/**/*.js'",
+    "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/unit/**/*.js'",
     "test": "npm run tests"
   },
   "peerDependencies": {

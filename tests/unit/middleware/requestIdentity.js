@@ -1,11 +1,11 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
+var Config    = require('bi-config');
 
 var Service         = require('../../../lib/service.js');
 var requestIdentity = require('../../../lib/middleware/requestIdentity.js');
 var AppManager      = require('../../../lib/express/appManager.js');
-var Config          = require('../mocks/config.js');
 
 var expect = chai.expect;
 
@@ -15,7 +15,7 @@ chai.should();
 describe('requestIdentity middleware', function() {
 
     before(function() {
-        this.config = new Config();
+        this.config = new Config.Config;
 
         this.service = new Service(this.config);
         this.appManager = this.service.appManager;
