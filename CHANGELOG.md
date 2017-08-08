@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `bi-service` module exported incorrect error contructor (ServiceError) under `error.ValidationError` instead of the actual `ValidationError`
+
 ## v0.16.1
 
 * [ADDED] - `AppManager.prototype.get` method
