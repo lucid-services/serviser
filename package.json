@@ -23,9 +23,10 @@
     "connect-memcached": "0.2.*"
   },
   "dependencies": {
+    "ajv": "^5.2.2",
+    "ajv-keywords": "^2.1.0",
     "bi-api-errors": "^1.10.0",
     "bi-cache-store-interface": "^1.0.1",
-    "bi-json-inspector": "^1.0.0-rc.4",
     "bi-logger": "^2.0.0",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
