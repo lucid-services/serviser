@@ -25,7 +25,6 @@ exports.RequestType          = require('./lib/express/requestType.js');
 exports.moduleLoader         = require('./lib/moduleLoader.js');
 
 exports.error       = {
-    IncompleteDataError : require('./lib/error/incompleteDataError.js'),
     RouteError          : require('./lib/error/routeError.js'),
     RouteNotFoundError  : require('./lib/error/routeNotFoundError.js'),
     RequestError        : require('./lib/error/requestError.js'),
