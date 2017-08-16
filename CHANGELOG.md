@@ -1,5 +1,6 @@
 ## FUTURE
 
+* [FIXED] - request UID should be generated before any other middleware is executed
 * [FIXED] - `bi-service` module exported incorrect error contructor (ServiceError) under `error.ValidationError` instead of the actual `ValidationError`
 
 ## v0.16.1
