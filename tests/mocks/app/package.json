@@ -1,0 +1,10 @@
+{
+  "name": "bi-service-mock-app",
+  "version": "0.1.0",
+  "description": "Mock of bi-service based app",
+  "main": "index.js",
+  "files": [
+    "config.json5",
+    "index.js"
+  ]
+}
