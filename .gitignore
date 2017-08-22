@@ -1,2 +1,6 @@
 node_modules
+.tern-project
+*.vim
+coverage
+test.js
 .idea
