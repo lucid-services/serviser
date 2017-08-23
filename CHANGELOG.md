@@ -3,7 +3,7 @@
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
 * [ADDED] - `bi-service` cli executable
-* [REMOVED] - `couchbase` integration modules
+* [REMOVED] - `couchbase` integration modules (use bi-service-couchbase plugin)
 * [REMOVED] - `loadORMmodels` method of `moduleLoader` has been removed - equivalent functionality is provided by `bi-service-sequelize`
 * [REMOVED] - `loadODMmodels` method of `moduleLoader` use `moduleLoader.fileIterator` intead
 
