@@ -15,15 +15,18 @@
     "engines": {
         "node": ">=6.4.0"
     },
+    "license": "GPL-3.0",
     "files": [
         "bin",
         "lib",
+        "LICENCE",
+        "COPYRIGHT",
         "CHANGELOG.md",
         "index.js"
     ],
     "scripts": {
         "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec --parse-pos-args false -t 5000 'tests/**/*.js'",
-        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/acceptance/**/*.js'",
+        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
         "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/unit/**/*.js'",
         "test": "npm run tests"
     },
@@ -43,6 +46,8 @@
         "json5": "0.5.0",
         "bi-api-errors": "^1.10.0",
         "bi-cache-store-interface": "^1.0.1",
+        "bi-config": "^2.0.0-alpha",
+        "bi-json-inspector": "^1.0.0-rc.4",
         "bi-logger": "^2.0.0",
         "bluebird": "^3.4.6",
         "body-parser": "^1.15.2",
@@ -56,18 +61,17 @@
         "raw-body": "2.1.*",
         "request": "^2.81.0",
         "request-promise": "^4.2.0",
+        "stack-trace": "0.0.9",
         "type-is": "~1.6.15",
-        "stack-trace": "0.0.9"
+        "yargs": "^8.0.0"
     },
     "devDependencies": {
-        "bi-config": "^1.2.0",
         "bi-service-sdk": "^1.0.0",
         "chai": "^3.5.0",
         "chai-as-promised": "^5.3.0",
         "express-session": "^1.13.x",
         "find-port": "^2.0.1",
         "istanbul": "^0.4.3",
-        "kouchbase-odm": ">=2.0.0-rc.1 <3",
         "mocha": "^2.5.3",
         "nconf": "^0.8.4",
         "rewire": "^2.5.2",
