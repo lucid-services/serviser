@@ -1,3 +1,8 @@
+## [FUTURE]
+
+* [ADDED] - `bi-service` cli executable
+* [REMOVED] - `couchbase` integration modules
+
 ## v0.16.2
 
 * [FIXED] - request UID should be generated before any other middleware is executed
