@@ -5,10 +5,6 @@ Promise.config({
 
 exports = module.exports = require('./lib/service.js');
 
-exports.database = {
-    CouchbaseCluster: require('./lib/database/couchbase.js')
-};
-
 exports.Express              = require('express');
 exports.EXPRESS_VERSION      = parseInt(require('express/package.json').version[0]);
 exports.VERSION              = require('./package.json').version;
