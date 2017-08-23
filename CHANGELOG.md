@@ -2,6 +2,8 @@
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
+* [ADDED] - `bi-service` cli executable
+* [REMOVED] - `couchbase` integration modules
 
 ## v0.16.5
 
