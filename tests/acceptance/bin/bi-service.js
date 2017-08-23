@@ -232,7 +232,7 @@ describe('bin/bi-service', function() {
                 json5.parse(result.stdout).should.be.eql({
                     apps: {
                         app1: {
-                            baseUrl: '127.0.0.1',
+                            baseUrl: 'http://127.0.0.1',
                             listen: 5903,
                             bodyParser: {
                                 json: {
