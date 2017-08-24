@@ -2,7 +2,6 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 var Config         = require('bi-config');
 
@@ -24,15 +23,10 @@ chai.should();
 describe('Response', function() {
 
     before(function() {
-        var validatorManager = new Validator.ValidatorManager();
-        this.validatorManager = validatorManager;
-
         this.res = {
             json: sinon.stub(),
             write: sinon.stub(),
-            req: {
-                validatorManager: validatorManager
-            }
+            req: {}
         };
     });
 
@@ -73,13 +67,6 @@ describe('Response', function() {
             describe('the route.respondsWith method is provided with registered validator name', function() {
 
                 before(function() {
-                    //var validator = new Validator.Validator(
-                        //{$isEmail: {}},
-                        //{},
-                        //this.validatorManager
-                    //);
-                    //this.validatorManager.add('#email', validator);
-                    //sinon.spy(this.validatorManager, 'get');
                     var validator = this.validator = this.app.getValidator();
 
                     validator.addSchema({
@@ -97,7 +84,7 @@ describe('Response', function() {
                     this.wrappedRes = Response.wrap(this.res, this.route);
                 });
 
-                it('should get a reponse validator schema from req.validatorManager when we provide only a validator name, not a schema definition', function() {
+                it('should fetch a reponse validator schema from validator instance when we provide only the schema name (id), not the schema definition', function() {
                     this.wrappedRes.filter(this.data);
                     this.validator.validate.should.have.been.calledOnce;
                     this.validator.validate.should.have.been.calledWith('#email', this.data);

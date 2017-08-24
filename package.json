@@ -31,10 +31,7 @@
         "test": "npm run tests"
     },
     "peerDependencies": {
-        "kouchbase-odm": ">=2.0.0-rc.1 <3",
         "bi-service-sdk": ">=0.6.3",
-        "bi-config": "^1.2.0",
-        "couchbase": "^2.1.6",
         "cookie-parser": "1.4.*",
         "memcached": "2.2.*",
         "express-session": "^1.13.x",
