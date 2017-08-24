@@ -2,7 +2,12 @@
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
+
+## v1.0.0-alpha
+
 * [ADDED] - `bi-service` cli executable
+* [ADDED] - `ajv` validator support (replacement for `bi-json-inspector`)
+* [REMOVED] - `bi-json-inspector` support
 * [REMOVED] - `couchbase` integration modules (use bi-service-couchbase plugin)
 * [REMOVED] - `loadORMmodels` method of `moduleLoader` has been removed - equivalent functionality is provided by `bi-service-sequelize`
 * [REMOVED] - `loadODMmodels` method of `moduleLoader` use `moduleLoader.fileIterator` intead
