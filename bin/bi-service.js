@@ -74,11 +74,11 @@ if (module.parent === null) {
         .argv;
 }
 
-module.exports.runCmd        = runCmd;
-module.exports.defaultCmd    = defaultCmd;
-module.exports._run          = _run;
-module.exports._runCluster   = _runCluster;
-module.exports._verifyCWD    = _verifyCWD;
+module.exports.runCmd      = runCmd;
+module.exports.defaultCmd  = defaultCmd;
+module.exports._run        = _run;
+module.exports._runCluster = _runCluster;
+module.exports._verifyCWD  = _verifyCWD;
 
 /**
  * @param {Object} argv - shell arguments

@@ -73,13 +73,21 @@ describe('Response', function() {
             describe('the route.respondsWith method is provided with registered validator name', function() {
 
                 before(function() {
-                    var validator = new Validator.Validator(
-                        {$isEmail: {}},
-                        {},
-                        this.validatorManager
-                    );
-                    this.validatorManager.add('#email', validator);
-                    sinon.spy(this.validatorManager, 'get');
+                    //var validator = new Validator.Validator(
+                        //{$isEmail: {}},
+                        //{},
+                        //this.validatorManager
+                    //);
+                    //this.validatorManager.add('#email', validator);
+                    //sinon.spy(this.validatorManager, 'get');
+                    var validator = this.validator = this.app.getValidator();
+
+                    validator.addSchema({
+                        type: 'string',
+                        format: 'email'
+                    }, '#email');
+
+                    sinon.spy(validator, 'validate');
 
                     this.route = this.router.buildRoute({type: 'get', url: '/test'});
                     this.route.respondsWith('#email');
@@ -91,12 +99,12 @@ describe('Response', function() {
 
                 it('should get a reponse validator schema from req.validatorManager when we provide only a validator name, not a schema definition', function() {
                     this.wrappedRes.filter(this.data);
-                    this.validatorManager.get.should.have.been.calledOnce;
-                    this.validatorManager.get.should.have.been.calledWith('#email');
+                    this.validator.validate.should.have.been.calledOnce;
+                    this.validator.validate.should.have.been.calledWith('#email', this.data);
                 });
 
                 after(function() {
-                    this.validatorManager.get.restore();
+                    this.validator.validate.restore();
                 });
             });
 
@@ -104,9 +112,14 @@ describe('Response', function() {
                 before(function() {
                     this.route = this.router.buildRoute({type: 'get', url: '/'});
                     this.route.respondsWith({
-                        $required: true,
-                        prop: {
-                            $is: String
+                        type: 'object',
+                        required: ['prop'],
+                        additionalProperties: false,
+                        properties: {
+                            prop: {
+                                $desc: 'property description',
+                                type: 'string'
+                            }
                         }
                     });
 
@@ -174,7 +187,7 @@ describe('Response', function() {
                         self.wrappedRes.filter(null).json();
                     }
 
-                    expect(tCase).to.throw(Validator.ValidationError);
+                    expect(tCase).to.throw(Service.error.ValidationError);
                 });
 
                 describe('wrapped response object returned from the `filter` method', function() {
