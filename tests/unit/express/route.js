@@ -2,18 +2,17 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var Validator      = require('bi-json-inspector');
 var Promise        = require('bluebird');
 var Config         = require('bi-config');
 
-var Service           = require('../../../lib/service.js');
-var AppManager        = require('../../../lib/express/appManager.js');
-var Router            = require('../../../lib/express/router.js');
-var Route             = require('../../../lib/express/route.js');
-var Response          = require('../../../lib/express/response.js');
-var RouteError        = require('../../../lib/error/routeError.js');
-var RequestError      = require('../../../lib/error/requestError.js');
-var ValidationError   = require('../../../lib/error/validationError.js');
+var Service         = require('../../../lib/service.js');
+var AppManager      = require('../../../lib/express/appManager.js');
+var Router          = require('../../../lib/express/router.js');
+var Route           = require('../../../lib/express/route.js');
+var Response        = require('../../../lib/express/response.js');
+var RouteError      = require('../../../lib/error/routeError.js');
+var RequestError    = require('../../../lib/error/requestError.js');
+var ValidationError = require('../../../lib/error/validationError.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -493,16 +492,6 @@ describe('Route', function() {
 
     describe('validate', function() {
         beforeEach(function() {
-            this.validatorMiddlewareStub = sinon.stub();
-            this.validatorStub = sinon.stub(Validator, 'getExpressMiddleware')
-                .returns(this.validatorMiddlewareStub);
-        });
-
-        afterEach(function() {
-            this.validatorStub.restore();
-        });
-
-        beforeEach(function() {
             this.route = this.buildRoute({
                 url: '/',
                 version: 1.0
@@ -512,7 +501,7 @@ describe('Route', function() {
             });
 
             this.schema = {
-                $is: String
+                type: "object"
             };
         });
 
@@ -525,14 +514,13 @@ describe('Route', function() {
             step.fn.should.be.a('function');
         });
 
-        it('should create transformed validator middleware which returns a Promise', function() {
-            var req = {};
+        it('should return null when validation is successfull', function() {
+            var req = {query: {valid: 'data'}};
             var res = {};
 
-            this.validatorMiddlewareStub.yields();
             this.route.validate(this.schema, 'query');
             var middleware = this.route.steps[0].fn;
-            return middleware(req, res).should.be.fulfilled;
+            expect(middleware(req, res)).to.equal(null);
         });
 
         it('should call `respondsWith` method with `ValidationError` constructor', function() {
@@ -544,15 +532,15 @@ describe('Route', function() {
             respondsWithSpy.restore();
         });
 
-        it('should return rejected Promise', function() {
-            var req = {};
+        it('should throw a ValidationError', function() {
+            var req = {
+                query: 'invalid'
+            };
             var res = {};
-            var err = new Error('test');
 
-            this.validatorMiddlewareStub.yields(err);
             this.route.validate(this.schema, 'query');
             var middleware = this.route.steps[0].fn;
-            return middleware(req, res).should.be.rejectedWith(err);
+            expect(middleware.bind(null, req, res)).to.throw(ValidationError);
         });
 
         it('should return self (Route object)', function() {

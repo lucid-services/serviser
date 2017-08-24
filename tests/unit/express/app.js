@@ -6,7 +6,6 @@ var http                = require('http');
 var https               = require('https');
 var Express             = require('express');
 var logger              = require('bi-logger');
-var ExpressValidator    = require('bi-json-inspector');
 var Config              = require('bi-config');
 
 var Service          = require('../../../lib/service.js');
