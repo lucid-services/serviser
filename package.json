@@ -25,9 +25,9 @@
     "index.js"
   ],
   "scripts": {
-    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec --parse-pos-args false -t 5000 'tests/**/*.js'",
-    "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
-    "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec --parse-pos-args false 'tests/unit/**/*.js'",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/**/*.js'",
+    "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
+    "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/unit/**/*.js'",
     "test": "npm run tests"
   },
   "peerDependencies": {
