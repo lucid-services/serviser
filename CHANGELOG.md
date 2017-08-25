@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
+
 ## v1.0.0-alpha
 
 * [ADDED] - `bi-service` cli executable
