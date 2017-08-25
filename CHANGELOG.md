@@ -2,6 +2,7 @@
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
+* [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
 
 ## v1.0.0-alpha
 
