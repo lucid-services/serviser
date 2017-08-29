@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.0-alpha.2
 
 * [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
 * [FIXED] - `ResourceManager.prototype.inspectIntegrity` should not swallow Errors about failed assertions
