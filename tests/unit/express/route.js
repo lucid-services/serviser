@@ -630,13 +630,24 @@ describe('Route', function() {
             };
         });
 
-        it("should push promise based function middleware to the route's stack", function() {
+        it("should push validation function middleware to the route's stack", function() {
             this.route.steps.should.be.eql([]);
             this.route.validate(this.schema, 'query');
 
             var step = this.route.steps[0];
             step.name.should.be.equal('validator');
             step.fn.should.be.a('function');
+        });
+
+        it('should set expected root object data type to `type:object` if not set already', function() {
+            var schema = {
+                properties: {
+                    id: {type: 'integer'}
+                }
+            };
+            this.route.validate(schema, 'query');
+
+            schema.should.have.property('type', 'object');
         });
 
         it('should return null when validation is successfull', function() {
