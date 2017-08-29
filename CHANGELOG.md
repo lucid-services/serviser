@@ -3,6 +3,7 @@
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
 * [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
+* [FIXED] - `ResourceManager.prototype.inspectIntegrity` should not swallow Errors about failed assertions
 * [ADDED] - `Route.prototype.validate` will set expected root data type to 'object' if not set already
 
 ## v1.0.0-alpha
