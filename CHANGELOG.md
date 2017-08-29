@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
+* [ADDED] - `Route.prototype.validate` will set expected root data type to 'object' if not set already
 
 ## v1.0.0-alpha
 
