@@ -1,3 +1,8 @@
+## FUTURE
+
+* [CHANGED] - Allow to set `apiCode` option of `RequestError` even when code != 400
+* [CHANGED] - Allow to set `apiCode` option of `UnauthorizedError`
+
 ## v0.16.2
 
 * [FIXED] - request UID should be generated before any other middleware is executed
