@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.3
 
 * [CHANGED] - Allow to set `apiCode` option of `RequestError` even when code != 400
 * [CHANGED] - Allow to set `apiCode` option of `UnauthorizedError`
