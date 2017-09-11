@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - adds request http method type: 'all' as a special type which binds the route to all http methods
+
 ## v0.16.3
 
 * [CHANGED] - Allow to set `apiCode` option of `RequestError` even when code != 400
