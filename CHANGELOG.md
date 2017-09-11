@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.4
 
 * [ADDED] - adds request http method type: 'all' as a special type which binds the route to all http methods
 
