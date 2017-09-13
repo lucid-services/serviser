@@ -1,3 +1,24 @@
+## v1.0.0-alpha.3
+
+* [ADDED] - `Route.prototype.acceptsContentType` method
+* [ADDED] - `Route.prototype.rejectsContentType` method
+* [FIXED] - backports bi-service@0.16.x fixes
+
+## v1.0.0-alpha.2
+
+* [FIXED] - validator middleware failed to compile ajv validator schema due to Ajv library misuse
+* [FIXED] - `ResourceManager.prototype.inspectIntegrity` should not swallow Errors about failed assertions
+* [ADDED] - `Route.prototype.validate` will set expected root data type to 'object' if not set already
+
+## v1.0.0-alpha
+
+* [ADDED] - `bi-service` cli executable
+* [ADDED] - `ajv` validator support (replacement for `bi-json-inspector`)
+* [REMOVED] - `bi-json-inspector` support
+* [REMOVED] - `couchbase` integration modules (use bi-service-couchbase plugin)
+* [REMOVED] - `loadORMmodels` method of `moduleLoader` has been removed - equivalent functionality is provided by `bi-service-sequelize`
+* [REMOVED] - `loadODMmodels` method of `moduleLoader` use `moduleLoader.fileIterator` intead
+
 ## v0.16.5
 
 * [FIXED] - `App` initialization procedure. Make sure `post-init` event is emitted after the event listener is registered

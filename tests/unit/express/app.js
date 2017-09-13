@@ -6,7 +6,6 @@ var http                = require('http');
 var https               = require('https');
 var Express             = require('express');
 var logger              = require('bi-logger');
-var ExpressValidator    = require('bi-json-inspector');
 var Config              = require('bi-config');
 
 var Service          = require('../../../lib/service.js');
@@ -97,8 +96,6 @@ describe('App', function() {
         beforeEach(function() {
             var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
-            this.getExpressInjectorSpy = sinon.spy(ExpressValidator, 'getExpressInjector');
-
             this.preBuildSpy      = sinon.spy();
             this.postBuildSpy     = sinon.spy();
             this.statusChangedSpy = sinon.spy();
@@ -153,7 +150,6 @@ describe('App', function() {
             delete this.app;
 
             this.appEmitSpy.restore();
-            this.getExpressInjectorSpy.restore();
         });
 
         describe('on', function() {
@@ -227,15 +223,6 @@ describe('App', function() {
 
             it('should emit `pre-init` event', function() {
                 this.postInitSpy.should.have.been.calledOnce;
-            });
-
-            it('should pass CLONED options object to the json inspector injector middleware', function() {
-                var self = this;
-
-                this.getExpressInjectorSpy.should.have.been.calledOnce;
-                this.getExpressInjectorSpy.should.have.been.calledWith(sinon.match(function(options) {
-                    return self.app.options.validator !== options && options.should.be.eql(self.app.options.validator);
-                }));
             });
         });
 

@@ -370,7 +370,7 @@ describe('Service', function() {
                 return this.service.close().should.be.fulfilled;
             });
 
-            it('should return call app.close() on each app', function() {
+            it('should call app.close() on each app', function() {
                 var self = this;
 
                 return this.service.close().then(function() {
