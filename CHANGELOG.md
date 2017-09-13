@@ -1,3 +1,7 @@
+## v0.16.5
+
+* [FIXED] - `App` initialization procedure. Make sure `post-init` event is emitted after the event listener is registered
+
 ## v0.16.4
 
 * [ADDED] - adds request http method type: 'all' as a special type which binds the route to all http methods
