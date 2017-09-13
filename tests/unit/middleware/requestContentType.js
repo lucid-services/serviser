@@ -1,122 +1,123 @@
-var sinon     = require('sinon');
-var chai      = require('chai');
-var sinonChai = require("sinon-chai");
-var Config    = require('bi-config');
+const request   = require('supertest');
+const http      = require('http');
+const Express   = require('express');
 
-var RequestError    = require('../../../lib/error/requestError.js');
-var reqContentType  = require('../../../lib/middleware/requestContentType.js');
+const RequestError   = require('../../../lib/error/requestError.js');
+const reqContentType = require('../../../lib/middleware/requestContentType.js');
 
-var expect = chai.expect;
-
-chai.use(sinonChai);
-chai.should();
+function createServer(supportedContentTypes) {
+    var context = {
+        route: {
+            $reqDataParser: {
+                contentTypes: supportedContentTypes,
+                mediaTypes: Object.keys(supportedContentTypes)
+            }
+        }
+    };
+    let fn = Express();
+    fn.all('/', function(req, res) {
+        return reqContentType.call(context, req, res).then(function() {
+            res.statusCode = 200;
+            res.end();
+        }).catch(RequestError, function(err) {
+            res.statusCode = 400;
+            res.end(err.__proto__.constructor.name);
+        });
+    })
+    return http.createServer(fn)
+}
 
 describe('requestContentType middleware', function() {
-
-    beforeEach(function() {
-        this.config = new Config.Config;
-
-        this.res = {};
-        this.req = {
-            header: function() {}
-        };
-        this.next = sinon.spy();
-
-        this.reqHeaderStub = sinon.stub(this.req, 'header');
-        this.confGetStub = sinon.stub(this.config, 'getOrFail');
-    });
 
     [
         {
             type: 'application/json',
-            method: 'POST',
+            data: JSON.stringify({data: 'data'}),
+            method: 'post',
             supported: {
                 json: {}
             }
         },
         {
             type: 'application/json',
-            method: 'POST',
+            data: JSON.stringify({data: 'data'}),
+            method: 'post',
             supported: {
-                json: {
+                'application/json': {
                     type: 'application/json'
                 }
             }
         },
         {
             type: 'application/x-www-form-urlencoded',
-            method: 'POST',
+            data: JSON.stringify({data: 'data'}),
+            method: 'post',
             supported: {
                 urlencoded: {}
             }
         },
         {
-            type: undefined,
-            method: 'GET',
+            type: '',
+            data: '',
+            method: 'get',
             supported: {
                 json: {}
             }
         }
     ].forEach(function(item, index) {
-        it(`should PASS req content-type validation (${index})`, function() {
+        it(`should PASS req content-type validation (${index})`, function(done) {
 
-            var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
-            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
-            this.req.method = item.method;
+            let server = createServer(item.supported);
 
-            var context = {config: this.config};
-            reqContentType.call(context, this.req, this.res, this.next);
-
-            confGetStub.should.have.been.calledOnce;
-            confGetStub.should.have.been.calledWith('bodyParser');
-            this.next.should.have.been.calledOnce;
-            this.next.should.have.been.calledWithExactly();
+            let test = request(server)[item.method]('/')
+            test.set('Content-Type', item.type)
+            test.write(item.data)
+            test.expect(200, '', done)
         });
     });
 
     [
         {
             type: 'json',
-            method: 'GET',
+            method: 'get',
+            data: '',
             supported: {
-                json: {type: 'application/json'}
+                'application/json': {type: 'application/json'}
             }
         },
         {
             type: 'urlencoded',
-            method: 'POST',
+            method: 'post',
+            data: JSON.stringify({data: 'data'}),
             supported: {
-                urlencoded: {type: 'application/x-www-form-urlencoded'}
+                'application/x-www-form-urlencoded': {type: 'application/x-www-form-urlencoded'}
             }
         },
         {
             type: 'application/json',
-            method: 'POST',
+            method: 'post',
+            data: JSON.stringify({data: 'data'}),
             supported: {
-                urlencoded: {type: 'application/x-www-form-urlencoded'}
+                'application/x-www-form-urlencoded': {type: 'application/x-www-form-urlencoded'}
             }
         },
         {
             type: 'application/x-www-form-urlencoded',
-            method: 'POST',
+            method: 'post',
+            data: JSON.stringify({data: 'data'}),
             supported: {
-                json: {type: 'application/json'}
+                'application/json': {type: 'application/json'}
             }
         },
     ].forEach(function(item, index) {
-        it(`should FAIL req content-type validation (${index})`, function() {
+        it(`should FAIL req content-type validation (${index})`, function(done) {
 
-            var headerStub = this.reqHeaderStub.withArgs('content-type').returns(item.type);
-            var confGetStub = this.confGetStub.withArgs('bodyParser').returns(item.supported);
-            this.req.method = item.method;
+            let server = createServer(item.supported);
 
-            var context = {config: this.config};
-            reqContentType.call(context, this.req, this.res, this.next);
-
-            confGetStub.should.have.been.calledOnce;
-            confGetStub.should.have.been.calledWith('bodyParser');
-            this.next.should.have.been.calledOnce;
-            this.next.should.have.been.calledWithExactly(sinon.match.instanceOf(RequestError));
+            let test = request(server)[item.method]('/')
+            test.set('Content-Type', item.type)
+            test.write(item.data)
+            test.expect(400, 'RequestError', done)
         });
     })
 });

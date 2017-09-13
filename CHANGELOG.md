@@ -1,3 +1,8 @@
+## FUTURE
+
+* [ADDED] - `Route.prototype.acceptsContentType` method
+* [ADDED] - `Route.prototype.rejectsContentType` method
+
 ## v0.16.5
 
 * [FIXED] - `App` initialization procedure. Make sure `post-init` event is emitted after the event listener is registered
