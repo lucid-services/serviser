@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-  "version": "1.0.0-alpha.2",
+    "version": "1.0.0-alpha.2",
     "description": "Generic service module",
     "main": "index.js",
     "testFramework": "mocha",
@@ -25,9 +25,9 @@
         "index.js"
     ],
     "scripts": {
-    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/**/*.js'",
-    "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
-    "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/unit/**/*.js'",
+        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/**/*.js'",
+        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
+        "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/unit/**/*.js'",
         "test": "npm run tests"
     },
     "peerDependencies": {
