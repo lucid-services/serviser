@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - set executable flag on bin/bi-service.js
+
 ## v1.0.0-alpha.3
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
