@@ -1,11 +1,11 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var sinonChai      = require("sinon-chai");
-var Promise        = require('bluebird');
+const sinon          = require('sinon');
+const chai           = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const sinonChai      = require("sinon-chai");
+const Promise        = require('bluebird');
 
-var ResourceManager = require('../../lib/resourceManager.js');
-var ServiceError    = require('../../lib/error/serviceError.js');
+const ResourceManager = require('../../lib/resourceManager.js');
+const ServiceError    = require('../../lib/error/serviceError.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -127,7 +127,7 @@ describe('ResourceManager', function() {
                     status.context.should.have.property('resource');
                     status.context.should.have.property('resource2');
                     status.context.should.have.property('resource3');
-                    status.context.should.have.property('resource4', err);
+                    status.context.should.have.property('resource4', err.toString());
                 }).should.be.fulfilled;
             });
         });
