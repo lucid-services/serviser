@@ -1,8 +1,8 @@
-## FUTURE
+## v1.0.0-alpha.3
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
-* [ADDED] - backports bi-service@0.16.x fixes
+* [FIXED] - backports bi-service@0.16.x fixes
 
 ## v1.0.0-alpha.2
 
