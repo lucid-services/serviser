@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.5
 
 * [FIXED] - `App` initialization procedure. Make sure `post-init` event is emitted after the event listener is registered
 
