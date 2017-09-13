@@ -132,6 +132,131 @@ describe('Route', function() {
             route.description.summary.should.be.equal('summary');
             route.description.description.should.be.equal('description');
         });
+
+        it('should call acceptsContentType method for each default content-type listed in the app config', function() {
+            this.config.set('bodyParser', {
+                json: {
+                    type: 'application/json'
+                }
+            });
+
+            let routeAcceptsContentTypeSpy = sinon.spy(Route.prototype, 'acceptsContentType');
+
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'post',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            routeAcceptsContentTypeSpy.should.have.been.calledOnce;
+            routeAcceptsContentTypeSpy.should.have.been.calledWith(
+                this.config.getOrFail('bodyParser:json:type')
+            );
+
+            routeAcceptsContentTypeSpy.restore();
+        });
+    });
+
+    describe('acceptsContentType', function() {
+        beforeEach(function() {
+            this.router = this.app.buildRouter({url: '/', version: 1.0});
+        });
+
+        it('should do nothing when req method type does not have req body', function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'get',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            expect(route.$reqDataParser).to.be.equal(null);
+            route.acceptsContentType('application/json');
+            expect(route.$reqDataParser).to.be.equal(null);
+        });
+
+        it(`should push req body parser into the route's stack`, function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'post',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            expect(route.$reqDataParser).to.be.equal(null);
+            route.acceptsContentType('application/json');
+            route.$reqDataParser.should.be.a('object');
+            route.$reqDataParser.should.have.property('name', 'content-type-parser');
+
+            route.steps.should.include(route.$reqDataParser);
+        });
+
+        it('should alter content-type-parser middleware options if the parser is already registered', function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'post',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            route.acceptsContentType('application/json');
+            route.steps.should.include(route.$reqDataParser);
+            let ref = route.$reqDataParser;
+            route.acceptsContentType('text/plain');
+            ref.should.be.equal(route.$reqDataParser);
+            ref.mediaTypes.should.include('application/json');
+            ref.mediaTypes.should.include('text/plain');
+            ref.contentTypes.should.have.property('application/json').that.is.eql({
+                type: 'application/json',
+                parser: undefined
+            });
+            ref.contentTypes.should.have.property('text/plain').that.is.eql({
+                type: 'text/plain',
+                parser: undefined
+            });
+        });
+
+        it('should return self (Route object)', function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'post',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            route.acceptsContentType('application/json').should.be.equal(route);
+        });
+    });
+
+    describe('rejectsContentType', function() {
+        beforeEach(function() {
+            this.router = this.app.buildRouter({url: '/', version: 1.0});
+
+            this.route = this.router.buildRoute({
+                url: '/',
+                type: 'post',
+                desc: 'description',
+                summary: 'summary'
+            });
+        });
+
+        it(`should delete registered content-type from route's req body parser middleware (thus making it unsupported)`, function() {
+
+            this.route.acceptsContentType('application/json');
+            this.route.rejectsContentType('application/json');
+            this.route.$reqDataParser.mediaTypes.should.not.include('application/json');
+            this.route.$reqDataParser.contentTypes.should.not.have.property('application/json');
+        });
+
+        it('should do nothing when route has not body parser middleware', function() {
+            this.route.rejectsContentType('application/json');
+            expect(this.route.$reqDataParser).to.be.equal(null);
+        });
+
+        it('should return self (the Route object)', function() {
+            this.route.rejectsContentType('application/json').should.be.equal(this.route);
+        });
     });
 
     describe('getName', function() {
