@@ -1,3 +1,9 @@
+## v1.0.0-alpha.4
+
+* [FIXED] - set executable flag on bin/bi-service.js
+* [FIXED] - defer emiting of the `app` event on the bi-service static module once the app is initialized
+* [ADDED] - cli interface of `bi-service-sequelize-migrations` is loaded if installed
+
 ## v1.0.0-alpha.3
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
