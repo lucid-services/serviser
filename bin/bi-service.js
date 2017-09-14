@@ -67,6 +67,14 @@ if (module.parent === null) {
         }
     }
 
+    try{
+        _yargs = require('bi-service-sequelize-migrations')(_yargs);
+    } catch(e) {
+        if (e.code !== 'MODULE_NOT_FOUND') {
+            throw e;
+        }
+    }
+
     const argv = _yargs
         .help('h', false)
         .alias('h', 'help')
