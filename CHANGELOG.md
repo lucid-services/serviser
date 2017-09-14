@@ -2,6 +2,7 @@
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
+* [FIXED] - emit the `app` event on bi-service static module once the app is initialized
 
 ## v0.16.5
 
