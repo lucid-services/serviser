@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.0-alpha.5
 
 * [FIXED] - Important! `Route` uids were being incorrectly constructed when an App run under a basePath in addition to a hostname
 
