@@ -517,7 +517,7 @@ describe('Route', function() {
             });
         });
 
-        it('should correctly construct route uids when an App runs at basePath location in addition to host', function() {
+        it('should correctly construct route uids when an App runs at basePath location in addition to host IMPORTANT', function() {
             let self = this;
 
             this.config.set('baseUrl', 'http://127.0.0.1:3000/base/app/path');
