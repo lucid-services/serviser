@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - Important! `Route` uids were being incorrectly constructed when an App run under a basePath in addition to a hostname
+
 ## v0.16.6
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
