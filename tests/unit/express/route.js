@@ -464,10 +464,8 @@ describe('Route', function() {
 
     describe('$formatUid', function() {
 
-        it("should return route's uid formated according to provided schema", function() {
-            var self = this;
-
-            var data = [
+        before(function() {
+            this.testData = [
                 {
                     routerOptions: {
                         url: '/api/s2s/{version}/user',
@@ -505,6 +503,27 @@ describe('Route', function() {
                     expectedUid: 'post_groupPost_v2.2'
                 },
             ];
+        });
+
+        it("should return route's uid formated according to provided schema", function() {
+            var self = this;
+
+            var data = this.testData;
+
+            data.forEach(function(data, index) {
+                var route = self.buildRoute(data.routerOptions, data.routeOptions);
+                route.$formatUid(route.Router.options.routeNameFormat)
+                    .should.be.equal(data.expectedUid, 'Dataset index: ' + index);
+            });
+        });
+
+        it('should correctly construct route uids when an App runs at basePath location in addition to host', function() {
+            let self = this;
+
+            this.config.set('baseUrl', 'http://127.0.0.1:3000/base/app/path');
+            this.app.$normalizeConfig();
+
+            var data = this.testData;
 
             data.forEach(function(data, index) {
                 var route = self.buildRoute(data.routerOptions, data.routeOptions);
