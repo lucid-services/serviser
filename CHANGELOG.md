@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.6
 
 * [ADDED] - `Route.prototype.acceptsContentType` method
 * [ADDED] - `Route.prototype.rejectsContentType` method
