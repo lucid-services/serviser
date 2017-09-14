@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.0-alpha.4
 
 * [FIXED] - set executable flag on bin/bi-service.js
 * [FIXED] - defer emiting of the `app` event on the bi-service static module once the app is initialized
