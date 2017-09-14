@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - Important! `Route` uids were being incorrectly constructed when an App run under a basePath in addition to a hostname
+
 ## v1.0.0-alpha.4
 
 * [FIXED] - set executable flag on bin/bi-service.js
