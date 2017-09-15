@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.9
 
 * [FIXED] - make sure req.body is always an object
 
