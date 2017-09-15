@@ -18,6 +18,7 @@ function createServer(supportedContentTypes) {
     fn.all('/', function(req, res) {
         return reqContentType.call(context, req, res).then(function() {
             res.statusCode = 200;
+            res.setHeader('req-body', JSON.stringify(req.body || ''));
             res.end();
         }).catch(RequestError, function(err) {
             res.statusCode = 400;
@@ -69,10 +70,10 @@ describe('requestContentType middleware', function() {
 
             let server = createServer(item.supported);
 
-            let test = request(server)[item.method]('/')
-            test.set('Content-Type', item.type)
-            test.write(item.data)
-            test.expect(200, '', done)
+            let test = request(server)[item.method]('/');
+            test.set('Content-Type', item.type);
+            test.write(item.data);
+            test.expect(200, '', done);
         });
     });
 
@@ -114,10 +115,23 @@ describe('requestContentType middleware', function() {
 
             let server = createServer(item.supported);
 
-            let test = request(server)[item.method]('/')
-            test.set('Content-Type', item.type)
-            test.write(item.data)
-            test.expect(400, 'RequestError', done)
+            let test = request(server)[item.method]('/');
+            test.set('Content-Type', item.type);
+            test.write(item.data);
+            test.expect(400, 'RequestError', done);
         });
-    })
+    });
+
+    it(`should set empty object to the req.body if conent-type parser did not populate it`, function(done) {
+
+        let server = createServer({
+            'multipart/form-data': {}
+        });
+
+        return request(server)
+            .post('/')
+            .set('Content-Type', 'multipart/form-data')
+            .expect('req-body', '{}')
+            .expect(200, '', done);
+    });
 });
