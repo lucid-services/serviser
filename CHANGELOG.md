@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - make sure req.body is always an object
+
 ## v0.16.8
 
 * [FIXED] - set req.body to an empty object if req body parser did not set the property
