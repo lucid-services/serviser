@@ -1,4 +1,4 @@
-## FUTURE
+## v0.16.8
 
 * [FIXED] - set req.body to an empty object if req body parser did not set the property
 * [FIXED] - `requestContentType` parser should not require the parser function to be set, if no parser function is found, skip and continue request execution
