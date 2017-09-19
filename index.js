@@ -19,6 +19,7 @@ exports.Router               = require('./lib/express/router.js');
 exports.Route                = require('./lib/express/route.js');
 exports.RequestType          = require('./lib/express/requestType.js');
 exports.moduleLoader         = require('./lib/moduleLoader.js');
+exports.utils                = require('./lib/utils.js');
 
 exports.error       = {
     RouteError          : require('./lib/error/routeError.js'),

@@ -1,6 +1,8 @@
 ## FUTURE
 
 * [FIXED] - make sure req.body is always an object
+* [ADDED] - custom ajv validator keyword `$toJSON`
+* [ADDED] - `res.setPaginationHeaders` method
 
 ## v1.0.0-alpha.6
 
