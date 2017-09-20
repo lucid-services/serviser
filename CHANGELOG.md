@@ -1,12 +1,9 @@
-## FUTURE
+## v1.0.0-alpha.6
 
 * [FIXED] - make sure req.body is always an object
 * [FIXED] - throw an Error if a validator can not be found  with the provided key to `Route.prototype.validate`
 * [ADDED] - custom ajv validator keyword `$toJSON`
 * [ADDED] - `res.setPaginationHeaders` method
-
-## v1.0.0-alpha.6
-
 * [FIXED] - set req.body to an empty object if req body parser did not set the property
 * [FIXED] - `requestContentType` parser should not require the parser function to be set, if no parser function is found, skip and continue request execution
 
