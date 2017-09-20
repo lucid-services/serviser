@@ -7,6 +7,7 @@ var https               = require('https');
 var Express             = require('express');
 var logger              = require('bi-logger');
 var Config              = require('bi-config');
+var Validator           = require('ajv');
 
 var Service          = require('../../../lib/service.js');
 var AppManager       = require('../../../lib/express/appManager.js');
@@ -253,6 +254,57 @@ describe('App', function() {
                 useSpy.should.have.been.calledOnce;
                 useSpy.should.have.been.calledWithExactly.apply(useSpy.should.have.been, args);
                 returnVal.should.be.equal(useSpy.getCall(0).returnValue);
+            });
+        });
+
+        describe('getValidator', function() {
+            it('should return a new Ajv validator instance if an app does not have any yet', function() {
+                expect(this.app.validator).to.be.equal(null);
+                let val = this.app.getValidator();
+                val.should.be.instanceof(Validator);
+                expect(this.app.validator).to.equal(val);
+            });
+
+            it('should return the existing Validator instance if an app has one already', function() {
+                expect(this.app.validator).to.be.equal(null);
+                let val = this.app.getValidator();
+                this.app.getValidator().should.be.equal(val);
+            });
+
+            it('(validator) should has custom $toJSON validation keyword working', function() {
+                let val = this.app.getValidator();
+
+                let prop = {
+                    json: 'invalid',
+                    toJSON: function() {
+                        return { json: true }
+                    }
+                };
+
+                let testData = {
+                    prop: prop
+                };
+
+                let validate = val.compile({
+                    type: 'object',
+                    required: ['prop'],
+                    properties: {
+                        prop: {
+                            allOf: [
+                                {$toJSON: {}},
+                                {
+                                    type: 'object',
+                                    required: ['json'],
+                                    properties: {
+                                        json: { type: 'boolean' }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+
+                expect(validate(testData)).to.equal(true);
             });
         });
 

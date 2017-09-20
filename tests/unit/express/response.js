@@ -1,23 +1,18 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var sinonChai      = require("sinon-chai");
-var Promise        = require('bluebird');
-var Config         = require('bi-config');
+var sinon     = require('sinon');
+var chai      = require('chai');
+var sinonChai = require("sinon-chai");
+var Promise   = require('bluebird');
+var Config    = require('bi-config');
 
-var Service         = require('../../../lib/service.js');
-var Response        = require('../../../lib/express/response.js');
-var AppManager      = require('../../../lib/express/appManager.js');
-var Router          = require('../../../lib/express/router.js');
-var Route           = require('../../../lib/express/route.js');
-
-//this makes sinon-as-promised available in sinon:
-require('sinon-as-promised');
+var Service    = require('../../../lib/service.js');
+var Response   = require('../../../lib/express/response.js');
+var AppManager = require('../../../lib/express/appManager.js');
+var Router     = require('../../../lib/express/router.js');
+var Route      = require('../../../lib/express/route.js');
 
 var expect = chai.expect;
 
 chai.use(sinonChai);
-chai.use(chaiAsPromised);
 chai.should();
 
 describe('Response', function() {
@@ -26,6 +21,7 @@ describe('Response', function() {
         this.res = {
             json: sinon.stub(),
             write: sinon.stub(),
+            setHeader: sinon.stub(),
             req: {}
         };
     });
@@ -47,12 +43,13 @@ describe('Response', function() {
     describe('wrapped response object - (the object is provided to route method definitions)', function() {
         before(function() {
             this.models = {odm: {}, orm: {}};
-            this.config = new Config.Config;
+            this.config = new Config.Config();
+            this.config.set('baseUrl', 'http://127.0.0.1:3000');
 
             this.service = new Service(this.config);
             this.appManager = this.service.appManager;
             var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
-            this.router = this.app.buildRouter({url: '/', version: 1.0});
+            this.router = this.app.buildRouter({url: '/test', version: 1.0});
         });
 
         beforeEach(function() {
@@ -60,6 +57,50 @@ describe('Response', function() {
                 prop: 'test',
                 unexpectedProp: 'invalid'
             };
+        });
+
+        describe('setPaginationHeaders method', function() {
+            before(function() {
+                this.route = this.router.buildRoute({type: 'get', url: '/test0'});
+                this.wrappedRes = Response.wrap(this.res, this.route);
+            });
+
+            it('should set valid Link response header', function() {
+                this.wrappedRes.setPaginationHeaders({
+                    offset: 0,
+                    count: 100,
+                    limit: 10
+                });
+
+                //TODO it's not ensured that url query parameters will be
+                //inserted in correct order
+                let firstUrl = this.route.getAbsoluteUrl({}, {
+                    limit: 10,
+                });
+                let lastUrl = this.route.getAbsoluteUrl({}, {
+                    limit: 10,
+                    offset: 90,
+                });
+                let nextUrl = this.route.getAbsoluteUrl({}, {
+                    offset: 10,
+                    limit: 10
+                });
+
+                this.res.setHeader.should.have.been.calledTwice;
+                this.res.setHeader.should.have.been.calledWith('x-total-count', 100);
+                this.res.setHeader.should.have.been.calledWith(
+                    'Link',
+                    `<${firstUrl}>; rel="first", <${lastUrl}>; rel="last", <${nextUrl}>; rel="next"`
+                );
+            });
+
+            it('should return response object', function() {
+                this.wrappedRes.setPaginationHeaders({
+                    offset: 0,
+                    count: 100,
+                    limit: 10
+                }).should.be.equal(this.wrappedRes);
+            });
         });
 
         describe('filter method', function() {

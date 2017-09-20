@@ -517,7 +517,7 @@ describe('Route', function() {
             });
         });
 
-        it('should correctly construct route uids when an App runs at basePath location in addition to host', function() {
+        it('should correctly construct route uids when an App runs at basePath location in addition to host IMPORTANT', function() {
             let self = this;
 
             this.config.set('baseUrl', 'http://127.0.0.1:3000/base/app/path');
@@ -676,6 +676,14 @@ describe('Route', function() {
             this.route.validate(this.schema, 'query');
             var middleware = this.route.steps[0].fn;
             expect(middleware(req, res)).to.equal(null);
+        });
+
+        it('should throw an Error if provided validator key does not have corresponding validator registered', function() {
+            var self = this;
+
+            expect(function() {
+                self.route.validate('nonexistentvalidatorkey', 'query');
+            }).to.throw(Error);
         });
 
         it('should call `respondsWith` method with `ValidationError` constructor', function() {
