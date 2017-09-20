@@ -678,6 +678,14 @@ describe('Route', function() {
             expect(middleware(req, res)).to.equal(null);
         });
 
+        it('should throw an Error if provided validator key does not have corresponding validator registered', function() {
+            var self = this;
+
+            expect(function() {
+                self.route.validate('nonexistentvalidatorkey', 'query');
+            }).to.throw(Error);
+        });
+
         it('should call `respondsWith` method with `ValidationError` constructor', function() {
             var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
 

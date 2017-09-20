@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [FIXED] - make sure req.body is always an object
+* [FIXED] - throw an Error if a validator can not be found  with the provided key to `Route.prototype.validate`
 * [ADDED] - custom ajv validator keyword `$toJSON`
 * [ADDED] - `res.setPaginationHeaders` method
 
