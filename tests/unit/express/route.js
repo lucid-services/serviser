@@ -391,6 +391,15 @@ describe('Route', function() {
                     '/endpoint/seg/resource/1?key=value&another=queryvalue'
                 );
             });
+
+            it('should not append leading "?" character if no query parameters were given', function() {
+                this.route.getUrl({
+                    seg: 'seg',
+                    id: '1'
+                }, {}).should.be.equal(
+                    '/endpoint/seg/resource/1'
+                );
+            });
         });
         describe('with router url', function() {
             before(function() {

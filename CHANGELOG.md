@@ -1,3 +1,8 @@
+## v1.0.0-alpha.7
+
+* [FIXED] - `Route.prototype.getUrl` output should be consistent (`?` should not be appended if no query parameters are included)
+* [FIXED] - `res.setPaginationHeaders` should interpret `limit=0` option as unlimited limit
+
 ## v1.0.0-alpha.6
 
 * [FIXED] - make sure req.body is always an object
