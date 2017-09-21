@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `Route.prototype.getUrl` output should be consistent (`?` should not be appended if no query parameters are included)
+
 ## v1.0.0-alpha.6
 
 * [FIXED] - make sure req.body is always an object
