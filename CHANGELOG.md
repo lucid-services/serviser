@@ -1,3 +1,7 @@
+## v1.0.0-alpha.8
+
+* [FIXED] - `bi-service-sequelize-migrations` optional dependency has been renamed to `bi-db-migrations`
+
 ## v1.0.0-alpha.7
 
 * [FIXED] - `Route.prototype.getUrl` output should be consistent (`?` should not be appended if no query parameters are included)
