@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.0-alpha.8
 
 * [FIXED] - `bi-service-sequelize-migrations` optional dependency has been renamed to `bi-db-migrations`
 
