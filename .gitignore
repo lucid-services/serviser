@@ -3,5 +3,6 @@ node_modules
 *.vim
 coverage
 logs
+docs
 test.js
 .idea
