@@ -6,7 +6,7 @@
     "testFramework": "mocha",
     "author": "Bohemia Interactive",
     "contributors": [
-        "fogine <TODO>"
+        "fogine"
     ],
     "private": false,
     "bin": {
