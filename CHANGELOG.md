@@ -1,3 +1,7 @@
+## v1.0.0-alpha.9
+
+* [FIXED] - generate documentation pages after successfull travis ci build
+
 ## v1.0.0-alpha.8
 
 * [FIXED] - `bi-service-sequelize-migrations` optional dependency has been renamed to `bi-db-migrations`
