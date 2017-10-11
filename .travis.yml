@@ -11,3 +11,7 @@ script:
 
 after_script:
     - codeclimate-test-reporter < ./coverage/lcov.info
+
+after_success:
+    - bash ./deploy.sh
+
