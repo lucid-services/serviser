@@ -6,7 +6,7 @@ TARGET_BRANCH="gh-pages"
 
 function doCompile {
 
-    npm run-script generate-docs
+    npm run-script create:docs
     cd docs
 
     docdir=$(node -e "var json = JSON.parse(process.argv[1]); console.log(json.name);" "$(< ../package.json)")
