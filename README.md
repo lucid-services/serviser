@@ -7,9 +7,13 @@ Features
 * **Promises!**
 * Environment-aware
 * App lifecycle events
-* App & Resource & Service integrity inspection capabilities
+* Resource & Service integrity inspection capabilities (health monitoring)
 * **Documentation autogeneration**
 * **A SDK client package autogeneration**
+* built-in caching solution
+* response data filters
+* request data validation
+* Semantic Service versioning
 * and more (see Public API Reference)!
 
 Resources
