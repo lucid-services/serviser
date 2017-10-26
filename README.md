@@ -14,6 +14,7 @@ Features
 
 Resources
 -------------------
+* [Getting started](https://bohemiainteractive.github.io/bi-service/tutorial-1.Getting-started.html)
 * [Public API Reference](https://bohemiainteractive.github.io/bi-service/)
 * [Changelog](./CHANGELOG.md)
 
