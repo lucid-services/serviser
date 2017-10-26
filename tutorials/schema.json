@@ -1,8 +1,28 @@
 {
-     "1.CLI-interface": {
-         "title": "CLI Interface"
-     },
-    "2.SDK-integration": {
+    "1": {
+        "title": "Basics",
+        "children": {
+            "1.Getting-started": {
+                "title": "Getting Started"
+            },
+            "1a.Configuration": {
+                "title": "Configuration"
+            },
+            "1b.ErrorManagement": {
+                "title": "Error management"
+            },
+            "1c.Validation": {
+                "title": "Validation"
+            }
+        }
+    },
+    "2.CLI-interface": {
+        "title": "CLI Interface"
+    },
+    "3.Plugins": {
+        "title": "Plugins/Extensions"
+    },
+    "4.SDK-integration": {
         "title": "SDKs integration"
     }
- }
+}
