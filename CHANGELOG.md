@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - `Route.prototype.step` is an alias of `Route.prototype.addStep`
+
 ## v1.0.0-alpha.9
 
 * [FIXED] - generate documentation pages after successfull travis ci build
