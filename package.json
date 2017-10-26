@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-    "version": "1.0.0-alpha.9",
+    "version": "1.0.0-beta",
     "description": "Generic service module",
     "main": "index.js",
     "testFramework": "mocha",
