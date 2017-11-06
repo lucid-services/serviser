@@ -6,8 +6,8 @@ var Config    = require('bi-config');
 
 var Service      = require('../../../lib/service.js');
 var errorHandler = require('../../../lib/middleware/errorHandler.js');
-var AppManager   = require('../../../lib/express/appManager.js');
-var AppStatus    = require('../../../lib/express/appStatus.js');
+var AppManager   = require('../../../lib/appManager.js');
+var AppStatus    = require('../../../lib/common/appStatus.js');
 var ServiceError = require('../../../lib/error/serviceError.js');
 var RequestError = require('../../../lib/error/requestError.js');
 

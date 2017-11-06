@@ -1,18 +1,19 @@
-var sinon          = require('sinon');
-var chai           = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-var sinonChai      = require("sinon-chai");
-var Promise        = require('bluebird');
-var Config         = require('bi-config');
+const sinon          = require('sinon');
+const chai           = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const sinonChai      = require("sinon-chai");
+const Promise        = require('bluebird');
+const Config         = require('bi-config');
 
-var Service         = require('../../../lib/service.js');
-var AppManager      = require('../../../lib/express/appManager.js');
-var Router          = require('../../../lib/express/router.js');
-var Route           = require('../../../lib/express/route.js');
-var Response        = require('../../../lib/express/response.js');
-var RouteError      = require('../../../lib/error/routeError.js');
-var RequestError    = require('../../../lib/error/requestError.js');
-var ValidationError = require('../../../lib/error/validationError.js');
+const Service         = require('../../../lib/service.js');
+const AppManager      = require('../../../lib/appManager.js');
+const Router          = require('../../../lib/express/router.js');
+const Route           = require('../../../lib/express/route.js');
+const RouteI          = require('../../../lib/common/route.js');
+const Response        = require('../../../lib/express/response.js');
+const RouteError      = require('../../../lib/error/routeError.js');
+const RequestError    = require('../../../lib/error/requestError.js');
+const ValidationError = require('../../../lib/error/validationError.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../index.js');
@@ -139,7 +140,7 @@ describe('Route', function() {
                 }
             });
 
-            let routeAcceptsContentTypeSpy = sinon.spy(Route.prototype, 'acceptsContentType');
+            let routeAcceptsContentTypeSpy = sinon.spy(RouteI.prototype, 'acceptsContentType');
 
             var route = this.router.buildRoute({
                 url: '/',
@@ -170,9 +171,9 @@ describe('Route', function() {
                 summary: 'summary'
             });
 
-            expect(route.$reqDataParser).to.be.equal(null);
+            expect(route.$dataParserMiddleware).to.be.equal(null);
             route.acceptsContentType('application/json');
-            expect(route.$reqDataParser).to.be.equal(null);
+            expect(route.$dataParserMiddleware).to.be.equal(null);
         });
 
         it(`should push req body parser into the route's stack`, function() {
@@ -183,12 +184,12 @@ describe('Route', function() {
                 summary: 'summary'
             });
 
-            expect(route.$reqDataParser).to.be.equal(null);
+            expect(route.$dataParserMiddleware).to.be.equal(null);
             route.acceptsContentType('application/json');
-            route.$reqDataParser.should.be.a('object');
-            route.$reqDataParser.should.have.property('name', 'content-type-parser');
+            route.$dataParserMiddleware.should.be.a('object');
+            route.$dataParserMiddleware.should.have.property('name', 'content-type-parser');
 
-            route.steps.should.include(route.$reqDataParser);
+            route.steps.should.include(route.$dataParserMiddleware);
         });
 
         it('should alter content-type-parser middleware options if the parser is already registered', function() {
@@ -200,10 +201,10 @@ describe('Route', function() {
             });
 
             route.acceptsContentType('application/json');
-            route.steps.should.include(route.$reqDataParser);
-            let ref = route.$reqDataParser;
+            route.steps.should.include(route.$dataParserMiddleware);
+            let ref = route.$dataParserMiddleware;
             route.acceptsContentType('text/plain');
-            ref.should.be.equal(route.$reqDataParser);
+            ref.should.be.equal(route.$dataParserMiddleware);
             ref.mediaTypes.should.include('application/json');
             ref.mediaTypes.should.include('text/plain');
             ref.contentTypes.should.have.property('application/json').that.is.eql({
@@ -244,13 +245,13 @@ describe('Route', function() {
 
             this.route.acceptsContentType('application/json');
             this.route.rejectsContentType('application/json');
-            this.route.$reqDataParser.mediaTypes.should.not.include('application/json');
-            this.route.$reqDataParser.contentTypes.should.not.have.property('application/json');
+            this.route.$dataParserMiddleware.mediaTypes.should.not.include('application/json');
+            this.route.$dataParserMiddleware.contentTypes.should.not.have.property('application/json');
         });
 
         it('should do nothing when route has not body parser middleware', function() {
             this.route.rejectsContentType('application/json');
-            expect(this.route.$reqDataParser).to.be.equal(null);
+            expect(this.route.$dataParserMiddleware).to.be.equal(null);
         });
 
         it('should return self (the Route object)', function() {

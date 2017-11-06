@@ -6,7 +6,7 @@ var Config    = require('bi-config');
 
 var Service    = require('../../../lib/service.js');
 var Response   = require('../../../lib/express/response.js');
-var AppManager = require('../../../lib/express/appManager.js');
+var AppManager = require('../../../lib/appManager.js');
 var Router     = require('../../../lib/express/router.js');
 var Route      = require('../../../lib/express/route.js');
 

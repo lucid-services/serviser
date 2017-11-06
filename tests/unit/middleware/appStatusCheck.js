@@ -5,8 +5,8 @@ var Config    = require('bi-config');
 
 var Service        = require('../../../lib/service.js');
 var appStatusCheck = require('../../../lib/middleware/appStatusCheck.js');
-var AppManager     = require('../../../lib/express/appManager.js');
-var AppStatus      = require('../../../lib/express/appStatus.js');
+var AppManager     = require('../../../lib/appManager.js');
+var AppStatus      = require('../../../lib/common/appStatus.js');
 var ServiceError   = require('../../../lib/error/serviceError.js');
 
 var expect = chai.expect;

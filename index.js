@@ -17,7 +17,7 @@ exports.VERSION = require('./package.json').version;
  * @name Service.AppManager
  * @type {AppManager}
  */
-exports.AppManager = require('./lib/express/appManager.js');
+exports.AppManager = require('./lib/appManager.js');
 /**
  * @name Service.App
  * @type {App}
@@ -43,7 +43,7 @@ exports.RemoteServiceManager = require('./lib/remoteServiceManager.js');
  * @name Service.AppStatus
  * @type {AppStatus}
  */
-exports.AppStatus = require('./lib/express/appStatus.js');
+exports.AppStatus = require('./lib/common/appStatus.js');
 /**
  * @name Service.Response
  * @type {Response}

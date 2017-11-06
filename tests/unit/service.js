@@ -11,9 +11,9 @@ var Promise        = require('bluebird');
 var Config         = require('bi-config');
 
 var Service              = require('../../lib/service.js');
-var AppManager           = require('../../lib/express/appManager.js');
+var AppManager           = require('../../lib/appManager.js');
 var App                  = require('../../lib/express/app.js');
-var AppStatus            = require('../../lib/express/appStatus.js');
+var AppStatus            = require('../../lib/common/appStatus.js');
 var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
 var ResourceManager      = require('../../lib/resourceManager.js');
 

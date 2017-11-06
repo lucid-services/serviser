@@ -6,7 +6,7 @@ var Config    = require('bi-config');
 var Service            = require('../../../lib/service.js');
 var RouteNotFoundError = require('../../../lib/error/routeNotFoundError.js');
 var routeNotFound      = require('../../../lib/middleware/routeNotFound.js');
-var AppManager         = require('../../../lib/express/appManager.js');
+var AppManager         = require('../../../lib/appManager.js');
 
 var expect = chai.expect;
 

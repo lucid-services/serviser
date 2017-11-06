@@ -10,10 +10,10 @@ var Config              = require('bi-config');
 var Validator           = require('ajv');
 
 var Service          = require('../../../lib/service.js');
-var AppManager       = require('../../../lib/express/appManager.js');
+var AppManager       = require('../../../lib/appManager.js');
 var Router           = require('../../../lib/express/router.js');
 var Route            = require('../../../lib/express/route.js');
-var AppStatus        = require('../../../lib/express/appStatus.js');
+var AppStatus        = require('../../../lib/common/appStatus.js');
 var Server           = require('../mocks/server.js');
 var MemcachedStoreMock   = require('../mocks/memcachedStore.js');
 
