@@ -75,7 +75,23 @@ exports.moduleLoader = require('./lib/moduleLoader.js');
  */
 exports.utils = require('./lib/utils.js');
 
+/**
+ * @name Service.common
+ * @type {CommonList}
+ */
+exports.common = {
+    App: require('./lib/common/app.js'),
+    Router: require('./lib/common/router.js'),
+    Route: require('./lib/common/route.js')
+};
 
+/**
+ * @typedef CommonList
+ * @type {Object}
+ * @property {AppInterface}    App
+ * @property {RouterInterface} Router
+ * @property {RouteInterface}  Route
+ */
 
 /**
  * @name Service.error
