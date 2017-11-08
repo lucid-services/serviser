@@ -7,8 +7,9 @@ const reqContentType = require('../../../lib/middleware/requestContentType.js');
 
 function createServer(supportedContentTypes) {
     var context = {
+        //TODO provide the real route object aka. instanceof Route
         route: {
-            $reqDataParser: {
+            $dataParserMiddleware: {
                 contentTypes: supportedContentTypes,
                 mediaTypes: Object.keys(supportedContentTypes)
             }

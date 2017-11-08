@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - `App` `config` is validated during the app initialization
+
 ## v1.0.0-beta
 
 * [ADDED] - `Route.prototype.step` is an alias of `Route.prototype.addStep`

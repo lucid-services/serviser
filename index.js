@@ -70,6 +70,12 @@ exports.RequestType = require('./lib/express/requestType.js');
  */
 exports.moduleLoader = require('./lib/moduleLoader.js');
 /**
+ * converts an Error to RequestError within a context of App
+ * @name Service.errorHandler
+ * @type {Function}
+ */
+exports.errorHandler = require('./lib/errorHandler.js');
+/**
  * @name Service.utils
  * @type {Utils}
  */
