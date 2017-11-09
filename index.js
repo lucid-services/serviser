@@ -48,7 +48,7 @@ exports.AppStatus = require('./lib/common/appStatus.js');
  * @name Service.Response
  * @type {Response}
  */
-exports.Response = require('./lib/express/response.js');
+exports.Response = require('./lib/response.js');
 /**
  * @name Service.Router
  * @type {Router}
