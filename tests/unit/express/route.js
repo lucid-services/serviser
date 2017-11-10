@@ -870,26 +870,6 @@ describe('Route', function() {
             this.next = sinon.spy();
         });
 
-        //TODO move to app.js
-        //it("should call express `next` callback when an error occurs", function() {
-            //var self = this;
-            //var error = new Error;
-            //var spy = sinon.spy();
-
-            //this.route.main(function() {
-                //throw error;
-            //});
-            //this.route.addStep(spy);
-
-            //var middleware = this.route.build();
-
-            //return middleware(this.req, this.res, this.next).should.be.fulfilled.then(function() {
-                //self.next.should.have.been.calledOnce;
-                //self.next.should.have.been.calledWith(error);
-                //spy.should.have.callCount(0);
-            //});
-        //});
-
         it('should assign `routeUID` to the `req` object (node http(s) IncomingMessage) ', function() {
             var self = this;
 
