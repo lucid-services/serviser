@@ -36,6 +36,7 @@ describe('Router', function() {
         };
 
         this.configGetStub = sinon.stub(this.config, 'get');
+        this.configGetStub.returns({});
 
         this.router = this.app.buildRouter({
             url: '/',
@@ -63,6 +64,7 @@ describe('Router', function() {
     it('should call the `$normalizeUrl` method', function() {
         var url = '/some/endpint';
         var spy = sinon.spy(Router.prototype, '$normalizeUrl');
+        this.configGetStub.withArgs('basePath').returns();
         this.app.buildRouter({ url: url });
 
         spy.should.have.been.calledOnce;

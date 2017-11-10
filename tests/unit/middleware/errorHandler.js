@@ -22,6 +22,7 @@ describe('errorHandler middleware', function() {
         this.config = new Config.Config;
 
         this.service = new Service(this.config);
+        this.service.on('error', function noop() {});
         this.appManager = this.service.appManager;
         var app = this.app = this.appManager.buildApp(this.config, {name: '1'});
 
@@ -78,11 +79,6 @@ describe('errorHandler middleware', function() {
         this.appEmitSpy.restore();
     });
 
-    it('should call the `next` callback when we get an err which is equal to "undefined" value', function() {
-        errorHandler(undefined, this.req, this.res, this.next);
-        this.next.should.have.been.calledOnce;
-    });
-
     it('should call the errorHandler with a ServiceError when we get an error of "null" value', function() {
         errorHandler.call(this.app, null, this.req, this.res, this.next);
         this.errorHandlerSpy.should.have.been.calledOnce;
@@ -91,18 +87,22 @@ describe('errorHandler middleware', function() {
         }));
     });
 
-    it('should return json response with correct status code when we get RequestError', function() {
-        var error = new RequestError({
+    it('should return json response with correct status code when we get RequestError', function(done) {
+        const self = this;
+        const error = new RequestError({
             message: 'test message'
         });
 
         errorHandler.call(this.app, error, this.req, this.res, this.next);
 
-        this.res.status.should.have.been.calledOnce;
-        this.res.status.should.have.been.calledWith(error.code);
+        setTimeout(function() {
+            self.res.status.should.have.been.calledOnce;
+            self.res.status.should.have.been.calledWith(error.code);
 
-        this.res.json.should.have.been.calledOnce;
-        this.res.json.should.have.been.calledWith(error);
+            self.res.json.should.have.been.calledOnce;
+            self.res.json.should.have.been.calledWith(error);
+            done();
+        }, 20)
     });
 
     it('should set correct status code and emit the `error-response` event when we get RequestError and at least one listener is registered for the event', function(done) {
@@ -136,10 +136,10 @@ describe('errorHandler middleware', function() {
 
         errorHandler.call(this.app, error, this.req, this.res, this.next);
 
-        this.res.status.should.have.been.calledOnce;
-        this.res.status.should.have.been.calledWith(500);
-
         setTimeout(function() {
+            self.res.status.should.have.been.calledOnce;
+            self.res.status.should.have.been.calledWith(500);
+
             self.res.json.should.have.been.calledOnce;
             self.res.json.should.have.been.calledWith(error);
             done();
@@ -216,7 +216,7 @@ describe('errorHandler middleware', function() {
         this.errorHandlerSpy.should.have.been.calledOnce;
         this.errorHandlerSpy.should.have.been.calledWith(sinon.match(function(err) {
             return err instanceof ServiceError;
-        }), this.req, this.res, this.next);
+        }), this.req, this.res);
 
         this.app.removeAllListeners('unknown-error');
     });
@@ -229,7 +229,7 @@ describe('errorHandler middleware', function() {
         this.errorHandlerSpy.should.have.been.calledOnce;
         this.errorHandlerSpy.should.have.been.calledWith(sinon.match(function(err) {
             return err instanceof ServiceError;
-        }), this.req, this.res, this.next);
+        }), this.req, this.res);
     });
 
     it('should convert an error to the ServiceError when it gets the error which is dirrect instanceof the Error', function() {
@@ -240,6 +240,6 @@ describe('errorHandler middleware', function() {
         this.errorHandlerSpy.should.have.been.calledOnce;
         this.errorHandlerSpy.should.have.been.calledWith(sinon.match(function(err) {
             return err instanceof ServiceError;
-        }), this.req, this.res, this.next);
+        }), this.req, this.res);
     });
 });
