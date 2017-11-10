@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - `App` `config` is validated during the app initialization
+* [ADDED] - Default `App` & `Router` & `Route` classes which the module exports implements common `AppInterface` & `RouterInterface` and `RouteInterface` respectively
 
 ## v1.0.0-beta
 
