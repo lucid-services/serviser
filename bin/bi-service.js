@@ -11,8 +11,10 @@ const config  = require('bi-config');
 
 const Service = require('../index.js');
 
-const CPU_COUNT = require('os').cpus().length;
-const VERSION   = require('../package.json').version;
+const CPU_COUNT     = require('os').cpus().length;
+const VERSION       = require('../package.json').version;
+const PROJECT_INDEX = path.resolve(process.cwd() + '/index.js');
+
 var _yargs = null; //yargs parser definition
 
 // adds .json5 loader require.extension
@@ -21,24 +23,40 @@ require('json5/lib/require');
 //run only if this module isn't required by other node module
 if (module.parent === null) {
 
-    _yargs = yargs
-    .usage('$0 <command> [options]')
-    .command('*', '', {
-        'get-conf': {
+    _yargs = _initializeYargs(yargs);
+
+    _yargs = _yargs.command('*', '', {
+        'get-conf': {//deprecated (has been replated by get:config cmd)
             alias: 'g',
             describe: 'Prints resolved config value',
             type: 'string'
         },
-        json5: {
+        json5: {//deprecated (has been replated by get:config cmd)
             describe: 'if any json data are about to be printed they will be converted to json5 format',
             type: 'boolean',
             default: false
         },
-        offset: {
+        offset: {//deprecated (has been replated by get:config cmd)
             describe: "A String or Number that's used to insert white space into the output JSON string for readability purposes.",
             default: 4
         }
-    }, defaultCmd)
+    }, defaultCmd);
+
+    _yargs.wrap(yargs.terminalWidth()).argv;
+}
+
+module.exports.runCmd      = runCmd;
+module.exports.defaultCmd  = defaultCmd;
+module.exports._run        = _run;
+module.exports._runCluster = _runCluster;
+module.exports._verifyCWD  = _verifyCWD;
+
+/**
+ * @param {Object} ya - yargs
+ */
+function _initializeYargs(ya) {
+    ya = ya
+    .usage('$0 <command> [options]')
     .command(['run [options..]', 'start', 'serve'], 'Starts bi-service app - expects it to be located under cwd', {
         cluster: {
             alias: 'c',
@@ -52,6 +70,23 @@ if (module.parent === null) {
             default: true
         }
     }, runCmd)
+    .command(['get:config [key]'], 'Dumbs resolved service configuration', {
+        json5: {
+            describe: 'if any json data are about to be printed they will be converted to json5 format',
+            type: 'boolean',
+            default: false
+        },
+        offset: {
+            describe: "A String or Number that's used to insert white space into the output JSON string for readability purposes.",
+            default: 4
+        }
+    }, getConfigCmd)
+    .option('help', {
+        alias: 'h',
+        describe: 'Show help',
+        global: true,
+        type: 'boolean'
+    })
     .option('config', {
         describe: 'Custom config file destination',
         global: true,
@@ -60,7 +95,7 @@ if (module.parent === null) {
     .version('version', 'Prints bi-service version', VERSION);
 
     try{
-        _yargs = require('bi-service-template')(_yargs);
+        ya = require('bi-service-template')(ya);
     } catch(e) {
         if (e.code !== 'MODULE_NOT_FOUND') {
             throw e;
@@ -68,27 +103,17 @@ if (module.parent === null) {
     }
 
     try{
-        _yargs = require('bi-db-migrations')(_yargs);
+        ya = require('bi-db-migrations')(ya);
     } catch(e) {
         if (e.code !== 'MODULE_NOT_FOUND') {
             throw e;
         }
     }
-
-    const argv = _yargs
-        .help('h', false)
-        .alias('h', 'help')
-        .wrap(yargs.terminalWidth())
-        .argv;
+    return ya;
 }
 
-module.exports.runCmd        = runCmd;
-module.exports.defaultCmd    = defaultCmd;
-module.exports._run          = _run;
-module.exports._runCluster   = _runCluster;
-module.exports._verifyCWD    = _verifyCWD;
-
 /**
+ * @private
  * @param {Object} argv - shell arguments
  */
 function runCmd(argv) {
@@ -103,40 +128,100 @@ function runCmd(argv) {
 }
 
 /**
- * @param {Object} argv - shell arguments
+ * @private
+ * @param {Object} argv
  */
-function defaultCmd(argv) {
-    if (argv['get-conf'] !== undefined) {
-        config.initialize({fileConfigPath: argv.config});
-        var getOptionVal = argv['get-conf'];
-        var val;
-        if (!getOptionVal) {
-            val = config.get();
-        } else {
-            val = _.get(config.get(), getOptionVal);
-        }
-
-        if (val !== undefined) {
-            if (typeof val === 'object') {
-                var jsonUtils = argv.json5 ? json5 : JSON;
-
-                val = jsonUtils.stringify(val, null, argv.offset);
-            }
-            console.log(val);
-            process.exit();
-        } else {
-            console.error(val);
-            process.exit(1);
-        }
+function getConfigCmd(argv) {
+    config.initialize({fileConfigPath: argv.config});
+    var getOptionVal = argv.key || argv['get-conf'];
+    var val;
+    if (!getOptionVal) {
+        val = config.get();
     } else {
-        _yargs.showHelp();
+        val = _.get(config.get(), getOptionVal);
+    }
+
+    if (val !== undefined) {
+        if (typeof val === 'object') {
+            var jsonUtils = argv.json5 ? json5 : JSON;
+
+            val = jsonUtils.stringify(val, null, argv.offset);
+        }
+        console.log(val);
+        process.exit();
+    } else {
+        console.error(val);
         process.exit(1);
     }
 }
 
 /**
+ * @private
+ * @param {Object} argv - shell arguments
+ */
+function defaultCmd(argv) {
+
+    if (argv['get-conf'] !== undefined) {
+        getConfigCmd(argv);
+    //if no supported commands or options were supported so far,
+    //we try to look for user defined shell commands:
+    } else {
+        config.initialize({fileConfigPath: argv.config});
+        let ya = require('yargs/yargs')();
+
+        ya.wrap(yargs.terminalWidth());
+        _initializeYargs(ya).help();
+
+        if (fs.existsSync(PROJECT_INDEX)) {
+            let service = require(PROJECT_INDEX);
+            service.appManager.on('build-app', _onBuildApp);
+
+            return service.$setup().then(function() {
+                setImmediate(_registerShellCommands, argv, ya, Service, service);
+            });
+        } else {
+            setImmediate(_registerShellCommands, argv, ya, Service);
+        }
+    }
+}
+
+/**
+ * `build-app` AppManager listener
+ * @private
+ */
+function _onBuildApp(app) {
+    app.once('post-init', function() {
+        this.build();
+    });
+}
+
+/**
+ * @private
+ * @param {Object} argv
+ * @param {Yargs} yargs
+ * @param {Function} Service - Service constructor
+ * @param {Service} service - instance of Service
+ */
+function _registerShellCommands(argv, yargs, Service, service) {
+
+    let args = process.argv.slice(2);
+
+    Service.emit('shell-cmd', yargs);
+    if (service) {
+        service.emit('shell-cmd', yargs);
+    }
+
+    if (!args.length) {
+        yargs.showHelp();
+        process.exit(1);
+    }
+    yargs.parse(args);
+}
+
+/**
  * returns parsed object with positional shell arguments.
  * These options will then overwrite option values set in configuration file
+ * @private
  * @param {Object} argv - shell arguments
  * @return {Object}
  */
@@ -214,20 +299,20 @@ function _verifyCWD() {
 /**
  * searches for custom bin/www startup script if not found, it starts up
  * the service itself.
+ * @private
  * @return {undefined}
  */
 function _run() {
     _verifyCWD();
 
     var customStartupFilePath = path.resolve(process.cwd() + '/bin/www');
-    var projectIndex = path.resolve(process.cwd() + '/index.js');
 
     if (fs.existsSync(customStartupFilePath)) {
         require(customStartupFilePath);
-    } else if (fs.existsSync(projectIndex)) {
-        let service = require(projectIndex);
+    } else if (fs.existsSync(PROJECT_INDEX)) {
+        let service = require(PROJECT_INDEX);
         if (!(service instanceof Service)) {
-            console.error(`${projectIndex} does not export a Service object`);
+            console.error(`${PROJECT_INDEX} does not export a Service object`);
             process.exit(1);
         }
 
@@ -236,6 +321,7 @@ function _run() {
 }
 
 /**
+ * @private
  * @return {undefined}
  */
 function _runCluster() {
