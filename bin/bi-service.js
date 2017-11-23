@@ -94,8 +94,8 @@ function _initializeYargs(ya) {
     })
     .version('version', 'Prints bi-service version', VERSION);
 
-    _loadExtension('bi-service-template');
-    _loadExtension('bi-db-migrations');
+    _loadExtension('bi-service-template', ya);
+    _loadExtension('bi-db-migrations', ya);
     return ya;
 }
 
