@@ -94,22 +94,23 @@ function _initializeYargs(ya) {
     })
     .version('version', 'Prints bi-service version', VERSION);
 
-    try{
-        ya = require('bi-service-template')(ya);
-    } catch(e) {
-        if (e.code !== 'MODULE_NOT_FOUND') {
-            throw e;
-        }
-    }
-
-    try{
-        ya = require('bi-db-migrations')(ya);
-    } catch(e) {
-        if (e.code !== 'MODULE_NOT_FOUND') {
-            throw e;
-        }
-    }
+    _loadExtension('bi-service-template');
+    _loadExtension('bi-db-migrations');
     return ya;
+}
+
+/*
+ * @param {String} name - npm package name
+ * @param {Yargs} yargs
+ */
+function _loadExtension(name, yargs) {
+    try{
+        ya = require(name)(yargs);
+    } catch(e) {
+        if (e.code !== 'MODULE_NOT_FOUND') {
+            throw e;
+        }
+    }
 }
 
 /**
