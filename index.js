@@ -86,24 +86,6 @@ exports.common = {
 };
 
 /**
- * @typedef ShellList
- * @type {Object}
- * @property {ShellApp}    App
- * @property {ShellRouter} Router
- * @property {ShellRoute}  Route
- */
-
-/**
- * @name Service.shell
- * @type {ShellList}
- */
-exports.shell = {
-    App: require('./lib/shell/app.js'),
-    Router: require('./lib/shell/router.js'),
-    Route: require('./lib/shell/route.js')
-};
-
-/**
  * @typedef CommonList
  * @type {Object}
  * @property {AppInterface}    App
