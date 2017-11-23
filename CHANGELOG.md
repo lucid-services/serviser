@@ -2,6 +2,7 @@
 
 * [ADDED] - `App` `config` is validated during the app initialization
 * [ADDED] - Default `App` & `Router` & `Route` classes which the module exports implements common `AppInterface` & `RouterInterface` and `RouteInterface` respectively
+* [ADDED] - `shell-cmd` event emitted on `Service` instance objects as well as on `Service` constructor (static event). Brings an interface for user defined commands.
 
 ## v1.0.0-beta
 
