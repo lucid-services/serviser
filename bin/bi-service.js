@@ -42,7 +42,7 @@ if (module.parent === null) {
         }
     }, defaultCmd);
 
-    _yargs.wrap(yargs.terminalWidth()).argv;
+    _yargs.strict(false).wrap(yargs.terminalWidth()).argv;
 }
 
 module.exports.runCmd      = runCmd;
@@ -178,6 +178,14 @@ function defaultCmd(argv) {
 
             return service.$setup().then(function() {
                 setImmediate(_registerShellCommands, argv, ya, Service, service);
+            }).catch(function(err) {
+                if (err.toLogger instanceof Function) {
+                    err = err.toLogger()
+                } else if (err.toJSON instanceof Function) {
+                    err = err.toJSON();
+                }
+                console.error(err);
+                process.exit(1);
             });
         } else {
             setImmediate(_registerShellCommands, argv, ya, Service);
