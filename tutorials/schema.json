@@ -8,10 +8,13 @@
             "1a.Configuration": {
                 "title": "Configuration"
             },
-            "1b.ErrorManagement": {
+            "1b.Routing": {
+                "title": "Routing"
+            },
+            "1c.ErrorManagement": {
                 "title": "Error management"
             },
-            "1c.Validation": {
+            "1d.Validation": {
                 "title": "Validation"
             }
         }
