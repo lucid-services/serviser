@@ -13,6 +13,7 @@ Features
 * built-in caching solution
 * response data filters
 * request data validation
+* shell integration
 * Semantic Service versioning
 * and more (see Public API Reference)!
 
