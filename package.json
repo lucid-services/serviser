@@ -1,7 +1,7 @@
 {
     "name": "bi-service",
-    "version": "1.0.0-beta",
-    "description": "Generic service module",
+    "version": "1.0.0-dev.20171127",
+    "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
     "author": "Bohemia Interactive",
