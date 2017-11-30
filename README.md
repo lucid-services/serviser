@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/BohemiaInteractive/bi-service.svg?branch=master)](https://travis-ci.org/BohemiaInteractive/bi-service)  [![Test Coverage](https://codeclimate.com/github/BohemiaInteractive/bi-service/badges/coverage.svg)](https://codeclimate.com/github/BohemiaInteractive/bi-service/coverage) [![npm version](https://badge.fury.io/js/bi-service.svg)](https://www.npmjs.com/package/bi-service)  
 
 
-`bi-service` is an abstraction layer with common interface for creating not-only web applications but also any apps that match the `request & response` pattern whether an underlying communication protocol is `HTTP`, `AMQP` (message queues), IPC (shell) or some other..  
+`bi-service` is an abstraction layer with common interface for creating not-only web applications but also any apps that match the `request & response` pattern whether an underlying communication protocol is `HTTP`, `AMQP` (message queues), `IPC` (shell) or other..  
 Emphasis is put among other [features](https://github.com/BohemiaInteractive/bi-service#features) on product API documentation, validation, error handling and automation of perpetually repeated tasks.
 
 Features
