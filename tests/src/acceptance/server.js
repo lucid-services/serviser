@@ -77,6 +77,23 @@ describe('functional server', function() {
             }
         },
         {
+            should: 'return correctly formated validation error',
+            url: '/validate/body',
+            method: 'post',
+            contentType: 'application/json',
+            data: {
+                username: 'test',
+                email: 'invalid',
+            },
+            responseStatus: 400,
+            response: {
+                code: 400,
+                uid: null,
+                api_code: null,
+                message: '.email should match format "email"'
+            }
+        },
+        {
             should: 'return correct response pagination headers',
             url: '/pagination',
             method: 'get',
