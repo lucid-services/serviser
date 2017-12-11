@@ -25,10 +25,9 @@
         "index.js"
     ],
     "scripts": {
-        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/**/*.js'",
+        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/src/**/*.js'",
         "create:docs": "./node_modules/.bin/jsdoc --configure .jsdoc.json -u ./tutorials --verbose",
-        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/acceptance/**/*.js' 'tests/unit/**/*.js'",
-        "unit-tests": "./node_modules/mocha/bin/mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/unit/**/*.js'",
+        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/src/**/*.js'",
         "test": "npm run tests"
     },
     "peerDependencies": {

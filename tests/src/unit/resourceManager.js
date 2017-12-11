@@ -4,8 +4,8 @@ const chaiAsPromised = require('chai-as-promised');
 const sinonChai      = require("sinon-chai");
 const Promise        = require('bluebird');
 
-const ResourceManager = require('../../lib/resourceManager.js');
-const ServiceError    = require('../../lib/error/serviceError.js');
+const ResourceManager = require('../../../lib/resourceManager.js');
+const ServiceError    = require('../../../lib/error/serviceError.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');

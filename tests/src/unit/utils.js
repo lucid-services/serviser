@@ -3,7 +3,7 @@ const chai      = require('chai');
 const sinonChai = require("sinon-chai");
 const Validator = require('ajv');
 
-const utils = require('../../lib/utils');
+const utils = require('../../../lib/utils');
 
 const expect = chai.expect;
 

@@ -2,8 +2,8 @@ const request   = require('supertest');
 const http      = require('http');
 const Express   = require('express');
 
-const RequestError   = require('../../../lib/error/requestError.js');
-const reqContentType = require('../../../lib/middleware/requestContentType.js');
+const RequestError   = require('../../../../lib/error/requestError.js');
+const reqContentType = require('../../../../lib/middleware/requestContentType.js');
 
 function createServer(supportedContentTypes) {
     var context = {

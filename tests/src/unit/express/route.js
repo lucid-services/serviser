@@ -5,18 +5,18 @@ const sinonChai      = require("sinon-chai");
 const Promise        = require('bluebird');
 const Config         = require('bi-config');
 
-const Service         = require('../../../lib/service.js');
-const AppManager      = require('../../../lib/appManager.js');
-const Router          = require('../../../lib/express/router.js');
-const Route           = require('../../../lib/express/route.js');
-const RouteI          = require('../../../lib/common/route.js');
-const Response        = require('../../../lib/response.js');
-const RouteError      = require('../../../lib/error/routeError.js');
-const RequestError    = require('../../../lib/error/requestError.js');
-const ValidationError = require('../../../lib/error/validationError.js');
+const Service         = require('../../../../lib/service.js');
+const AppManager      = require('../../../../lib/appManager.js');
+const Router          = require('../../../../lib/express/router.js');
+const Route           = require('../../../../lib/express/route.js');
+const RouteI          = require('../../../../lib/common/route.js');
+const Response        = require('../../../../lib/response.js');
+const RouteError      = require('../../../../lib/error/routeError.js');
+const RequestError    = require('../../../../lib/error/requestError.js');
+const ValidationError = require('../../../../lib/error/validationError.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
-require('../../../index.js');
+require('../../../../index.js');
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
 

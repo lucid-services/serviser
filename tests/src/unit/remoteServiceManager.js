@@ -9,8 +9,8 @@ var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
 var BIServiceSDK   = require('bi-service-sdk');
 
-var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
-var SDKMock              = require('./mocks/sdk.js');
+var RemoteServiceManager = require('../../../lib/remoteServiceManager.js');
+var SDKMock              = require('../..//mocks/sdk.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -81,7 +81,7 @@ describe('RemoteServiceManager', function() {
 
     describe('buildRemoteService', function() {
         before(function() {
-            this.managerPath = path.resolve(__dirname + '/../../lib/remoteServiceManager.js');
+            this.managerPath = path.resolve(__dirname + '/../../../lib/remoteServiceManager.js');
             this.managerModule = m._cache[this.managerPath];
 
             this.requireStub = sinon.stub(this.managerModule, 'require');

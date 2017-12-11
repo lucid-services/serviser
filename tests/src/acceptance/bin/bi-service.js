@@ -11,10 +11,10 @@ const sinonChai      = require("sinon-chai");
 const Promise        = require('bluebird');
 const spawn          = require('child_process').spawn;
 
-const biServicePath = path.resolve(__dirname + '/../../../bin/bi-service.js');
-const MOCK_APP_ROOT = path.resolve(__dirname + '/../../mocks/app');
-const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../mocks/app/config.json5');
-const BI_SERVICE_VERSION = require('../../../package.json').version;
+const biServicePath = path.resolve(__dirname + '/../../../../bin/bi-service.js');
+const MOCK_APP_ROOT = path.resolve(__dirname + '/../../../mocks/app');
+const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../../mocks/app/config.json5');
+const BI_SERVICE_VERSION = require('../../../../package.json').version;
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised', Promise);

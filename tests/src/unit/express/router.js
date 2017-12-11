@@ -5,11 +5,11 @@ var sinonChai      = require("sinon-chai");
 var Express        = require('express');
 var Config         = require('bi-config');
 
-var Service    = require('../../../lib/service.js');
-var AppManager = require('../../../lib/appManager.js');
-var Router     = require('../../../lib/express/router.js');
-var Route      = require('../../../lib/express/route.js');
-var RouterError= require('../../../lib/error/routerError.js');
+var Service    = require('../../../../lib/service.js');
+var AppManager = require('../../../../lib/appManager.js');
+var Router     = require('../../../../lib/express/router.js');
+var Route      = require('../../../../lib/express/route.js');
+var RouterError= require('../../../../lib/error/routerError.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');

@@ -3,9 +3,9 @@ var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 var Config    = require('bi-config');
 
-var Service    = require('../../../lib/service.js');
-var AppManager = require('../../../lib/appManager.js');
-var App        = require('../../../lib/express/app.js');
+var Service    = require('../../../../lib/service.js');
+var AppManager = require('../../../../lib/appManager.js');
+var App        = require('../../../../lib/express/app.js');
 
 var expect = chai.expect;
 

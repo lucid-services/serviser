@@ -4,11 +4,11 @@ var sinonChai = require("sinon-chai");
 var Promise   = require('bluebird');
 var Config    = require('bi-config');
 
-var Service    = require('../../../lib/service.js');
-var Response   = require('../../../lib/response.js');
-var AppManager = require('../../../lib/appManager.js');
-var Router     = require('../../../lib/express/router.js');
-var Route      = require('../../../lib/express/route.js');
+var Service    = require('../../../../lib/service.js');
+var Response   = require('../../../../lib/response.js');
+var AppManager = require('../../../../lib/appManager.js');
+var Router     = require('../../../../lib/express/router.js');
+var Route      = require('../../../../lib/express/route.js');
 
 var expect = chai.expect;
 

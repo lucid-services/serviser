@@ -10,12 +10,12 @@ var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
 var Config         = require('bi-config');
 
-var Service              = require('../../lib/service.js');
-var AppManager           = require('../../lib/appManager.js');
-var App                  = require('../../lib/express/app.js');
-var AppStatus            = require('../../lib/common/appStatus.js');
-var RemoteServiceManager = require('../../lib/remoteServiceManager.js');
-var ResourceManager      = require('../../lib/resourceManager.js');
+var Service              = require('../../../lib/service.js');
+var AppManager           = require('../../../lib/appManager.js');
+var App                  = require('../../../lib/express/app.js');
+var AppStatus            = require('../../../lib/common/appStatus.js');
+var RemoteServiceManager = require('../../../lib/remoteServiceManager.js');
+var ResourceManager      = require('../../../lib/resourceManager.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised', Promise);
@@ -56,7 +56,7 @@ describe('Service', function() {
 
         it('should set valid "root" property value (project root path) of config store', function() {
             (new Service(this.config)).config.get('root')
-                .should.be.equal(path.resolve(__dirname + '/../../node_modules/mocha'));
+                .should.be.equal(path.resolve(__dirname + '/../../../node_modules/mocha'));
         });
 
         it('should set valid "npmName" property of config store', function() {

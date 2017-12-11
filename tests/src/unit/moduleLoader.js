@@ -4,7 +4,7 @@ var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 var tmp       = require('tmp');
 
-var moduleLoader = rewire('../../lib/moduleLoader.js');
+var moduleLoader = rewire('../../../lib/moduleLoader.js');
 
 var expect = chai.expect;
 

@@ -3,10 +3,10 @@ var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 var Config    = require('bi-config');
 
-var Service            = require('../../../lib/service.js');
-var RouteNotFoundError = require('../../../lib/error/routeNotFoundError.js');
-var routeNotFound      = require('../../../lib/middleware/routeNotFound.js');
-var AppManager         = require('../../../lib/appManager.js');
+var Service            = require('../../../../lib/service.js');
+var RouteNotFoundError = require('../../../../lib/error/routeNotFoundError.js');
+var routeNotFound      = require('../../../../lib/middleware/routeNotFound.js');
+var AppManager         = require('../../../../lib/appManager.js');
 
 var expect = chai.expect;
 

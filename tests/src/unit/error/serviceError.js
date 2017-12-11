@@ -2,8 +2,8 @@ var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
 
-var ServiceError = require('../../../lib/error/serviceError.js');
-var RequestError = require('../../../lib/error/requestError.js');
+var ServiceError = require('../../../../lib/error/serviceError.js');
+var RequestError = require('../../../../lib/error/requestError.js');
 
 var expect = chai.expect;
 

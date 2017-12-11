@@ -9,13 +9,13 @@ var logger              = require('bi-logger');
 var Config              = require('bi-config');
 var Validator           = require('ajv');
 
-var Service          = require('../../../lib/service.js');
-var AppManager       = require('../../../lib/appManager.js');
-var Router           = require('../../../lib/express/router.js');
-var Route            = require('../../../lib/express/route.js');
-var AppStatus        = require('../../../lib/common/appStatus.js');
-var Server           = require('../mocks/server.js');
-var MemcachedStoreMock   = require('../mocks/memcachedStore.js');
+var Service          = require('../../../../lib/service.js');
+var AppManager       = require('../../../../lib/appManager.js');
+var Router           = require('../../../../lib/express/router.js');
+var Route            = require('../../../../lib/express/route.js');
+var AppStatus        = require('../../../../lib/common/appStatus.js');
+var Server           = require('../../../mocks/server.js');
+var MemcachedStoreMock   = require('../../../mocks/memcachedStore.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
