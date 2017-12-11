@@ -4,18 +4,18 @@
  * shell executable
  */
 
-var Service = require('../../../index.js');
-var config = require('bi-config');
+const Service = require('../../../index.js');
+const config = require('bi-config');
 
-var service = module.exports = new Service(config);
+const service = module.exports = new Service(config);
 
 service.on('set-up', function() {
     //app1
-    this.buildApp('app1').buildRouter({
-        url: '/',
-        version: 1
-    }).buildRoute({
-        url: '/',
-        type: 'get'
+    this.buildApp('app1');
+
+    Service.moduleLoader.loadModules([
+        __dirname + '/routes/'
+    ], {
+        except: []
     });
 });

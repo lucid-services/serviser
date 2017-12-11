@@ -1,4 +1,4 @@
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 Promise.config({
     cancellation: true, //used for canceling promise chain in case of early request response
 });
@@ -17,7 +17,7 @@ exports.VERSION = require('./package.json').version;
  * @name Service.AppManager
  * @type {AppManager}
  */
-exports.AppManager = require('./lib/express/appManager.js');
+exports.AppManager = require('./lib/appManager.js');
 /**
  * @name Service.App
  * @type {App}
@@ -43,12 +43,12 @@ exports.RemoteServiceManager = require('./lib/remoteServiceManager.js');
  * @name Service.AppStatus
  * @type {AppStatus}
  */
-exports.AppStatus = require('./lib/express/appStatus.js');
+exports.AppStatus = require('./lib/common/appStatus.js');
 /**
  * @name Service.Response
  * @type {Response}
  */
-exports.Response = require('./lib/express/response.js');
+exports.Response = require('./lib/response.js');
 /**
  * @name Service.Router
  * @type {Router}
@@ -75,7 +75,23 @@ exports.moduleLoader = require('./lib/moduleLoader.js');
  */
 exports.utils = require('./lib/utils.js');
 
+/**
+ * @name Service.common
+ * @type {CommonList}
+ */
+exports.common = {
+    App: require('./lib/common/app.js'),
+    Router: require('./lib/common/router.js'),
+    Route: require('./lib/common/route.js')
+};
 
+/**
+ * @typedef CommonList
+ * @type {Object}
+ * @property {AppInterface}    App
+ * @property {RouterInterface} Router
+ * @property {RouteInterface}  Route
+ */
 
 /**
  * @name Service.error
