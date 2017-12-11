@@ -1,4 +1,4 @@
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 Promise.config({
     cancellation: true, //used for canceling promise chain in case of early request response
 });
