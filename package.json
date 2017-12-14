@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-    "version": "1.0.0-rc",
+    "version": "1.0.0-rc.2",
     "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
@@ -29,13 +29,6 @@
         "create:docs": "./node_modules/.bin/jsdoc --configure .jsdoc.json -u ./tutorials --verbose",
         "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/src/**/*.js'",
         "test": "npm run tests"
-    },
-    "peerDependencies": {
-        "bi-service-sdk": ">=0.6.3",
-        "cookie-parser": "1.4.*",
-        "memcached": "2.2.*",
-        "express-session": "^1.13.x",
-        "connect-memcached": "0.2.*"
     },
     "dependencies": {
         "bi-cache-store-interface": "^1.0.1",

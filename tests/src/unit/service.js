@@ -56,12 +56,12 @@ describe('Service', function() {
 
         it('should set valid "root" property value (project root path) of config store', function() {
             (new Service(this.config)).config.get('root')
-                .should.be.equal(path.resolve(__dirname + '/../../../node_modules/mocha'));
+                .should.be.equal(path.resolve(__dirname + '/../../../'));
         });
 
         it('should set valid "npmName" property of config store', function() {
             (new Service(this.config)).config.get('npmName')
-                .should.be.equal('mocha');
+                .should.be.equal('bi-service');
         });
 
         it('should call self.$initLogger() method', function() {
