@@ -77,6 +77,18 @@ describe('functional server', function() {
             }
         },
         {
+            should: 'return json error when we request non-existing endpoint',
+            url: '/invalid/endpoint/which/does/not/exist',
+            method: 'get',
+            responseStatus: 404,
+            response: {
+                code: 404,
+                uid: null,
+                api_code: null,
+                message: 'Not found'
+            }
+        },
+        {
             should: 'return correctly formated validation error',
             url: '/validate/body',
             method: 'post',

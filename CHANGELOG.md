@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - errors were not being processed by express error handler middleware
+
 ## v1.0.0-rc
 
 * [ADDED] - `App` `config` is validated during the app initialization
