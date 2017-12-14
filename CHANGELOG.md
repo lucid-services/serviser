@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.0-rc.2
 
 * [FIXED] - errors were not being processed by express error handler middleware
 * [FIXED] - `Service` project `root` path should be determined from `process.cwd()` starting point by default
