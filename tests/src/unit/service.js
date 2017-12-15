@@ -133,7 +133,7 @@ describe('Service', function() {
         describe('buildApp', function() {
             beforeEach(function() {
 
-                this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
+                this.setProjectMetaStub = sinon.stub(Service.prototype, '$setProjectMeta');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
                 this.service = new Service(this.config);
@@ -155,7 +155,7 @@ describe('Service', function() {
 
             afterEach(function() {
                 this.setProjectRootStub.restore();
-                this.setProjectNameStub.restore();
+                this.setProjectMetaStub.restore();
             });
 
             it('should return a new App object', function() {
@@ -180,7 +180,7 @@ describe('Service', function() {
                 this.inspectIntegrityStub = sinon.stub(this.service.resourceManager, 'inspectIntegrity');
                 this.emitAsyncSeriesSpy = sinon.spy(this.service, 'emitAsyncSeries');
                 this.emitSpy = sinon.spy(Service, 'emitAsyncSeries');
-                this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
+                this.setProjectMetaStub = sinon.stub(Service.prototype, '$setProjectMeta');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
                 this.inspectIntegrityStub.returns(Promise.resolve());
@@ -192,7 +192,7 @@ describe('Service', function() {
                 this.inspectIntegrityStub.restore();
                 this.emitAsyncSeriesSpy.restore();
                 this.emitSpy.restore();
-                this.setProjectNameStub.restore();
+                this.setProjectMetaStub.restore();
                 this.setProjectRootStub.restore();
             });
 

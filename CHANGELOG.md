@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - set project's `version` option on `Service` config object when `Service` is being instantiated
+
 ## v1.0.0-rc.2
 
 * [FIXED] - errors were not being processed by express error handler middleware
