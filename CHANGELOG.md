@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - set project's `version` option on `Service` config object when `Service` is being instantiated
+* [CHANGED] - deprecate `App.prototype.useSession` method
 
 ## v1.0.0-rc.2
 
