@@ -157,6 +157,17 @@ describe('ResourceManager', function() {
             });
         });
 
+        describe('no resource with given tag does NOT exist', function() {
+            it('should return resolved promise', function() {
+                return this.resourceManager.inspectIntegrity(
+                    'tag-which-does-not-exist'
+                ).bind(this).then(function() {
+                    this.inspectIntegritySpy.should.have.callCount(0);
+                    this.inspectIntegritySpy2.should.have.callCount(0);
+                }).should.be.fulfilled;
+            });
+        });
+
         describe('tag is NOT provided', function() {
             beforeEach(function() {
                 this.resourceManager.add('resource', this._resourceMock);
