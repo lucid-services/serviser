@@ -147,6 +147,10 @@ describe('Service', function() {
                         baseUrl: '127.0.0.1:3001',
                         listen: 3001
                     },
+                    custom: {
+                        baseUrl: '127.0.0.1:3002',
+                        listen: 3002
+                    },
                 };
 
                 this.config.set('root', '/project/root');
@@ -170,6 +174,21 @@ describe('Service', function() {
                 app.config.should.be.instanceof(Config.Config);
                 app.config.get().should.have.property('baseUrl', this.appsConfig.private.baseUrl);
                 app.config.get().should.have.property('listen', this.appsConfig.private.listen);
+            });
+
+            it('should return a new instance object of provided app Constructor function', function() {
+                function CustomApp() {
+                    App.apply(this, arguments);
+                }
+                CustomApp.prototype = Object.create(App.prototype);
+                CustomApp.prototype.constructor = CustomApp;
+
+                let app = this.service.buildApp('custom', {}, CustomApp);
+                app.should.be.instanceof(CustomApp);
+                app.config.should.be.instanceof(Config.Config);
+                app.config.get().should.have.property('baseUrl', this.appsConfig.custom.baseUrl);
+                app.config.get().should.have.property('listen', this.appsConfig.custom.listen);
+
             });
         });
 
