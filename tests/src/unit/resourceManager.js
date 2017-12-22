@@ -84,9 +84,14 @@ describe('ResourceManager', function() {
             ]);
         });
 
-        it('should assign default tag to all registered resources (the tag equals resource key)', function() {
+        it('should assign default tags to all registered resources', function() {
             this.resourceManager.register('my-resource', this._resourceMock);
             this.resourceManager.register('my-resource2', this._resourceMock);
+
+            this.resourceManager.tags.should.have.property('*').that.is.eql([
+                'my-resource',
+                'my-resource2',
+            ]);
 
             //all resource are assigned default tag which is equal to resource name/key
             this.resourceManager.tags.should.have.property('my-resource').that.is.eql([

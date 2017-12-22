@@ -201,7 +201,21 @@ describe('Service', function() {
 
                 return this.service.$setup().then(function() {
                     self.inspectIntegrityStub.should.have.been.calledOnce;
-                }).should.be.resolved;
+                });
+            });
+
+            it('should call service.inspectIntegrity with correct arguments', function() {
+                var self = this;
+
+                return this.service.$setup({
+                    integrity: ['*', {mode: 'exclude'}]
+                }).then(function() {
+                    self.inspectIntegrityStub.should.have.been.calledOnce;
+                    self.inspectIntegrityStub.should.have.been.calledWith(
+                        '*',
+                        {mode: 'exclude'}
+                    );
+                });
             });
 
             it('should asynchrounously emit `set-up` event on the service instance', function() {
@@ -211,7 +225,7 @@ describe('Service', function() {
                     self.emitAsyncSeriesSpy.should.have.been.calledOnce;
                     self.emitAsyncSeriesSpy.should.have.been.calledWith('set-up');
                     self.emitAsyncSeriesSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
-                }).should.be.resolved;
+                });
             });
 
             it('should synchrounously emit the `set-up` event on Service constructor', function() {
@@ -221,7 +235,7 @@ describe('Service', function() {
                     self.emitSpy.should.have.been.calledOnce;
                     self.emitSpy.should.have.been.calledWith('set-up');
                     self.emitSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
-                }).should.be.resolved;
+                });
             });
 
             it('should return rejected promise', function() {
