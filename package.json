@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-    "version": "1.0.0-rc.2",
+    "version": "1.0.0",
     "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
@@ -32,7 +32,7 @@
     },
     "dependencies": {
         "bi-cache-store-interface": "^1.0.1",
-        "bi-config": "^2.0.0-alpha",
+        "bi-config": "^2.0.0",
         "ajv": "^5.2.2",
         "ajv-keywords": "^2.1.0",
         "bi-logger": "^2.0.0",
