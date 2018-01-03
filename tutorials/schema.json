@@ -16,6 +16,9 @@
             },
             "1d.Validation": {
                 "title": "Validation"
+            },
+            "1e.Logging": {
+                "title": "Logging"
             }
         }
     },

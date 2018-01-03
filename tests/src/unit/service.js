@@ -133,7 +133,7 @@ describe('Service', function() {
         describe('buildApp', function() {
             beforeEach(function() {
 
-                this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
+                this.setProjectMetaStub = sinon.stub(Service.prototype, '$setProjectMeta');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
                 this.service = new Service(this.config);
@@ -147,6 +147,10 @@ describe('Service', function() {
                         baseUrl: '127.0.0.1:3001',
                         listen: 3001
                     },
+                    custom: {
+                        baseUrl: '127.0.0.1:3002',
+                        listen: 3002
+                    },
                 };
 
                 this.config.set('root', '/project/root');
@@ -155,7 +159,7 @@ describe('Service', function() {
 
             afterEach(function() {
                 this.setProjectRootStub.restore();
-                this.setProjectNameStub.restore();
+                this.setProjectMetaStub.restore();
             });
 
             it('should return a new App object', function() {
@@ -171,6 +175,21 @@ describe('Service', function() {
                 app.config.get().should.have.property('baseUrl', this.appsConfig.private.baseUrl);
                 app.config.get().should.have.property('listen', this.appsConfig.private.listen);
             });
+
+            it('should return a new instance object of provided app Constructor function', function() {
+                function CustomApp() {
+                    App.apply(this, arguments);
+                }
+                CustomApp.prototype = Object.create(App.prototype);
+                CustomApp.prototype.constructor = CustomApp;
+
+                let app = this.service.buildApp('custom', {}, CustomApp);
+                app.should.be.instanceof(CustomApp);
+                app.config.should.be.instanceof(Config.Config);
+                app.config.get().should.have.property('baseUrl', this.appsConfig.custom.baseUrl);
+                app.config.get().should.have.property('listen', this.appsConfig.custom.listen);
+
+            });
         });
 
         describe('$setup', function() {
@@ -180,7 +199,7 @@ describe('Service', function() {
                 this.inspectIntegrityStub = sinon.stub(this.service.resourceManager, 'inspectIntegrity');
                 this.emitAsyncSeriesSpy = sinon.spy(this.service, 'emitAsyncSeries');
                 this.emitSpy = sinon.spy(Service, 'emitAsyncSeries');
-                this.setProjectNameStub = sinon.stub(Service.prototype, '$setProjectName');
+                this.setProjectMetaStub = sinon.stub(Service.prototype, '$setProjectMeta');
                 this.setProjectRootStub = sinon.stub(Service.prototype, '$setProjectRoot');
 
                 this.inspectIntegrityStub.returns(Promise.resolve());
@@ -192,7 +211,7 @@ describe('Service', function() {
                 this.inspectIntegrityStub.restore();
                 this.emitAsyncSeriesSpy.restore();
                 this.emitSpy.restore();
-                this.setProjectNameStub.restore();
+                this.setProjectMetaStub.restore();
                 this.setProjectRootStub.restore();
             });
 
@@ -201,7 +220,21 @@ describe('Service', function() {
 
                 return this.service.$setup().then(function() {
                     self.inspectIntegrityStub.should.have.been.calledOnce;
-                }).should.be.resolved;
+                });
+            });
+
+            it('should call service.inspectIntegrity with correct arguments', function() {
+                var self = this;
+
+                return this.service.$setup({
+                    integrity: ['*', {mode: 'exclude'}]
+                }).then(function() {
+                    self.inspectIntegrityStub.should.have.been.calledOnce;
+                    self.inspectIntegrityStub.should.have.been.calledWith(
+                        '*',
+                        {mode: 'exclude'}
+                    );
+                });
             });
 
             it('should asynchrounously emit `set-up` event on the service instance', function() {
@@ -211,7 +244,7 @@ describe('Service', function() {
                     self.emitAsyncSeriesSpy.should.have.been.calledOnce;
                     self.emitAsyncSeriesSpy.should.have.been.calledWith('set-up');
                     self.emitAsyncSeriesSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
-                }).should.be.resolved;
+                });
             });
 
             it('should synchrounously emit the `set-up` event on Service constructor', function() {
@@ -221,7 +254,7 @@ describe('Service', function() {
                     self.emitSpy.should.have.been.calledOnce;
                     self.emitSpy.should.have.been.calledWith('set-up');
                     self.emitSpy.should.have.been.calledAfter(self.inspectIntegrityStub);
-                }).should.be.resolved;
+                });
             });
 
             it('should return rejected promise', function() {

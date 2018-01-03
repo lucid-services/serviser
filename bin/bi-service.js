@@ -4,7 +4,7 @@ const yargs   = require('yargs');
 const cluster = require('cluster');
 const path    = require('path');
 const fs      = require('fs');
-const logger  = require('bi-logger');
+const logger  = require('bi-logger');//hooks up global uncaughtException listener
 const _       = require('lodash');
 const json5   = require('json5');
 const config  = require('bi-config');
@@ -177,7 +177,10 @@ function defaultCmd(argv) {
             let service = require(PROJECT_INDEX);
             service.appManager.on('build-app', _onBuildApp);
 
-            return service.$setup().then(function() {
+            return service.$setup({
+                //inspect only resources with exclusive 'shell' tag
+                integrity: ['shell']
+            }).then(function() {
                 setImmediate(_registerShellCommands, argv, ya, Service, service);
             }).catch(function(err) {
                 if (err.toLogger instanceof Function) {
@@ -199,9 +202,13 @@ function defaultCmd(argv) {
  * @private
  */
 function _onBuildApp(app) {
-    app.once('post-init', function() {
-        this.build();
-    });
+    let proto = Object.getPrototypeOf(app);
+    if (proto.constructor && proto.constructor.name === 'ShellApp') {
+        app.once('post-init', function() {
+            this.build();
+            this.listen();
+        });
+    }
 }
 
 /**

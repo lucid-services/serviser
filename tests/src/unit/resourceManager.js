@@ -23,6 +23,12 @@ describe('ResourceManager', function() {
                 return Promise.resolve();
             }
         };
+
+        this._resourceMock2 = {
+            inspectIntegrity: function() {
+                return Promise.resolve();
+            }
+        };
     });
 
     beforeEach(function() {
@@ -61,20 +67,59 @@ describe('ResourceManager', function() {
         });
     });
 
+    describe('tag', function() {
+        it('should tag registered resources with provided label', function() {
+            this.resourceManager.register('my-resource', this._resourceMock);
+            this.resourceManager.register('my-resource2', this._resourceMock);
+
+            this.resourceManager.tag('my-resource', 'tag-name', 'tag-name2');
+            this.resourceManager.tag('my-resource2', 'tag-name2');
+
+            this.resourceManager.tags.should.have.property('tag-name').that.is.eql([
+                'my-resource'
+            ]);
+            this.resourceManager.tags.should.have.property('tag-name2').that.is.eql([
+                'my-resource',
+                'my-resource2',
+            ]);
+        });
+
+        it('should assign default tags to all registered resources', function() {
+            this.resourceManager.register('my-resource', this._resourceMock);
+            this.resourceManager.register('my-resource2', this._resourceMock);
+
+            this.resourceManager.tags.should.have.property('*').that.is.eql([
+                'my-resource',
+                'my-resource2',
+            ]);
+
+            //all resource are assigned default tag which is equal to resource name/key
+            this.resourceManager.tags.should.have.property('my-resource').that.is.eql([
+                'my-resource'
+            ]);
+            this.resourceManager.tags.should.have.property('my-resource2').that.is.eql([
+                'my-resource2'
+            ]);
+        });
+    });
+
     describe('inspectIntegrity', function() {
         before(function() {
             this.inspectIntegritySpy = sinon.spy(this._resourceMock, 'inspectIntegrity');
+            this.inspectIntegritySpy2 = sinon.spy(this._resourceMock2, 'inspectIntegrity');
         });
 
         beforeEach(function() {
             this.inspectIntegritySpy.reset();
+            this.inspectIntegritySpy2.reset();
         });
 
         after(function() {
             this.inspectIntegritySpy.restore();
+            this.inspectIntegritySpy2.restore();
         });
 
-        describe('resource identifier is provided', function() {
+        describe('tag is provided', function() {
             beforeEach(function() {
                 this.resourceManager.add('resource', this._resourceMock);
             });
@@ -91,9 +136,44 @@ describe('ResourceManager', function() {
                     self.inspectIntegritySpy.should.have.been.calledOnce;
                 });
             });
+
+            it('should NOT call the `inspectIntegrity` method on resources that are NOT assigned given tag', function() {
+                const self = this;
+                this.resourceManager.add('resource2', this._resourceMock2);
+                return this.resourceManager.inspectIntegrity('resource2').then(function() {
+                    self.inspectIntegritySpy.should.have.been.callCount(0);
+                });
+            });
+
+            it('should NOT call the `inspectIntegrity` method on resources that are assigned given tag', function() {
+                const self = this;
+                this.resourceManager.add('resource2', this._resourceMock2);
+                this.resourceManager.add('resource2b', this._resourceMock2);
+
+                this.resourceManager.tag('resource2', 'common-tag');
+                this.resourceManager.tag('resource2b', 'common-tag');
+
+                return this.resourceManager.inspectIntegrity('common-tag', {
+                    mode: 'exclude'
+                }).then(function() {
+                    self.inspectIntegritySpy.should.have.been.callCount(1);
+                    self.inspectIntegritySpy2.should.have.been.callCount(0);
+                });
+            });
         });
 
-        describe('resource identifier is NOT provided', function() {
+        describe('no resource with given tag does NOT exist', function() {
+            it('should return resolved promise', function() {
+                return this.resourceManager.inspectIntegrity(
+                    'tag-which-does-not-exist'
+                ).bind(this).then(function() {
+                    this.inspectIntegritySpy.should.have.callCount(0);
+                    this.inspectIntegritySpy2.should.have.callCount(0);
+                }).should.be.fulfilled;
+            });
+        });
+
+        describe('tag is NOT provided', function() {
             beforeEach(function() {
                 this.resourceManager.add('resource', this._resourceMock);
                 this.resourceManager.add('resource2', this._resourceMock);
