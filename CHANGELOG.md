@@ -1,9 +1,9 @@
-## FUTURE
+## v1.0.0
 
-* [CHANGED] - initialization procedure prior a shell command dispatching - service resources are NOT inspected unless explicitly tagged with 'shell' label
-* [ADDED] - support for custom application constructor function in `Service.prototype.buildApp`
+* [CHANGED] - initialization procedure prior a shell command dispatching has been altered so that service resources are NOT inspected unless explicitly tagged with 'shell' label
+* [ADDED] - support for optional custom application constructor argument in `Service.prototype.buildApp`
 * [ADDED] - `ResourceManager.prototype.tag` method which allows to tag resources and inspect a group of resources via the tag
-* [ADDED] - set project's `version` option on `Service` config object when `Service` is being instantiated
+* [ADDED] - set project's `version` option on `Service` config object on `Service` instantiation
 * [CHANGED] - deprecate `App.prototype.useSession` method
 
 ## v1.0.0-rc.2
