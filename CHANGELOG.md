@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
+
 ## v1.0.0
 
 * [CHANGED] - initialization procedure prior a shell command dispatching has been altered so that service resources are NOT inspected unless explicitly tagged with 'shell' label
