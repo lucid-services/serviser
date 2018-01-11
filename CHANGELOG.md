@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `Route` & `Service` `constructor` properties of parent `prototype` objects were not referencing parent constructor function
+
 ## v1.0.0
 
 * [CHANGED] - initialization procedure prior a shell command dispatching has been altered so that service resources are NOT inspected unless explicitly tagged with 'shell' label
