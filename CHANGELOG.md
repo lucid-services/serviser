@@ -1,7 +1,10 @@
 ## FUTURE
 
-* [FIXED] - `Route` & `Service` `constructor` properties of parent `prototype` objects were not referencing parent constructor function
 * [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
+
+## v1.0.1
+
+* [FIXED] - `Route` & `Service` `constructor` properties of parent `prototype` objects were not referencing parent constructor function
 
 ## v1.0.0
 
