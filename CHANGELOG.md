@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.1
 
 * [FIXED] - `Route` & `Service` `constructor` properties of parent `prototype` objects were not referencing parent constructor function
 
