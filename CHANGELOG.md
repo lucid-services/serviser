@@ -1,3 +1,7 @@
+## v1.0.2
+
+* [FIXED] - `services.<service>.<app>.host` validation. IP addresses should be allowed
+
 ## v1.0.1
 
 * [FIXED] - `Route` & `Service` `constructor` properties of parent `prototype` objects were not referencing parent constructor function
