@@ -164,7 +164,7 @@ function defaultCmd(argv) {
 
     if (argv['get-conf'] !== undefined) {
         getConfigCmd(argv);
-    //if no supported commands or options were supported so far,
+    //if no supported commands or options were matched so far,
     //we try to look for user defined shell commands:
     } else {
         config.initialize({fileConfigPath: argv.config});

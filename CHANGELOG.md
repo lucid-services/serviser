@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
+* [FIXED] - `services.<service>.<app>.host` validation. IP addresses should be allowed
 
 ## v1.0.1
 
