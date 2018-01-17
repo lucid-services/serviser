@@ -1,4 +1,4 @@
-## FUTURE
+## v1.0.2
 
 * [FIXED] - `services.<service>.<app>.host` validation. IP addresses should be allowed
 
