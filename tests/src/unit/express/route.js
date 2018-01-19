@@ -13,6 +13,7 @@ const RouteI          = require('../../../../lib/common/route.js');
 const Response        = require('../../../../lib/response.js');
 const RouteError      = require('../../../../lib/error/routeError.js');
 const RequestError    = require('../../../../lib/error/requestError.js');
+const ServiceError    = require('../../../../lib/error/serviceError.js');
 const ValidationError = require('../../../../lib/error/validationError.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
@@ -930,6 +931,23 @@ describe('Route', function() {
                 self.next.should.have.callCount(0);
                 done();
             }, 50);
+        });
+
+        it("should raise a ServiceError when a Route catches an error value which is not instanceof Error", function() {
+            var self = this;
+
+            this.route.main(function() {
+                throw undefined;
+            });
+
+            var routeMiddleware = this.route.build();
+
+            return routeMiddleware(this.req, this.res, this.next).should.be.fulfilled.then(function() {
+                self.next.should.have.been.calledWith(sinon.match(function(err) {
+                    err.message.should.match(/Received error value of undefined type, which is not instanceof Error/);
+                    return true;
+                }));
+            });
         });
 
         it("should call registered route's catch error handler", function() {
