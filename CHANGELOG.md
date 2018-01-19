@@ -1,4 +1,4 @@
-## FUTURE
+## v1.1.0
 
 * [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
 * [FIXED] - `Route` error handler `.then()` clause has been creating "runaway" promise
