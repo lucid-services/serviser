@@ -55,5 +55,21 @@ describe('ServiceError', function() {
             err.should.have.deep.property('context.message', 'test');
             err.stack.should.be.equal(e.stack);
         });
+
+        it('should return a new ServiceError object with additional context object properties', function() {
+            var e = new RequestError('test');
+
+            var err = ServiceError.buildFrom(e, {
+                another: 'value',
+                and: 'another'
+            });
+
+            err.should.be.instanceof(ServiceError);
+
+            err.should.have.deep.property('context.message', 'test');
+            err.should.have.deep.property('context.another', 'value');
+            err.should.have.deep.property('context.and', 'another');
+            err.stack.should.be.equal(e.stack);
+        });
     });
 });

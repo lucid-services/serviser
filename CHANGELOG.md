@@ -1,3 +1,9 @@
+## v1.1.0
+
+* [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
+* [FIXED] - `Route` error handler `.then()` clause has been creating "runaway" promise
+* [FIXED] - errors which are not instanceof `Error` are not supported. The case of eg. `throw undefined` has not been properly handled.
+
 ## v1.0.2
 
 * [FIXED] - `services.<service>.<app>.host` validation. IP addresses should be allowed
