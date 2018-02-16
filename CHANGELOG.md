@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `bi-service` executable - should not leak synchronous exceptions when executing a custom shell command. Those errors will be properly catched and printed to stderr before exit.
+
 ## v1.1.0
 
 * [ADDED] - optional `context` object argument to the `ServiceError.prototype.buildFrom` method
