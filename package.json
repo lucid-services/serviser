@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
@@ -14,6 +14,10 @@
     },
     "engines": {
         "node": ">=6.4.0"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/BohemiaInteractive/bi-service"
     },
     "license": "GPL-3.0",
     "files": [

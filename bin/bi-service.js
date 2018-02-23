@@ -8,6 +8,7 @@ const logger  = require('bi-logger');//hooks up global uncaughtException listene
 const _       = require('lodash');
 const json5   = require('json5');
 const config  = require('bi-config');
+const Promise = require('bluebird');
 
 const Service = require('../index.js');
 
@@ -181,7 +182,7 @@ function defaultCmd(argv) {
                 //inspect only resources with exclusive 'shell' tag
                 integrity: ['shell']
             }).then(function() {
-                setImmediate(_registerShellCommands, argv, ya, Service, service);
+                return _setImmediate(_registerShellCommands, argv, ya, Service, service);
             }).catch(function(err) {
                 if (err.toLogger instanceof Function) {
                     err = err.toLogger()
@@ -192,9 +193,26 @@ function defaultCmd(argv) {
                 process.exit(1);
             });
         } else {
-            setImmediate(_registerShellCommands, argv, ya, Service);
+            return _setImmediate(_registerShellCommands, argv, ya, Service);
         }
     }
+}
+
+/**
+ * setImmediate which returns a Promise
+ */
+function _setImmediate(fn) {
+    let args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function(resolve, reject) {
+        setImmediate(function() {
+            try {
+                fn.apply(this, args);
+            } catch(e) {
+                return reject(e);
+            }
+            resolve();
+        });
+    });
 }
 
 /**
