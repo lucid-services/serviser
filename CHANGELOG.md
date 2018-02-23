@@ -1,4 +1,4 @@
-## FUTURE
+## v1.1.1
 
 * [FIXED] - `bi-service` executable - should not leak synchronous exceptions when executing a custom shell command. Those errors will be properly catched and printed to stderr before exit.
 
