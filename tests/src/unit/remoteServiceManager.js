@@ -77,6 +77,16 @@ describe('RemoteServiceManager', function() {
                 manager.get('depot:public:v2.0');
             }).to.throw(Error);
         });
+
+        it('should throw an Error when object is not instanceof BIServiceSDK', function() {
+            var manager = this.manager;
+            var sdk = new SDKMock({baseURL: '127.0.0.1'});
+
+            this.manager.add('depot:public:scope', sdk);
+            expect(function() {
+                manager.get('depot:public');
+            }).to.throw(Error);
+        });
     });
 
     describe('buildRemoteService', function() {
