@@ -4,14 +4,15 @@ node_js:
 
 before_script:
     - sudo ln -s $(which node) /bin
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
+    - chmod +x /tmp/cc-test-reporter
 
 script:
+    - /tmp/cc-test-reporter before-build
     - npm test
     - npm run-script coverage
 
-after_script:
-    - codeclimate-test-reporter < ./coverage/lcov.info
-
 after_success:
+    - /tmp/cc-test-reporter after-build
     - bash ./deploy.sh
 
