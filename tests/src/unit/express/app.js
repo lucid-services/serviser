@@ -9,6 +9,7 @@ var logger              = require('bi-logger');
 var Config              = require('bi-config');
 var Validator           = require('ajv');
 
+var ResourceManager  = require('../../../../lib/resourceManager.js');
 var Service          = require('../../../../lib/service.js');
 var AppManager       = require('../../../../lib/appManager.js');
 var Router           = require('../../../../lib/express/router.js');
@@ -45,6 +46,14 @@ describe('App', function() {
     });
 
     describe('constructor', function() {
+        it('should create an App instance object', function() {
+            var app = this.appManager.buildApp(this.config, {name: 'test'});
+            app.should.have.property('name', 'test');
+            app.should.have.property('service').that.is.instanceof(Service);
+            app.should.have.property('appManager').that.is.instanceof(AppManager);
+            app.should.have.property('resourceManager').that.is.instanceof(ResourceManager);
+        });
+
         it('should throw an Error when we try to create an App with no `name` option set', function() {
             var self = this;
 
@@ -463,7 +472,7 @@ describe('App', function() {
                     });
 
                     var app = this.appManager.buildApp(config, {
-                        name: Date.now() + index
+                        name: (Date.now() + index).toString()
                     });
 
                     var expressUseSpy = sinon.spy(app.expressApp, 'use').withArgs(

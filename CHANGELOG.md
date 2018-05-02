@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - npm sdk packages do not have to expose strict data structure in order to be able to instantiate BIServiceSDK with the `RemoteServiceManager.prototype.buildRemoteService` method
+* [ADDED] - `name` instance public readonly property of `App`
 * [FIXED] - updated dependencies: ajv@6.4.0, ajv-keywords@3.0.0
 * [FIXED] - `Route.prototype.validate` method should fail when we provide invalid arguments
 
