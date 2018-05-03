@@ -661,6 +661,22 @@ describe('Route', function() {
             };
         });
 
+        it('should throw a Error when invalid target data property argument is provided', function() {
+            var self = this;
+
+            expect(function() {
+                self.route.validate(this.schema, '');
+            }).to.throw(Error);
+        });
+
+        it('should throw a Error when invalid target data property argument is provided (2)', function() {
+            var self = this;
+
+            expect(function() {
+                self.route.validate(this.schema, null);
+            }).to.throw(Error);
+        });
+
         it("should push validation function middleware to the route's stack", function() {
             this.route.validate(this.schema, 'query');
 
@@ -715,6 +731,17 @@ describe('Route', function() {
             this.route.validate(this.schema, 'query');
             var middleware = this.route.steps.pop().fn;
             expect(middleware.bind(null, req, res)).to.throw(ValidationError);
+        });
+
+        it('should throw a ValidationError with correct dataPath set when root data value is invalid', function() {
+            var req = {
+                query: 'invalid'
+            };
+            var res = {};
+
+            this.route.validate(this.schema, 'query');
+            var middleware = this.route.steps.pop().fn;
+            expect(middleware.bind(null, req, res)).to.throw(ValidationError, /<query> should be object/);
         });
 
         it('should return self (Route object)', function() {

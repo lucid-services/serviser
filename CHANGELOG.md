@@ -1,3 +1,12 @@
+## v1.2.0
+
+* [ADDED] - npm sdk packages do not have to expose strict data structure in order to be able to instantiate BIServiceSDK with the `RemoteServiceManager.prototype.buildRemoteService` method
+* [ADDED] - `name` instance public readonly property of `App`
+* [FIXED] - updated dependencies: ajv@6.4.0, ajv-keywords@3.0.0
+* [FIXED] - `Route.prototype.validate` method should fail when we provide invalid arguments
+* [FIXED] - validation error messages include information about what data source validation has failed on (like query|body|headers etc..)
+* [ADDED] - allow to set custom `Error` constructor for `Response` validation errors
+
 ## v1.1.1
 
 * [FIXED] - `bi-service` executable - should not leak synchronous exceptions when executing a custom shell command. Those errors will be properly catched and printed to stderr before exit.
