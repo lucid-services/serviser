@@ -733,6 +733,17 @@ describe('Route', function() {
             expect(middleware.bind(null, req, res)).to.throw(ValidationError);
         });
 
+        it('should throw a ValidationError with correct dataPath set when root data value is invalid', function() {
+            var req = {
+                query: 'invalid'
+            };
+            var res = {};
+
+            this.route.validate(this.schema, 'query');
+            var middleware = this.route.steps.pop().fn;
+            expect(middleware.bind(null, req, res)).to.throw(ValidationError, /<query> should be object/);
+        });
+
         it('should return self (Route object)', function() {
             this.route.validate(this.schema, 'query').should.be.equal(this.route);
         });
