@@ -5,6 +5,7 @@
 * [FIXED] - updated dependencies: ajv@6.4.0, ajv-keywords@3.0.0
 * [FIXED] - `Route.prototype.validate` method should fail when we provide invalid arguments
 * [FIXED] - validation error messages include information about what data source validation has failed on (like query|body|headers etc..)
+* [ADDED] - allow to set custom `Error` constructor for `Response` validation errors
 
 ## v1.1.1
 

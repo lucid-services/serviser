@@ -1,16 +1,17 @@
-var sinon     = require('sinon');
-var chai      = require('chai');
-var sinonChai = require("sinon-chai");
-var Promise   = require('bluebird');
-var Config    = require('bi-config');
+const sinon     = require('sinon');
+const chai      = require('chai');
+const sinonChai = require("sinon-chai");
+const Promise   = require('bluebird');
+const Config    = require('bi-config');
 
-var Service    = require('../../../../lib/service.js');
-var Response   = require('../../../../lib/response.js');
-var AppManager = require('../../../../lib/appManager.js');
-var Router     = require('../../../../lib/express/router.js');
-var Route      = require('../../../../lib/express/route.js');
+const Service         = require('../../../../lib/service.js');
+const Response        = require('../../../../lib/response.js');
+const AppManager      = require('../../../../lib/appManager.js');
+const Router          = require('../../../../lib/express/router.js');
+const Route           = require('../../../../lib/express/route.js');
+const ValidationError = require('../../../../lib/error/validationError.js');
 
-var expect = chai.expect;
+const expect = chai.expect;
 
 chai.use(sinonChai);
 chai.should();
@@ -215,7 +216,20 @@ describe('Response', function() {
                         self.wrappedRes.filter(null).json();
                     }
 
-                    expect(tCase).to.throw(Service.error.ValidationError);
+                    expect(tCase).to.throw(Service.error.ValidationError, /<response> should be object/);
+                });
+
+                it('should throw a TypeError', function() {
+
+                    var self = this;
+                    Response.ValidationError = TypeError;
+
+                    function tCase() {
+                        self.wrappedRes.filter(null).json();
+                    }
+
+                    expect(tCase).to.throw(TypeError);
+                    Response.ValidationError = ValidationError;
                 });
 
                 describe('wrapped response object returned from the `filter` method', function() {
