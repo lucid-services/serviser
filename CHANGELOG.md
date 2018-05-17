@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - new instance methods `has()` & `remove()` of the `ResourceManager`
+
 ## v1.2.0
 
 * [ADDED] - npm sdk packages do not have to expose strict data structure in order to be able to instantiate BIServiceSDK with the `RemoteServiceManager.prototype.buildRemoteService` method

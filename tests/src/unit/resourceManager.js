@@ -51,6 +51,32 @@ describe('ResourceManager', function() {
         });
     });
 
+    describe('remove', function() {
+        it('should remove the resource object from registry and return the removed resource', function() {
+            this.resourceManager.add('my-resource', this._resourceMock);
+
+            this.resourceManager.resources.should.have.property('my-resource');
+            this.resourceManager.remove('my-resource').should.be.equal(this._resourceMock);
+            this.resourceManager.resources.should.not.have.property('my-resource');
+        });
+
+        it('should return undefined when we try to remove resource which does not exist', function() {
+            expect(this.resourceManager.remove('unknown-resource')).to.be.equal(undefined);
+        });
+    });
+
+    describe('has', function() {
+        it('should return true if a resource is registered with provided name in the manager', function() {
+            this.resourceManager.add('my-resource', this._resourceMock);
+
+            this.resourceManager.has('my-resource').should.be.equal(true);
+        });
+
+        it('should return false if a resource is not registered in the manager', function() {
+            expect(this.resourceManager.has('unknown-resource')).to.be.equal(false);
+        });
+    });
+
     describe('register/add', function() {
         it('should register received resource under provided key', function() {
             this.resourceManager.register('my-resource', this._resourceMock);
