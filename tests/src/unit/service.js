@@ -31,10 +31,16 @@ describe('Service', function() {
     before(function() {
         this.servicePath = path.resolve(__dirname + '/../../lib/service.js');
         this.serviceModule = m._cache[this.servicePath];
+        this.serviceEmitSpy = sinon.spy(Service, 'emit');
     });
 
     beforeEach(function() {
         this.config = new Config.Config;
+        this.serviceEmitSpy.reset();
+    });
+
+    after(function() {
+        this.serviceEmitSpy.restore();
     });
 
     describe('constructor', function() {
@@ -70,6 +76,29 @@ describe('Service', function() {
             var s = new Service(this.config);
             initLoggerSpy.should.have.been.calledOnce;
             initLoggerSpy.restore();
+        });
+
+        it('should emit `service` static event on Service constructor object', function() {
+            const service = new Service(this.config);
+            let listenerSpy = sinon.spy();
+
+            Service.once('service', listenerSpy);
+
+            return service.$setup().then(function() {
+                return new Promise(function(resolve, reject) {
+                    process.nextTick(function() {
+                        try {
+                            listenerSpy.should.have.been.calledOnce;
+                            listenerSpy.should.have.been.calledWith(service);
+                            Service.emit.withArgs('service', service).should.be.calledOnce;
+                            Service.emit.withArgs('service').should.be.calledBefore(Service.emit.withArgs('set-up'));
+                            resolve();
+                        } catch(e) {
+                            reject(e);
+                        }
+                    });
+                });
+            });
         });
     });
 
