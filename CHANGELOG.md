@@ -1,6 +1,8 @@
 ## FUTURE
 
 * [ADDED] - new instance methods `has()` & `remove()` of the `ResourceManager`
+* [ADDED] - new instance method `has()` of the `RemoteServiceManager`
+* [ADDED] - `services.<name>` configuration section can now contain additional axios constructor options which the SDK will be instantiated with at the time of `remoteServiceManager.buildRemoteService()` call
 
 ## v1.2.0
 
