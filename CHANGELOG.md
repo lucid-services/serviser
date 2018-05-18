@@ -4,6 +4,7 @@
 * [ADDED] - new instance method `has()` of the `RemoteServiceManager`
 * [ADDED] - `services.<name>` configuration section can now contain additional axios constructor options which the SDK will be instantiated with at the time of `remoteServiceManager.buildRemoteService()` call
 * [FIXED] - `service` static event of `Service` constructor object should be emitted in the next event loop cycle to give plugins a chance to hook-up
+* [FIXED] - `Service.prototype.listen` waits till the next event loop tick to give bi-service plugins a chance to hook up
 
 ## v1.2.0
 
