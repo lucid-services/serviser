@@ -89,6 +89,37 @@ describe('RemoteServiceManager', function() {
         });
     });
 
+    describe('has', function() {
+        beforeEach(function() {
+            this.manager = new RemoteServiceManager();
+
+            var sdk = new SDKMock({baseURL: '127.0.0.1'});
+            this.manager.add('depot:public', sdk);
+        });
+
+        it("should return true when the manager's registry includes a SDK instance which matches provided key", function() {
+
+            this.manager.has('depot:public:v1.0').should.be.equal(true);
+            this.manager.has('depot:public').should.be.equal(true);
+            this.manager.has('depot').should.be.equal(true);
+        });
+
+        it("should return false when the manager's registry does not include a SDK instance which matches provided key", function() {
+
+            this.manager.has('depot:public:v2.0').should.be.equal(false);
+            this.manager.has('depot:s2s').should.be.equal(false);
+            this.manager.has('facebook').should.be.equal(false);
+        });
+
+        it("should throw an Error when an invalid key format is provided", function() {
+            var manager = this.manager;
+
+            expect(function() {
+                manager.has('depot:public:v1.0:someprop');
+            }).to.throw(Error);
+        });
+    });
+
     describe('buildRemoteService', function() {
         before(function() {
             this.managerPath = path.resolve(__dirname + '/../../../lib/remoteServiceManager.js');
@@ -108,7 +139,10 @@ describe('RemoteServiceManager', function() {
                     public: {
                         npm: 'bi-depot-public-sdk',
                         host: '127.0.0.1:3000',
-                        ssl: false
+                        ssl: false,
+                        params: {
+                            prop1: 'value'
+                        }
                     },
                     cli: {
                         npm: 'bi-cli-sdk',
@@ -156,6 +190,17 @@ describe('RemoteServiceManager', function() {
             });
 
             this.manager.buildRemoteService('depot:public:v1.0').should.be.instanceof(BIServiceSDK);
+        });
+
+        it('should provide the sdk constructor with additional options when as configured in the `services` config section', function() {
+            this.requireStub.withArgs('bi-depot-public-sdk').returns({
+                'v1.0': SDKMock
+            });
+
+            let sdk = this.manager.buildRemoteService('depot:public:v1.0');
+            sdk.axios.defaults.params.should.be.eql({
+                prop1: 'value'
+            });
         });
 
         it('should register newly created object in internal cache object', function() {
