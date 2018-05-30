@@ -11,7 +11,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 chai.should();
 
-describe('moduleLoader', function() {
+describe.only('moduleLoader', function() {
 
     before(function() {
         var self = this;
@@ -88,6 +88,16 @@ describe('moduleLoader', function() {
             );
 
             cbSpy.should.have.callCount(9);
+            this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
+        });
+
+        it('should support explicit file path as well as directory path', function() {
+            moduleLoader.loadModules([
+                this.tmpDir.name + '/modules/routes/v1.0',
+                this.tmpDir.name + '/modules/routes/v2.0/route4.js'
+            ]);
+
+            this.requireSpy.should.have.callCount(7);
             this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
         });
 

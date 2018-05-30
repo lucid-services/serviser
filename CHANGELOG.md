@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - `moduleLoader.fileIterator` did not support explicit file paths alongside directory paths even though public API claimed it as supported
+
 ## v1.3.0
 
 * [ADDED] - new instance methods `has()` & `remove()` of the `ResourceManager`
