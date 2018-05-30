@@ -116,5 +116,13 @@ describe('moduleLoader', function() {
 
             this.requireSpy.should.have.callCount(5);
         });
+
+        it('should throw an Error when first argument paths is invalid', function() {
+            const self = this;
+
+            expect(function() {
+                moduleLoader.loadModules({});
+            }).to.throw(Error, 'Invalid first argument');
+        });
     });
 });
