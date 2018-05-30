@@ -103,3 +103,96 @@ describe('resolveSchemaRefs', function() {
         });
     });
 });
+
+describe('registerCustomKeywords', function() {
+    beforeEach(function() {
+        this.validator = new Validator({});
+    });
+
+    describe('$desc', function() {
+        it('should register custom $desc keyword', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            this.validator.validateSchema({
+                type: "object",
+                properties: {
+                    username: {
+                        type: 'string',
+                        $desc: 'field description'
+                    }
+                }
+            }).should.be.equal(true);
+        });
+    });
+
+    describe('$toJSON', function() {
+        it('should register custom $toJSON keyword', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            this.validator.validateSchema({
+                type: 'object',
+                properties: {
+                    user: {
+                        allOf: [
+                            {$toJSON: {}},
+                            { type: 'object' }
+                        ]
+                    }
+                }
+            }).should.be.equal(true);
+        });
+
+        it('should parse json string', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            const schema = {
+                type: 'object',
+                properties: {
+                    json: {
+                        allOf: [
+                            {$toJSON: {}},
+                            { type: 'object' }
+                        ]
+                    }
+                }
+            };
+            const data = {json: '{"prop": "value"}'};
+
+            this.validator.validate(schema, data).should.be.equal(true);
+            data.json.should.be.eql({prop: 'value'});
+        });
+
+        it('should convert data object to json by calling its toJSON method implementation', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            const schema = {
+                type: 'object',
+                properties: {
+                    json: {
+                        allOf: [
+                            {$toJSON: {}},
+                            {
+                                type: 'object',
+                                required: ['prop'],
+                                properties: {
+                                    prop: {type: 'string'}
+                                }
+                            }
+                        ]
+                    }
+                }
+            };
+
+            function Data() {}
+
+            Data.prototype.toJSON = function toJSON() {
+                return {prop: 'value'};
+            };
+
+            const data = {json: new Data};
+
+            this.validator.validate(schema, data).should.be.equal(true);
+            data.json.should.be.eql({prop: 'value'});
+        });
+    });
+});
