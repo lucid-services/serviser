@@ -11,7 +11,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 chai.should();
 
-describe.only('moduleLoader', function() {
+describe('moduleLoader', function() {
 
     before(function() {
         var self = this;
