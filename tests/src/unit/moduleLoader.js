@@ -91,6 +91,16 @@ describe('moduleLoader', function() {
             this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
         });
 
+        it('should support explicit file path as well as directory path', function() {
+            moduleLoader.loadModules([
+                this.tmpDir.name + '/modules/routes/v1.0',
+                this.tmpDir.name + '/modules/routes/v2.0/route4.js'
+            ]);
+
+            this.requireSpy.should.have.callCount(7);
+            this.requireSpy.should.always.have.been.calledWithExactly(sinon.match.string);
+        });
+
         it('should skip directories & files which are listed in the `except` collection option ', function() {
             var options = {
                 except: [
@@ -105,6 +115,14 @@ describe('moduleLoader', function() {
             );
 
             this.requireSpy.should.have.callCount(5);
+        });
+
+        it('should throw an Error when first argument paths is invalid', function() {
+            const self = this;
+
+            expect(function() {
+                moduleLoader.loadModules({});
+            }).to.throw(Error, 'Invalid first argument');
         });
     });
 });

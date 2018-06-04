@@ -1,3 +1,8 @@
+## v1.3.1
+
+* [FIXED] - `moduleLoader.fileIterator` did not support explicit file paths alongside directory paths even though public API claimed it as supported
+* [FIXED] - custom `Ajv` keyword `$toJSON` should support typeof string values which it should attemnt to parse
+
 ## v1.3.0
 
 * [ADDED] - new instance methods `has()` & `remove()` of the `ResourceManager`
