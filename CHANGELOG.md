@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
+
 ## v1.3.1
 
 * [FIXED] - `moduleLoader.fileIterator` did not support explicit file paths alongside directory paths even though public API claimed it as supported
