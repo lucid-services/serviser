@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
+* [FIXED] - make sure node process is properly aborted when service initialization fails. This was not the case when multiple `bluebird` packages were being used in one chain.
 
 ## v1.3.1
 
