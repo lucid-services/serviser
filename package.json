@@ -1,6 +1,6 @@
 {
     "name": "bi-service",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
