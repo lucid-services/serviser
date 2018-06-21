@@ -260,6 +260,38 @@ describe('Route', function() {
         });
     });
 
+    describe('acceptedContentTypes', function() {
+        beforeEach(function() {
+            this.router = this.app.buildRouter({url: '/', version: 1.0});
+            this.putRoute = this.router.buildRoute({
+                url: '/',
+                type: 'put',
+                desc: 'description',
+                summary: 'summary'
+            });
+            this.getRoute = this.router.buildRoute({
+                url: '/',
+                type: 'get',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            this.putRoute.acceptsContentType('application/json');
+            this.putRoute.acceptsContentType('application/xml');
+        });
+
+        it('should return a collection of supported request content mime types', function() {
+            this.putRoute.acceptedContentTypes().should.be.eql([
+                'application/json',
+                'application/xml'
+            ]);
+        });
+
+        it('should return an empty array', function() {
+            this.getRoute.acceptedContentTypes().should.be.eql([]);
+        });
+    });
+
     describe('getName', function() {
         it("should return route's name", function() {
             var route = this.buildRoute({

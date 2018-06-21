@@ -1,3 +1,9 @@
+## 1.4.0
+
+* [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
+* [ADDED] - configurable `cluster` option of `bi-service run --cluster=<number>` where `<number>` can be a percentage amount (from number of available cpu threads) of childs to be forked in the case of floating point value, or exlicit number of childs when integer is provided
+* [FIXED] - make sure node process is properly aborted when service initialization fails. This was not the case when multiple `bluebird` packages were being used in one chain.
+
 ## v1.3.1
 
 * [FIXED] - `moduleLoader.fileIterator` did not support explicit file paths alongside directory paths even though public API claimed it as supported

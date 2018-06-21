@@ -368,46 +368,76 @@ describe('Service', function() {
                 this.service = new Service(this.config);
                 this.config.set('exitOnInitError', false);
 
-                var conf1 = this.config.createLiteralProvider();
-                var conf2 = this.config.createLiteralProvider();
+                this.buildApp = function buildApp(name) {
+                    const conf = this.config.createLiteralProvider();
+                    return this.service.appManager.buildApp(conf, {name: name});
+                };
 
-                this.app1 = this.service.appManager.buildApp(conf1, {name: 'app1'});
-                this.app2 = this.service.appManager.buildApp(conf2, {name: 'app2'});
-
-                this.appListenStub = sinon.stub(App.prototype, 'listen').returns({});
+                this.appListenStub = sinon.stub(App.prototype, 'listen', function() {
+                    this.$setStatus(AppStatus.OK);
+                    this.emit('listening', this);
+                    return {};
+                });
             });
 
             afterEach(function() {
                 this.appListenStub.restore();
             });
 
-            it('should return resolved Promise once all apps are initializey to receive connections', function() {
-                var self = this;
+            it('should return resolved Promise once all apps are initialized to receive connections', function() {
+                let app1 = this.buildApp('app1');
+                let app2 = this.buildApp('app2');
 
                 setTimeout(function() {
-                    self.app1.$setStatus(AppStatus.OK);
+                    app1.$setStatus(AppStatus.OK);
                 }, 25);
 
                 setTimeout(function() {
-                    self.app2.$setStatus(AppStatus.OK);
+                    app2.$setStatus(AppStatus.OK);
                 }, 50);
 
                 return this.service.listen().should.be.fulfilled;
             });
 
             it('should return rejected Promise when an Error occurs during initialization of apps', function() {
-                var self = this;
+                const app1 = this.buildApp('app1');
+                const app2 = this.buildApp('app2');
                 var error = new Error('test error');
 
                 setTimeout(function() {
-                    self.app1.$setStatus(AppStatus.OK);
+                    app1.$setStatus(AppStatus.OK);
                 }, 25);
 
                 setTimeout(function() {
-                    self.app2.$setStatus(AppStatus.ERROR, error);
+                    app2.$setStatus(AppStatus.ERROR, error);
                 }, 80);
 
                 return this.service.listen().should.be.rejectedWith(error);
+            });
+
+            it('should return rejected Promise when $setup fails after all apps are initialized', function() {
+                const err = new Error('test err');
+                const self = this;
+                const Promise2 = Promise.getNewLibraryCopy();
+                const serviceListeningSpy = sinon.spy();
+
+                this.service.once('listening', serviceListeningSpy);
+                this.service.once('error', function() {
+                    this.removeListener('listening', serviceListeningSpy);
+                });
+
+                this.service.on('set-up', function() {
+                    return new Promise2(function(resolve, reject) {
+                        self.buildApp('app1');
+                        reject(err);
+                    });
+                });
+
+                return this.service.listen().should.be.rejected.then(function(error) {
+                    serviceListeningSpy.should.have.callCount(0);
+                    self.appListenStub.should.have.callCount(0);
+                    expect(error).to.be.equal(err);
+                });
             });
         });
 
