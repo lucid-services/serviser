@@ -1,4 +1,4 @@
-## FUTURE
+## 1.4.0
 
 * [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
 * [ADDED] - configurable `cluster` option of `bi-service run --cluster=<number>` where `<number>` can be a percentage amount (from number of available cpu threads) of childs to be forked in the case of floating point value, or exlicit number of childs when integer is provided
