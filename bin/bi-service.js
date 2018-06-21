@@ -61,9 +61,11 @@ function _initializeYargs(ya) {
     .command(['run [options..]', 'start', 'serve'], 'Starts bi-service app - expects it to be located under cwd', {
         cluster: {
             alias: 'c',
-            describe: 'runs bi-service app in cluster mode - spawns child workers which are connected to the master process via IPC channel',
-            default: false,
-            type: 'boolean'
+            describe: '`<number>` is either a percentage amount (from number of available cpu threads) ' +
+            'of childs/workers to be forked in the case of floating point value, or exlicit number of childs in the case of integer'
+            default: 0,
+            defaultDescription: 'cluster mode disabled',
+            type: 'number'
         },
         'parse-pos-args': {
             describe: 'Whether to parse positional arguments',
@@ -122,8 +124,10 @@ function runCmd(argv) {
     var confOpt = _parseShellConfigOptions(argv);
     config.initialize(confOpt);
 
-    if (argv.cluster) {
-        _runCluster();
+    //when argv.cluster === void 0, the user provided --cluster
+    //flag without the option value (number of childs/nodes)
+    if (argv.cluster || argv.cluster === void 0) {
+        _runCluster(argv.cluster);
     } else {
         _run();
     }
@@ -358,11 +362,29 @@ function _run() {
  * @private
  * @return {undefined}
  */
-function _runCluster() {
+function _runCluster(numOfWorkers) {
+
+    if (typeof numOfWorkers !== 'number') {
+        numOfWorkers = CPU_COUNT;
+    } else if (numOfWorkers <= 0
+        || (!Number.isInteger(numOfWorkers)
+            && numOfWorkers < 0
+        )
+    ) {
+        console.error(
+            'Invalid `cluster` option value.' +
+            ' Expecting an integer or float n where n > 0'
+        );
+        process.exit(1);
+    } else if (!Number.isInteger(numOfWorkers)) {
+        numOfWorkers = Math.round(numOfWorkers * CPU_COUNT);
+    }
+
     if (cluster.isMaster) {
+        console.log(`RUNNING CLUSTER OF ${numOfWorkers}`)
         _verifyCWD();
         // Create a worker for each CPU
-        for (let i = 0; i < CPU_COUNT; i += 1) {
+        for (let i = 0; i < numOfWorkers; i += 1) {
             cluster.fork();
         }
         // Listen for dying workers

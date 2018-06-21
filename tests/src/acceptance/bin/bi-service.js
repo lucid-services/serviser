@@ -9,6 +9,7 @@ const chai           = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const sinonChai      = require("sinon-chai");
 const Promise        = require('bluebird');
+const CPU_COUNT      = require('os').cpus().length;
 const spawn          = require('child_process').spawn;
 
 const biServicePath = path.resolve(__dirname + '/../../../../bin/bi-service.js');
@@ -163,8 +164,75 @@ describe('bin/bi-service', function() {
                 MOCK_APP_CONFIG_PATH,
                 'apps.app1.listen',
                 this.port
-            ]).should.be.fulfilled;
+            ]).should.be.fulfilled.then(function(result) {
+                let matches = result.stdout.toString().match(/app listening on port/g);
+                expect(matches).to.be.instanceof(Array);
+                matches.length.should.be.equal(CPU_COUNT);
+            });
         });
+
+        it('should start a nodejs server in cluster mode with 1 node', function() {
+            return this.spawn([
+                'run',
+                '--cluster',
+                1,
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'apps.app1.listen',
+                this.port
+            ]).should.be.fulfilled.then(function(result) {
+                let matches = result.stdout.toString().match(/app listening on port/g);
+                expect(matches).to.be.instanceof(Array);
+                matches.length.should.be.equal(1);
+            });
+        });
+
+        it(`should start a nodejs server in cluster mode with ${CPU_COUNT} node(s)`, function() {
+            return this.spawn([
+                'run',
+                '--cluster',
+                .99,
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'apps.app1.listen',
+                this.port
+            ]).should.be.fulfilled.then(function(result) {
+                let matches = result.stdout.toString().match(/app listening on port/g);
+                expect(matches).to.be.instanceof(Array);
+                matches.length.should.be.equal(CPU_COUNT);
+            });
+        });
+
+        it(`should start a nodejs server in cluster mode with ${CPU_COUNT/2} node(s)`, function() {
+            return this.spawn([
+                'run',
+                '--cluster',
+                .5,
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'apps.app1.listen',
+                this.port
+            ]).should.be.fulfilled.then(function(result) {
+                let matches = result.stdout.toString().match(/app listening on port/g);
+                expect(matches).to.be.instanceof(Array);
+                matches.length.should.be.equal(CPU_COUNT/2);
+            });
+        });
+
+        it.only(`should fail with status code 1 when invalid 'cluster' option value is provided`, function() {
+            return this.spawn([
+                'run',
+                '--cluster',
+                -1,
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'apps.app1.listen',
+                this.port
+            ]).should.be.rejected.then(function(err) {
+                err.stderr.toString().should.match(/Invalid `cluster` option value/);
+            });
+        });
+
 
         describe('--parse-pos-args', function() {
             describe('when disabled', function() {
