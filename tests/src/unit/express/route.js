@@ -261,7 +261,7 @@ describe('Route', function() {
     });
 
     describe('acceptedContentTypes', function() {
-        before(function() {
+        beforeEach(function() {
             this.router = this.app.buildRouter({url: '/', version: 1.0});
             this.putRoute = this.router.buildRoute({
                 url: '/',
