@@ -219,7 +219,7 @@ describe('bin/bi-service', function() {
             });
         });
 
-        it.only(`should fail with status code 1 when invalid 'cluster' option value is provided`, function() {
+        it(`should fail with status code 1 when invalid 'cluster' option value is provided`, function() {
             return this.spawn([
                 'run',
                 '--cluster',
