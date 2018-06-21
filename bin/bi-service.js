@@ -62,7 +62,7 @@ function _initializeYargs(ya) {
         cluster: {
             alias: 'c',
             describe: '`<number>` is either a percentage amount (from number of available cpu threads) ' +
-            'of childs/workers to be forked in the case of floating point value, or exlicit number of childs in the case of integer'
+            'of childs/workers to be forked in the case of floating point value, or exlicit number of childs in the case of integer',
             default: 0,
             defaultDescription: 'cluster mode disabled',
             type: 'number'
