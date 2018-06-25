@@ -101,7 +101,7 @@ describe('functional server', function() {
             response: {
                 code: 400,
                 uid: null,
-                api_code: null,
+                api_code: 'validationFailure',
                 message: '.email should match format "email"'
             }
         },
