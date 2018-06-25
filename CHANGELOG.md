@@ -1,3 +1,7 @@
+## FUTURE
+
+* [ADDED] - `ValidationError.API_CODE` static writable property (which defaults to `validationFailure`) - sets `api_code` value for validation error http 400 response
+
 ## 1.4.0
 
 * [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
