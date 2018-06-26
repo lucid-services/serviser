@@ -113,14 +113,15 @@ exports.common = {
  * @readonly
  */
 exports.error = {
-    RouteError          : require('./lib/error/routeError.js'),
-    RouterError         : require('./lib/error/routerError.js'),
-    RouteNotFoundError  : require('./lib/error/routeNotFoundError.js'),
-    RequestError        : require('./lib/error/requestError.js'),
-    ServiceError        : require('./lib/error/serviceError.js'),
-    ValidationError     : require('./lib/error/validationError.js'),
-    ForbiddenError      : require('./lib/error/forbiddenError.js'),
-    UnauthorizedError   : require('./lib/error/unauthorizedError.js')
+    RouteError              : require('./lib/error/routeError.js'),
+    RouterError             : require('./lib/error/routerError.js'),
+    RouteNotFoundError      : require('./lib/error/routeNotFoundError.js'),
+    RequestError            : require('./lib/error/requestError.js'),
+    ServiceError            : require('./lib/error/serviceError.js'),
+    ValidationError         : require('./lib/error/validationError.js'),
+    ForbiddenError          : require('./lib/error/forbiddenError.js'),
+    UnauthorizedError       : require('./lib/error/unauthorizedError.js'),
+    ValidationCompoundError : require('./lib/error/validationCompoundError.js')
 };
 
 /**
@@ -133,4 +134,5 @@ exports.error = {
  * @property {ValidationError}    ValidationError
  * @property {ForbiddenError}     ForbiddenError
  * @property {UnauthorizedError}  UnauthorizedError
+ * @property {ValidationCompoundError} ValidationCompoundError
  */

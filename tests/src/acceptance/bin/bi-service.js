@@ -68,7 +68,7 @@ describe('bin/bi-service', function() {
                 }
 
                 if (typeof port === 'number') {
-                    intervalID = setInterval(killOnTCPUnavailable, 125);
+                    intervalID = setInterval(killOnTCPUnavailable, 200);
                 }
 
                 var proc = spawn('node', args, {
@@ -167,7 +167,7 @@ describe('bin/bi-service', function() {
             ]).should.be.fulfilled.then(function(result) {
                 let matches = result.stdout.toString().match(/app listening on port/g);
                 expect(matches).to.be.instanceof(Array);
-                matches.length.should.be.equal(CPU_COUNT);
+                matches.length.should.be.equal(2*CPU_COUNT);//2 apps each running at CPU_COUNT number of threads
             });
         });
 
@@ -183,7 +183,7 @@ describe('bin/bi-service', function() {
             ]).should.be.fulfilled.then(function(result) {
                 let matches = result.stdout.toString().match(/app listening on port/g);
                 expect(matches).to.be.instanceof(Array);
-                matches.length.should.be.equal(1);
+                matches.length.should.be.equal(2);//2apps
             });
         });
 
@@ -199,7 +199,7 @@ describe('bin/bi-service', function() {
             ]).should.be.fulfilled.then(function(result) {
                 let matches = result.stdout.toString().match(/app listening on port/g);
                 expect(matches).to.be.instanceof(Array);
-                matches.length.should.be.equal(CPU_COUNT);
+                matches.length.should.be.equal(2*CPU_COUNT);//2 apps each running at CPU_COUNT number of threads
             });
         });
 
@@ -215,7 +215,7 @@ describe('bin/bi-service', function() {
             ]).should.be.fulfilled.then(function(result) {
                 let matches = result.stdout.toString().match(/app listening on port/g);
                 expect(matches).to.be.instanceof(Array);
-                matches.length.should.be.equal(CPU_COUNT/2);
+                matches.length.should.be.equal(2*CPU_COUNT/2);//2 apps each running at CPU_COUNT/2 number of threads
             });
         });
 
@@ -297,20 +297,27 @@ describe('bin/bi-service', function() {
                 '--get-conf',
             ]).should.be.fulfilled.then(function(result) {
                 result.code.should.be.equal(0);
+                let bodyParser = {
+                    json: {
+                        extended: true,
+                        type: 'application/json',
+                        limit: "2mb"
+                    }
+                };
                 json5.parse(result.stdout).should.be.eql({
                     apps: {
                         app1: {
                             baseUrl: 'http://127.0.0.1',
                             listen: 5903,
-                            bodyParser: {
-                                json: {
-                                    extended: true,
-                                    type: 'application/json',
-                                    limit: "2mb"
-                                }
-                            },
+                            bodyParser: bodyParser,
+                        },
+                        app2: {
+                            baseUrl: 'http://127.0.0.1',
+                            listen: 5904,
+                            bodyParser: bodyParser,
                         }
                     },
+                    bodyParser: bodyParser,
                     fileConfigPath: MOCK_APP_CONFIG_PATH,
                     type: 'literal'
                 });

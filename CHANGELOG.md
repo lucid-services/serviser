@@ -1,6 +1,7 @@
 ## FUTURE
 
 * [ADDED] - `ValidationError.API_CODE` static writable property (which defaults to `validationFailure`) - sets `api_code` value for validation error http 400 response
+* [ADDED] - Ajv option `allErrors=true` is now supported. if enabled, validation response will include a collection of failures
 
 ## 1.4.0
 

@@ -381,7 +381,6 @@ function _runCluster(numOfWorkers) {
     }
 
     if (cluster.isMaster) {
-        console.log(`RUNNING CLUSTER OF ${numOfWorkers}`)
         _verifyCWD();
         // Create a worker for each CPU
         for (let i = 0; i < numOfWorkers; i += 1) {
