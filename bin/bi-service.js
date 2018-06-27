@@ -11,6 +11,7 @@ const config  = require('bi-config');
 const Promise = require('bluebird');
 
 const Service = require('../index.js');
+const configSchema = require('../lib/configSchema.js');
 
 const CPU_COUNT     = require('os').cpus().length;
 const VERSION       = require('../package.json').version;
@@ -27,17 +28,17 @@ if (module.parent === null) {
     _yargs = _initializeYargs(yargs);
 
     _yargs = _yargs.command('*', '', {
-        'get-conf': {//deprecated (has been replated by get:config cmd)
+        'get-conf': {//TODO remove, deprecated (has been replated by get:config cmd)
             alias: 'g',
             describe: 'Prints resolved config value',
             type: 'string'
         },
-        json5: {//deprecated (has been replated by get:config cmd)
+        json5: {//TODO, remove deprecated (has been replated by get:config cmd)
             describe: 'if any json data are about to be printed they will be converted to json5 format',
             type: 'boolean',
             default: false
         },
-        offset: {//deprecated (has been replated by get:config cmd)
+        offset: {//TODO, remove , deprecated (has been replated by get:config cmd)
             describe: "A String or Number that's used to insert white space into the output JSON string for readability purposes.",
             default: 4
         }
@@ -84,6 +85,12 @@ function _initializeYargs(ya) {
             default: 4
         }
     }, getConfigCmd)
+    .command(['test:config'], 'Tries to load the configuration file. Validates configuration.', {
+        schema: {
+            describe: "File path of additional validation json-schema. Supported filetypes: json/js",
+            type: 'string'
+        }
+    }, testConfigCmd)
     .option('help', {
         alias: 'h',
         describe: 'Show help',
@@ -153,12 +160,60 @@ function getConfigCmd(argv) {
 
             val = jsonUtils.stringify(val, null, argv.offset);
         }
-        console.log(val);
+        process.stdout.write(val+'');
+        process.stdout.write('\n');
         process.exit();
     } else {
-        console.error(val);
+        process.stderr.write(val+'');
+        process.stderr.write('\n');
         process.exit(1);
     }
+}
+
+/**
+ * @private
+ * @param {Object} argv
+ */
+function testConfigCmd(argv) {
+    let userSchema;
+
+    try {
+        if (argv.schema) {
+            if (!path.isAbsolute(argv.schema)) {
+                argv.schema = path.resolve(process.cwd() + '/' + argv.schema);
+            }
+
+            userSchema = require(argv.schema);
+        }
+
+        config.initialize({fileConfigPath: argv.config});
+        config.setInspectionSchema(configSchema);
+
+        if (!config.hasFileConfig) {
+            throw new Error('No configuration file at: ' + config.$getDefaultConfigPath());
+        }
+    } catch(e) {
+        process.stderr.write(e.message);
+        process.stderr.write('\n');
+        process.exit(1);
+    }
+
+    return config.inspectIntegrity().then(function() {
+        if (!userSchema) {
+            return null;
+        }
+
+        config.setInspectionSchema(userSchema);
+        return config.inspectIntegrity();
+    }).then(function() {
+        process.stdout.write('OK');
+        process.stdout.write('\n');
+        process.exit(0);
+    }).catch(function(e) {
+        process.stderr.write(e.message);
+        process.stderr.write('\n');
+        process.exit(1);
+    });
 }
 
 /**
@@ -193,7 +248,8 @@ function defaultCmd(argv) {
                 } else if (err.toJSON instanceof Function) {
                     err = err.toJSON();
                 }
-                console.error(err);
+                process.stderr.write(err);
+                process.stderr.write('\n');
                 process.exit(1);
             });
         } else {
@@ -328,8 +384,10 @@ function _verifyCWD() {
         if (e.code !== 'MODULE_NOT_FOUND') {
             throw e;
         }
-        console.error(`Could not confirm that cwd is a bi-service project:`);
-        console.error(e);
+        process.stderr.write(`Could not confirm that cwd is a bi-service project:`);
+        process.stderr.write('\n');
+        process.stderr.write(e);
+        process.stderr.write('\n');
         process.exit(1);
     }
 }
@@ -350,7 +408,10 @@ function _run() {
     } else if (fs.existsSync(PROJECT_INDEX)) {
         let service = require(PROJECT_INDEX);
         if (!(service instanceof Service)) {
-            console.error(`${PROJECT_INDEX} does not export a Service object`);
+            process.stderr.write(
+                `${PROJECT_INDEX} does not export a Service object`
+            );
+            process.stderr.write('\n');
             process.exit(1);
         }
 
@@ -371,10 +432,11 @@ function _runCluster(numOfWorkers) {
             && numOfWorkers < 0
         )
     ) {
-        console.error(
+        process.stderr.write(
             'Invalid `cluster` option value.' +
             ' Expecting an integer or float n where n > 0'
         );
+        process.stderr.write('\n');
         process.exit(1);
     } else if (!Number.isInteger(numOfWorkers)) {
         numOfWorkers = Math.round(numOfWorkers * CPU_COUNT);
@@ -394,7 +456,8 @@ function _runCluster(numOfWorkers) {
         });
         //
         cluster.on('disconnect', function(worker) {
-            console.error('disconnect!');
+            process.stderr.write('disconnect!');
+            process.stderr.write('\n');
         });
     } else {
         _run();

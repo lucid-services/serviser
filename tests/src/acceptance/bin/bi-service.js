@@ -277,6 +277,130 @@ describe('bin/bi-service', function() {
         });
     });
 
+    describe('get:config', function() {
+        it('should print option value', function() {
+            return this.spawn([
+                'get:config',
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'apps.app1.bodyParser.json.type'
+            ]).should.be.fulfilled.then(function(result) {
+                result.code.should.be.equal(0);
+                result.stdout.should.be.eql('application/json');
+            });
+        });
+
+        it('should print option value', function() {
+            return this.spawn([
+                "get:config",
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+            ]).should.be.fulfilled.then(function(result) {
+                result.code.should.be.equal(0);
+                let bodyParser = {
+                    json: {
+                        extended: true,
+                        type: 'application/json',
+                        limit: "2mb"
+                    }
+                };
+                json5.parse(result.stdout).should.be.eql({
+                    apps: {
+                        app1: {
+                            baseUrl: 'http://127.0.0.1',
+                            listen: 5903,
+                            bodyParser: bodyParser,
+                        },
+                        app2: {
+                            baseUrl: 'http://127.0.0.1',
+                            listen: 5904,
+                            bodyParser: bodyParser,
+                        }
+                    },
+                    bodyParser: bodyParser,
+                    fileConfigPath: MOCK_APP_CONFIG_PATH,
+                    type: 'literal'
+                });
+            });
+        });
+
+        it('should exit with 1 and print "undefined" when there is not such option', function() {
+            return this.spawn([
+                'get:config',
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                'some.options.which.does.not.exist'
+            ]).should.be.rejected.then(function(result) {
+                result.code.should.be.equal(1);
+                result.stderr.should.be.equal('undefined');
+            });
+        });
+    });
+
+    describe('test:config', function() {
+        before(function(done) {
+            tmp.setGracefulCleanup();
+            this.tmpDir = tmp.dirSync({unsafeCleanup: true});
+
+            const jsonSchema = {
+                type: 'object',
+                properties: {
+                    apps: {
+                        type: 'object',
+                        required: ['app3'],
+                        properties: {
+                            app3: {type: 'object'}
+                        }
+                    }
+                }
+            };
+
+            fs.writeFile(
+                `${this.tmpDir.name}/json-schema.json`,
+                JSON.stringify(jsonSchema),
+                done
+            );
+        });
+
+        it('should print OK message', function() {
+            return this.spawn([
+                'test:config',
+                '--config',
+                MOCK_APP_CONFIG_PATH
+            ]).should.be.fulfilled.then(function(result) {
+                result.code.should.be.equal(0);
+                result.stdout.should.be.eql('OK');
+            });
+        });
+
+        it('should accept additional validation json-schema through --schema option', function() {
+            return this.spawn([
+                'test:config',
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                '--schema',
+                `${this.tmpDir.name}/json-schema.json`
+
+            ]).should.be.rejected.then(function(err) {
+                expect(err.code).to.be.equal(1);
+                err.stderr.toString().should.match(
+                    /.apps should have required property 'app3'/
+                );
+            });
+        });
+
+        it('should exit with 1 when no configuration file is found', function() {
+            return this.spawn([
+                'test:config'
+            ]).should.be.rejected.then(function(err) {
+                expect(err.code).to.be.equal(1);
+                err.stderr.toString().should.match(
+                    /No configuration file at/
+                );
+            });
+        });
+    });
+
     describe('--get-conf', function() {
         it('should print option value', function() {
             return this.spawn([
