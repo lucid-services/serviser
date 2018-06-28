@@ -10,8 +10,9 @@ const json5   = require('json5');
 const config  = require('bi-config');
 const Promise = require('bluebird');
 
-const Service = require('../index.js');
+const Service      = require('../index.js');
 const configSchema = require('../lib/configSchema.js');
+const utils        = require('../lib/utils.js');
 
 const CPU_COUNT     = require('os').cpus().length;
 const VERSION       = require('../package.json').version;
@@ -193,8 +194,7 @@ function testConfigCmd(argv) {
             throw new Error('No configuration file at: ' + config.$getDefaultConfigPath());
         }
     } catch(e) {
-        process.stderr.write(e.message);
-        process.stderr.write('\n');
+        utils._stderr(e)
         process.exit(1);
     }
 
@@ -210,8 +210,7 @@ function testConfigCmd(argv) {
         process.stdout.write('\n');
         process.exit(0);
     }).catch(function(e) {
-        process.stderr.write(e.message);
-        process.stderr.write('\n');
+        utils._stderr(e);
         process.exit(1);
     });
 }
@@ -234,22 +233,35 @@ function defaultCmd(argv) {
         _initializeYargs(ya).help();
 
         if (fs.existsSync(PROJECT_INDEX)) {
-            let service = require(PROJECT_INDEX);
-            service.appManager.on('build-app', _onBuildApp);
+            let service;
+            const p = Promise.resolve();
 
-            return service.$setup({
-                //inspect only resources with exclusive 'shell' tag
-                integrity: ['shell']
+            return p.then(function() {
+                service = require(PROJECT_INDEX);
+                service.appManager.on('build-app', _onBuildApp);
+            }).then(function() {
+                return service.$setup({
+                    //inspect only resources with exclusive 'shell' tag
+                    integrity: ['shell']
+                });
+            }).catch(function(err) {
+                utils._stderr(
+                    'Warning: Failure encountered (in user-space) while loading' +
+                    ' additional shell commands.\n This is a problem' +
+                    ' with service implementation, not with bi-service itself.\n'
+                );
+                p.cancel();
+
+                return Promise.all([
+                    Promise.fromCallback(function(cb) {
+                        logger.error(err, cb);
+                    }),
+                    _setImmediate(_registerShellCommands, argv, ya, Service)
+                ]);
             }).then(function() {
                 return _setImmediate(_registerShellCommands, argv, ya, Service, service);
             }).catch(function(err) {
-                if (err.toLogger instanceof Function) {
-                    err = err.toLogger()
-                } else if (err.toJSON instanceof Function) {
-                    err = err.toJSON();
-                }
-                process.stderr.write(err);
-                process.stderr.write('\n');
+                utils._stderr(err);
                 process.exit(1);
             });
         } else {
@@ -384,10 +396,8 @@ function _verifyCWD() {
         if (e.code !== 'MODULE_NOT_FOUND') {
             throw e;
         }
-        process.stderr.write(`Could not confirm that cwd is a bi-service project:`);
-        process.stderr.write('\n');
-        process.stderr.write(e);
-        process.stderr.write('\n');
+        utils._stderr(`Could not confirm that cwd is a bi-service project:`);
+        utils._stderr(e);
         process.exit(1);
     }
 }
@@ -408,10 +418,7 @@ function _run() {
     } else if (fs.existsSync(PROJECT_INDEX)) {
         let service = require(PROJECT_INDEX);
         if (!(service instanceof Service)) {
-            process.stderr.write(
-                `${PROJECT_INDEX} does not export a Service object`
-            );
-            process.stderr.write('\n');
+            utils._stderr(`${PROJECT_INDEX} does not export a Service object`);
             process.exit(1);
         }
 
@@ -432,11 +439,10 @@ function _runCluster(numOfWorkers) {
             && numOfWorkers < 0
         )
     ) {
-        process.stderr.write(
+        utils._stderr(
             'Invalid `cluster` option value.' +
             ' Expecting an integer or float n where n > 0'
         );
-        process.stderr.write('\n');
         process.exit(1);
     } else if (!Number.isInteger(numOfWorkers)) {
         numOfWorkers = Math.round(numOfWorkers * CPU_COUNT);
@@ -456,8 +462,7 @@ function _runCluster(numOfWorkers) {
         });
         //
         cluster.on('disconnect', function(worker) {
-            process.stderr.write('disconnect!');
-            process.stderr.write('\n');
+            utils._stderr('disconnect!');
         });
     } else {
         _run();
