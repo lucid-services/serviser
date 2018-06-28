@@ -4,7 +4,8 @@ const router = require('../router.js');
 
 const route = router.buildRoute({
     type: 'post',
-    url : '/validate/body',
+    name: 'validateBody',
+    url : /\/validate\/body/,
 });
 
 route.validate({

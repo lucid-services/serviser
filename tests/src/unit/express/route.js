@@ -307,6 +307,21 @@ describe('Route', function() {
             route.getName().should.be.equal('test');
         });
 
+        it('should throw a RouteError when the route endpoint includes a regular expression and the `name` option is not defined', function() {
+
+            const self = this;
+
+            expect(function() {
+                self.buildRoute({
+                    url: '/',
+                    version: '1.0'
+                }, {
+                    url: /regexp/,
+                    type: 'get'
+                });
+            }).to.throw(RouteError);
+        });
+
         describe("default route's name (should be created if route name is not explicitly set)", function() {
 
             beforeEach(function() {
@@ -396,6 +411,7 @@ describe('Route', function() {
     });
 
     describe('getUrl', function() {
+
         describe('without router url', function() {
             before(function() {
                 this.route = this.buildRoute({
@@ -436,6 +452,28 @@ describe('Route', function() {
                 );
             });
         });
+
+        describe('route endpoint with a regular expression', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/path/to'
+                }, {
+                    type: 'get',
+                    name: 'routeName',
+                    url: /\/endpoint\/:seg\/resource\/:id/
+                });
+            });
+
+            it('should throw a RouteError when the route endpoint includes a regular expression', function() {
+                const self = this;
+
+                expect(function() {
+                    self.route.getUrl();
+                }).to.throw(RouteError);
+            });
+        });
+
         describe('with router url', function() {
             before(function() {
                 this.route = this.buildRoute({

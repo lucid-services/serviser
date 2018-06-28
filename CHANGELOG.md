@@ -4,6 +4,7 @@
 * [ADDED] - Ajv option `allErrors=true` is now supported. if enabled, validation response will include a collection of failures
 * [ADDED] - `bi-service test:config` command
 * [FIXED] - shell commands should print a short description of failure reason to stderr
+* [ADDED] - http `Route` implementation supports a regular expression as `url` option value
 
 ## 1.4.0
 
