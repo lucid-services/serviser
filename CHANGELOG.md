@@ -3,7 +3,7 @@
 * [ADDED] - `ValidationError.API_CODE` static writable property (which defaults to `validationFailure`) - sets `api_code` value for validation error http 400 response
 * [ADDED] - Ajv option `allErrors=true` is now supported. if enabled, validation response will include a collection of failures
 * [ADDED] - `bi-service test:config` command
-* [FIXED] - shell commands should print a short version of the failure reason to stderr
+* [FIXED] - shell commands should print a short description of failure reason to stderr
 
 ## 1.4.0
 
