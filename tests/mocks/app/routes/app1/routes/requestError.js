@@ -1,6 +1,6 @@
 'use strict'
 
-const RequestError = require('../../../../../lib/error/requestError.js');
+const RequestError = require('../../../../../../lib/error/requestError.js');
 const router = require('../router.js');
 
 const route = router.buildRoute({

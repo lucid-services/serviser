@@ -12,6 +12,7 @@ const service = module.exports = new Service(config);
 service.on('set-up', function() {
     //app1
     this.buildApp('app1');
+    this.buildApp('app2', {validator: {allErrors: true}});
 
     Service.moduleLoader.loadModules([
         __dirname + '/routes/'

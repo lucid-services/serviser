@@ -15,6 +15,7 @@ const RouteError      = require('../../../../lib/error/routeError.js');
 const RequestError    = require('../../../../lib/error/requestError.js');
 const ServiceError    = require('../../../../lib/error/serviceError.js');
 const ValidationError = require('../../../../lib/error/validationError.js');
+const ValidationCompoundError = require('../../../../lib/error/validationCompoundError.js');
 
 //should be required as it enables promise cancellation feature of bluebird Promise
 require('../../../../index.js');
@@ -306,6 +307,21 @@ describe('Route', function() {
             route.getName().should.be.equal('test');
         });
 
+        it('should throw a RouteError when the route endpoint includes a regular expression and the `name` option is not defined', function() {
+
+            const self = this;
+
+            expect(function() {
+                self.buildRoute({
+                    url: '/',
+                    version: '1.0'
+                }, {
+                    url: /regexp/,
+                    type: 'get'
+                });
+            }).to.throw(RouteError);
+        });
+
         describe("default route's name (should be created if route name is not explicitly set)", function() {
 
             beforeEach(function() {
@@ -395,6 +411,7 @@ describe('Route', function() {
     });
 
     describe('getUrl', function() {
+
         describe('without router url', function() {
             before(function() {
                 this.route = this.buildRoute({
@@ -435,6 +452,28 @@ describe('Route', function() {
                 );
             });
         });
+
+        describe('route endpoint with a regular expression', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/path/to'
+                }, {
+                    type: 'get',
+                    name: 'routeName',
+                    url: /\/endpoint\/:seg\/resource\/:id/
+                });
+            });
+
+            it('should throw a RouteError when the route endpoint includes a regular expression', function() {
+                const self = this;
+
+                expect(function() {
+                    self.route.getUrl();
+                }).to.throw(RouteError);
+            });
+        });
+
         describe('with router url', function() {
             before(function() {
                 this.route = this.buildRoute({
@@ -754,6 +793,30 @@ describe('Route', function() {
             respondsWithSpy.restore();
         });
 
+        it('should call `respondsWith` method with `ValidationCompoundError` constructor', function() {
+            var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
+
+            this.app.options.validator = {allErrors: true};
+            this.route.validate(this.schema, 'query');
+            respondsWithSpy.should.have.been.calledWith(ValidationCompoundError);
+
+            respondsWithSpy.restore();
+        });
+
+        it('should call `respondsWith` method with `ValidationCustomError` constructor', function() {
+            function ValidationCustomError() { }
+            ValidationCustomError.prototype = Object.create(ValidationError.prototype);
+            ValidationCustomError.prototype.constructor = ValidationCustomError;
+
+            var respondsWithSpy = sinon.spy(this.route, 'respondsWith');
+
+            this.app.getValidator().ValidationErrorConstructor = ValidationCustomError;
+            this.route.validate(this.schema, 'query');
+            respondsWithSpy.should.have.been.calledWith(ValidationCustomError);
+
+            respondsWithSpy.restore();
+        });
+
         it('should throw a ValidationError', function() {
             var req = {
                 query: 'invalid'
@@ -763,6 +826,35 @@ describe('Route', function() {
             this.route.validate(this.schema, 'query');
             var middleware = this.route.steps.pop().fn;
             expect(middleware.bind(null, req, res)).to.throw(ValidationError);
+        });
+
+        it('should throw a ValidationCompoundError', function() {
+            var req = {
+                query: 'invalid'
+            };
+            var res = {};
+
+            this.app.options.validator = {allErrors: true};
+            this.route.validate(this.schema, 'query');
+            var middleware = this.route.steps.pop().fn;
+            expect(middleware.bind(null, req, res)).to.throw(ValidationCompoundError);
+        });
+
+        it('should throw a ValidationCustomError', function() {
+            function ValidationCustomError() { }
+            ValidationCustomError.prototype = Object.create(ValidationError.prototype);
+            ValidationCustomError.prototype.constructor = ValidationCustomError;
+
+            this.app.getValidator().ValidationErrorConstructor = ValidationCustomError;
+
+            var req = {
+                query: 'invalid'
+            };
+            var res = {};
+
+            this.route.validate(this.schema, 'query');
+            var middleware = this.route.steps.pop().fn;
+            expect(middleware.bind(null, req, res)).to.throw(ValidationCustomError);
         });
 
         it('should throw a ValidationError with correct dataPath set when root data value is invalid', function() {

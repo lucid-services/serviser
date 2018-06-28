@@ -280,6 +280,60 @@ describe('App', function() {
                 this.app.getValidator().should.be.equal(val);
             });
 
+            it('should define ValidationErrorConstructor property on the validator object with value equal to `ValidationError` when allErrors=false', function() {
+                expect(this.app.validator).to.be.equal(null);
+                let val = this.app.getValidator();
+                expect(val.ValidationErrorConstructor).to.be.equal(
+                    Service.error.ValidationError
+                );
+            });
+
+            it('should define ValidationErrorConstructor property on the validator object with value equal to `ValidationCompoundError` when allErrors=true', function() {
+                expect(this.app.validator).to.be.equal(null);
+                this.app.options.validator = {allErrors: true};
+                let val = this.app.getValidator();
+                expect(val.ValidationErrorConstructor).to.be.equal(
+                    Service.error.ValidationCompoundError
+                );
+            });
+
+            it('should throw a TypeError when we try to overwrite ValidationErrorConstructor property with invalid value (value that does not inherit ValidationError)', function() {
+                function InvalidConstructor() {}
+
+                expect(this.app.validator).to.be.equal(null);
+                let val = this.app.getValidator();
+
+                expect(function() {
+                    val.ValidationErrorConstructor = InvalidConstructor;
+                }).to.throw(TypeError);
+
+                expect(function() {
+                    val.ValidationErrorConstructor = null;
+                }).to.throw(TypeError);
+
+                expect(function() {
+                    val.ValidationErrorConstructor = 'invalid';
+                }).to.throw(TypeError);
+
+                expect(function() {
+                    val.ValidationErrorConstructor = {};
+                }).to.throw(TypeError);
+            });
+
+            it('should allow to overwrite ValidationErrorConstructor property of validator object with a constructor which inherits from ValidationError', function() {
+                function CustomValidationError() {}
+                CustomValidationError.prototype = Object.create(
+                    Service.error.ValidationError.prototype
+                );
+                CustomValidationError.prototype.constructor = CustomValidationError;
+
+                expect(this.app.validator).to.be.equal(null);
+                let val = this.app.getValidator();
+
+                val.ValidationErrorConstructor = CustomValidationError;
+                expect(val.ValidationErrorConstructor).to.be.equal(CustomValidationError);
+            });
+
             it('(validator) should has custom $toJSON validation keyword working', function() {
                 let val = this.app.getValidator();
 
