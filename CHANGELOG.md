@@ -1,4 +1,4 @@
-## FUTURE
+## v1.5.1
 
 * [FIXED] - built-in cli commands were ignoring the `--help/-h` switch
 
