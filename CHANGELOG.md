@@ -1,3 +1,7 @@
+## v1.5.1
+
+* [FIXED] - built-in cli commands were ignoring the `--help/-h` switch
+
 ## v1.5.0
 
 * [ADDED] - `ValidationError.API_CODE` static writable property (which defaults to `validationFailure`) - sets `api_code` value for validation error http 400 response
