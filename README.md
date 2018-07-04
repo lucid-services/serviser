@@ -4,7 +4,7 @@
 `bi-service` is an abstraction layer with common interface for creating not-only web applications but also any apps that match the `request & response` pattern whether an underlying communication protocol is `HTTP`, `AMQP` (message queues), `IPC` or other..  
 Emphasis is put among other [features](https://github.com/BohemiaInteractive/bi-service#features) on product API documentation, validation, error handling and automation of perpetually repeated tasks.
 
-**Why?**
+**Why?**  
 So that basic project foundations and application architecture doesn't need to be invented again and again for each (web) service.  
 The project empowers minimalistic but mature libraries like [express]() and does its job on top of them striving for clean scalable, testable and consistent applications.
 
