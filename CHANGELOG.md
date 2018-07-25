@@ -1,3 +1,8 @@
+## FUTURE
+
+* [FIXED] - `bi-service --help` cli command was failing to load shell commands from user-space as internal `service.$setup` procedure was being executed too early
+* [FIXED] - the logger was not given enough time for an error to be logged when a failure occurred while loading additional shell commands from user-space
+
 ## v1.5.1
 
 * [FIXED] - built-in cli commands were ignoring the `--help/-h` switch
@@ -13,13 +18,13 @@
 ## v1.4.0
 
 * [ADDED] - `common/Route.prototype.acceptedContentTypes()` which returns a collection of supported request content mime types
-* [ADDED] - configurable `cluster` option of `bi-service run --cluster=<number>` where `<number>` can be a percentage amount (from number of available cpu threads) of childs to be forked in the case of floating point value, or exlicit number of childs when integer is provided
+* [ADDED] - configurable `cluster` option of `bi-service run --cluster=<number>` where `<number>` can be a percentage amount (from number of available cpu threads) of children to be forked in the case of floating point value, or explicit number of children when integer is provided
 * [FIXED] - make sure node process is properly aborted when service initialization fails. This was not the case when multiple `bluebird` packages were being used in one chain.
 
 ## v1.3.1
 
 * [FIXED] - `moduleLoader.fileIterator` did not support explicit file paths alongside directory paths even though public API claimed it as supported
-* [FIXED] - custom `Ajv` keyword `$toJSON` should support typeof string values which it should attemnt to parse
+* [FIXED] - custom `Ajv` keyword `$toJSON` should support typeof string values which it should attempt to parse
 
 ## v1.3.0
 
@@ -40,7 +45,7 @@
 
 ## v1.1.1
 
-* [FIXED] - `bi-service` executable - should not leak synchronous exceptions when executing a custom shell command. Those errors will be properly catched and printed to stderr before exit.
+* [FIXED] - `bi-service` executable - should not leak synchronous exceptions when executing a custom shell command. Those errors will be properly caught and printed to stderr before exit.
 
 ## v1.1.0
 
@@ -81,7 +86,7 @@
 
 ## v1.0.0-alpha.9
 
-* [FIXED] - generate documentation pages after successfull travis ci build
+* [FIXED] - generate documentation pages after successful travis ci build
 
 ## v1.0.0-alpha.8
 
@@ -108,7 +113,7 @@
 ## v1.0.0-alpha.4
 
 * [FIXED] - set executable flag on bin/bi-service.js
-* [FIXED] - defer emiting of the `app` event on the bi-service static module once the app is initialized
+* [FIXED] - defer emitting of the `app` event on the bi-service static module once the app is initialized
 * [ADDED] - cli interface of `bi-service-sequelize-migrations` is loaded if installed
 
 ## v1.0.0-alpha.3
@@ -130,7 +135,7 @@
 * [REMOVED] - `bi-json-inspector` support
 * [REMOVED] - `couchbase` integration modules (use bi-service-couchbase plugin)
 * [REMOVED] - `loadORMmodels` method of `moduleLoader` has been removed - equivalent functionality is provided by `bi-service-sequelize`
-* [REMOVED] - `loadODMmodels` method of `moduleLoader` use `moduleLoader.fileIterator` intead
+* [REMOVED] - `loadODMmodels` method of `moduleLoader` use `moduleLoader.fileIterator` instead
 
 ## v0.16.5
 
@@ -148,7 +153,7 @@
 ## v0.16.2
 
 * [FIXED] - request UID should be generated before any other middleware is executed
-* [FIXED] - `bi-service` module exported incorrect error contructor (ServiceError) under `error.ValidationError` instead of the actual `ValidationError`
+* [FIXED] - `bi-service` module exported incorrect error constructor (ServiceError) under `error.ValidationError` instead of the actual `ValidationError`
 
 ## v0.16.1
 
@@ -250,7 +255,7 @@
 
 ## v0.11.1
 
-* [FIXED] - `baseUrl` path string was being parsed incorrectly which led to routers being binded to incorrect endpoint
+* [FIXED] - `baseUrl` path string was being parsed incorrectly which led to routers being bound to incorrect endpoint
 * [FIXED] - `connect-flash` package was being incorrectly initialized when `Route.prototype.useSession` is called this led to a request hangup
 
 ## v0.11.0
@@ -264,8 +269,8 @@
 
 ## v0.10.3
 
-* [FIXED] an `Error` is throwed when a `Router` is trying to register a `Route` with non-unique route `uid`. `uid` should be unique in context of an `App`
-* [FIXED] an `Error` is throwed when a App defines non-unique `name` option
+* [FIXED] an `Error` is thrown when a `Router` is trying to register a `Route` with non-unique route `uid`. `uid` should be unique in context of an `App`
+* [FIXED] an `Error` is thrown when a App defines non-unique `name` option
 * [FIXED] each `App` presents itself independently to the `bi-depot` - this prevents service scope collision
 
 ## v0.10.2
@@ -283,11 +288,11 @@
 * [ADDED] `bi-api-errors` dependency
 * [ADDED] `AppManager.prototype.buildApp` emits a `build-app` event with a new App
 * [ADDED] `App.prototype.buildRouter` emits a `build-router` event with a new Router
-* [ADDED] new App `error-response` event which when registered, defers response of globaly handled errors to an user defined logic.
+* [ADDED] new App `error-response` event which when registered, defers response of globally handled errors to an user defined logic.
 * [ADDED] automatically describe possible error response codes of "native" middlewares with the `Route.prototype.respondsWith` method
 * [ADDED] `Route.prototype.restrictClientRedirect` method
 * [ADDED] `serviceIntegrity` inspects that an app can connect to its dependent web services
-* [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwriten - as it is for success response schema provided to the method.
+* [ADDED] support multiple calls to the `route.respondsWith` method with same type of `Error` object (Error objects which all resolve to same response code). The errors are stacked and not overwritten - as it is for success response schema provided to the method.
 * [REMOVED] `Route.prototype.restrictByIp` method
 * [REMOVED] `restrictRedirect` option of the `restrictByClient` method in favor of `Route.prototype.restrictClientRedirect` method
 * [REMOVED] the module no longer exports optionally dependent `Couchbase` & `CouchbaseODM` dependencies use `require('couchbase')` instead
@@ -328,7 +333,7 @@
 ## v0.8.0
 
 * [ADDED] automatic documentation server generation
-* [ADDED] `Route` constructor `summary` & `description` options for documenation purposes
+* [ADDED] `Route` constructor `summary` & `description` options for documentation purposes
 * [CHANGED] behavior of the `Route.prototype.respondsWith` behavior. The methods accepts single `descriptor` argument which can be either `json-inspector` schema or `Error` constructor & instance
 
 ## v0.7.1
@@ -359,7 +364,7 @@
 * [FIXED] `staticData.loadSync` - convert stdout, stderr Buffers to strings (incorrect condition caused the buffers to NOT be converted)
 * [FIXED] `staticData.loader` - particular db settings is taken from `storage.postgres.databases.staticData` config path
 * [FIXED] `clientMiddleware` - the `restrictScope` & `restrictRedirect` options were ignored + added tests for the middleware (tests requires >kouchbase-odm@2.0.0-rc.1)
-* [FIXED] fulfillent value (eg.: Response object) of the last route middleware was never being processed
+* [FIXED] fulfillment value (eg.: Response object) of the last route middleware was never being processed
 * [FIXED] updated `kouchbase-odm` allowing versions greater than `2.0.0-rc.1`
 
 ## v0.6.1
@@ -390,7 +395,7 @@
 * [ADDED] Route.prototype.catch method - reflects bluebirds Promise.catch method signature
 * [ADDED] most of the `Route` methods were made chainable (`main`, `validate`, `restrictByClient`, `restrictByIp`, `restrictByOrigin`, `addStep`, `catch`)
 * [ADDED] CLI `sort` && filter options to the `ls` command
-* [FIXED] CLI error handling of synchrounously throwed errors (witout this fix, an app would crash with exit code != 0) on error
+* [FIXED] CLI error handling of synchronously thrown errors (without this fix, an app would crash with exit code != 0) on error
 * [FIXED] Sequelize penetrator - don't load (require) `cache` module unless we want to penetrate cache support into a sequelize instance
 
 ## v0.4.0

@@ -29,7 +29,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('bin/bi-service', function() {
+describe.only('bin/bi-service', function() {
     before(function() {
         var self = this;
         this.spawn = _spawn;
@@ -397,6 +397,32 @@ describe('bin/bi-service', function() {
                 err.stderr.toString().should.match(
                     /No configuration file at/
                 );
+            });
+        });
+    });
+
+    describe('--help', function() {
+        it('should print available commands and exit with status code 0', function() {
+            let expectedStdout =
+                '../../../bin/bi-service.js <command> [options]\n' +
+                '\n' +
+                'Commands:\n' +
+                '  run [options..]   Starts bi-service app - expects it to be located under cwd  [aliases: start, serve]\n' +
+                '  get:config [key]  Dumbs resolved service configuration\n' +
+                '  test:config       Tries to load the configuration file. Validates configuration.\n' +
+                '\n' +
+                'Options:\n' +
+                '  --help, -h  Show help  [boolean]\n' +
+                '  --config    Custom config file destination  [string]\n' +
+                '  --version   Prints bi-service version  [boolean]';
+
+            return this.spawn([
+                '--config',
+                MOCK_APP_CONFIG_PATH,
+                '--help'
+            ]).should.be.fulfilled.then(function(result) {
+                result.code.should.be.equal(0);
+                result.stdout.should.be.eql(expectedStdout);
             });
         });
     });
