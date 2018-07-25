@@ -165,7 +165,7 @@ describe('Route', function() {
             this.router = this.app.buildRouter({url: '/', version: 1.0});
         });
 
-        it('should do nothing when req method type does not have req body', function() {
+        it(`should push req body parser into the route's stack (get method)`, function() {
             var route = this.router.buildRoute({
                 url: '/',
                 type: 'get',
@@ -175,10 +175,59 @@ describe('Route', function() {
 
             expect(route.$dataParserMiddleware).to.be.equal(null);
             route.acceptsContentType('application/json');
-            expect(route.$dataParserMiddleware).to.be.equal(null);
+            route.$dataParserMiddleware.should.be.a('object');
+            route.$dataParserMiddleware.should.have.property('name', 'content-type-parser');
+            route.$dataParserMiddleware.should.have.property('validatorMiddlewareIndex', route.steps.length -1);
+            route.$dataParserMiddleware.should.have.property('pendingValidatorMiddleware', true);
+
+            route.steps.should.include(route.$dataParserMiddleware);
         });
 
-        it(`should push req body parser into the route's stack`, function() {
+        it('should schedule nextTick callback which should register valid content-type validation middleware', function(done) {
+            var route = this.router.buildRoute({
+                url: '/schedule',
+                type: 'get'
+            });
+
+            expect(route.$dataParserMiddleware).to.be.equal(null);
+            route.acceptsContentType('application/json');
+            route.acceptsContentType('application/x-www-form-urlencoded');
+
+            let stackLength = route.steps.length;
+            expect(findValidator()).to.be.equal(undefined);
+
+            process.nextTick(function() {
+                try {
+                    route.steps.length.should.be.equal(stackLength + 1);
+                    let validator = findValidator();
+                    expect(validator).to.be.an('object');
+                    validator.args[0].should.be.eql({
+                        type: 'object',
+                        properties: {
+                            'content-type': {
+                                type: 'string',
+                                enum: [
+                                    'application/json',
+                                    'application/x-www-form-urlencoded'
+                                ]
+                            }
+                        }
+                    });
+                    validator.args[1].should.be.equal('headers');
+                    done();
+                } catch(e) {
+                    done(e);
+                }
+            });
+
+            function findValidator() {
+                return route.steps.find(function(middleware) {
+                    return middleware.name === 'validator';
+                });
+            }
+        });
+
+        it(`should push req body parser into the route's stack (post method)`, function() {
             var route = this.router.buildRoute({
                 url: '/',
                 type: 'post',
