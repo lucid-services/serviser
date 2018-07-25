@@ -29,7 +29,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe.only('bin/bi-service', function() {
+describe('bin/bi-service', function() {
     before(function() {
         var self = this;
         this.spawn = _spawn;
