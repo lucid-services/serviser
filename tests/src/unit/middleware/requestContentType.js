@@ -52,7 +52,8 @@ describe('requestContentType middleware', function() {
         },
         {
             type: 'application/x-www-form-urlencoded',
-            data: JSON.stringify({data: 'data'}),
+            data: 'data=data',
+            expectedData: JSON.stringify({data: 'data'}),
             method: 'post',
             supported: {
                 urlencoded: {}
@@ -74,6 +75,7 @@ describe('requestContentType middleware', function() {
             let test = request(server)[item.method]('/');
             test.set('Content-Type', item.type);
             test.write(item.data);
+            test.expect('req-body', item.expectedData || item.data || '{}');
             test.expect(200, '', done);
         });
     });
@@ -112,14 +114,15 @@ describe('requestContentType middleware', function() {
             }
         },
     ].forEach(function(item, index) {
-        it(`should FAIL req content-type validation (${index})`, function(done) {
+        it(`should NOT parse req body (${index})`, function(done) {
 
             let server = createServer(item.supported);
 
             let test = request(server)[item.method]('/');
             test.set('Content-Type', item.type);
             test.write(item.data);
-            test.expect(400, 'RequestError', done);
+            test.expect('req-body', '{}');
+            test.expect(200, '', done);
         });
     });
 

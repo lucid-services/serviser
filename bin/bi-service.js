@@ -163,11 +163,12 @@ function defaultCmd(argv) {
 
         if (fs.existsSync(PROJECT_INDEX)) {
             let service;
-            const p = Promise.resolve();
 
-            return p.then(function() {
+            let p = Promise.try(function() {
                 service = require(PROJECT_INDEX);
                 service.appManager.on('build-app', _onBuildApp);
+                //give service enough time to register event listeners
+                return _waitTillNextTick();
             }).then(function() {
                 return service.$setup({
                     //inspect only resources with exclusive 'shell' tag
@@ -181,18 +182,25 @@ function defaultCmd(argv) {
                 );
                 p.cancel();
 
-                return Promise.all([
-                    Promise.fromCallback(function(cb) {
-                        logger.error(err, cb);
-                    }),
-                    _setImmediate(_registerShellCommands, argv, ya, Service)
-                ]);
+                //make sure exitCode is not changed by yargs
+                Object.defineProperty(process, 'exitCode', {
+                    get: function() {return 1;},
+                    set: function() {}
+                });
+
+                return Promise.fromCallback(function(cb) {
+                    logger.error(err, cb);
+                }).then(function() {
+                    return _setImmediate(_registerShellCommands, argv, ya, Service);
+                });
             }).then(function() {
                 return _setImmediate(_registerShellCommands, argv, ya, Service, service);
             }).catch(function(err) {
                 utils._stderr(err);
                 process.exit(1);
             });
+
+            return p;
         } else {
             return _setImmediate(_registerShellCommands, argv, ya, Service);
         }
@@ -200,7 +208,17 @@ function defaultCmd(argv) {
 }
 
 /**
+ * @return <Promise>
+ */
+function _waitTillNextTick(fn) {
+    return new Promise(function(resolve, reject) {
+        process.nextTick(resolve);
+    });
+}
+
+/**
  * setImmediate which returns a Promise
+ * @return <Promise>
  */
 function _setImmediate(fn) {
     let args = Array.prototype.slice.call(arguments, 1);
