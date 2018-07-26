@@ -1,4 +1,4 @@
-## FUTURE
+## v1.6.0
 
 * [ADDED] - `Route.prototype.acceptsContentType` uses internal route validation API instead of validating the data on its own
 * [FIXED] - `bi-service --help` cli command was failing to load shell commands from user-space as internal `service.$setup` procedure was being executed too early
