@@ -1,6 +1,6 @@
 ## v1.6.1
 
-* [FIXED] - regression of `1.6.0` release which would not expand content-type abbreviations like `json` & `urlencoded` into valid media type thus requiring request to define `content-type` header with invalid (abbreviated) values
+* [FIXED] - regression of `1.6.0` release which would not expand content-type abbreviations like `json` & `urlencoded` into valid media type thus requiring a request to define `content-type` header with invalid (abbreviated) values
 
 ## v1.6.0
 
