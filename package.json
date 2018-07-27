@@ -50,7 +50,7 @@
         "lodash": "~4.17.4",
         "qs": "~6.5.1",
         "stack-trace": "0.0.10",
-        "type-is": "~1.6.16",
+        "type-is": "1.6.16",
         "yargs": "^8.0.0"
     },
     "devDependencies": {

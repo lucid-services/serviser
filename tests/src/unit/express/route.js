@@ -183,6 +183,26 @@ describe('Route', function() {
             route.steps.should.include(route.$dataParserMiddleware);
         });
 
+        it('should register expanded media type abbreviations', function() {
+            var route = this.router.buildRoute({
+                url: '/',
+                type: 'get',
+                desc: 'description',
+                summary: 'summary'
+            });
+
+            expect(route.$dataParserMiddleware).to.be.equal(null);
+            route.acceptsContentType('json');
+            route.acceptsContentType('urlencoded');
+            route.$dataParserMiddleware.should.be.a('object');
+            route.$dataParserMiddleware.should.have.property('mediaTypes')
+                .that.is.eql(['application/json', 'application/x-www-form-urlencoded']);
+            route.$dataParserMiddleware
+                .should.have.deep.property('contentTypes.application/json');
+            route.$dataParserMiddleware
+                .should.have.deep.property('contentTypes.application/x-www-form-urlencoded');
+        });
+
         it('should schedule nextTick callback which should register valid content-type validation middleware', function(done) {
             var route = this.router.buildRoute({
                 url: '/schedule',
