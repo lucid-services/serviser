@@ -1,4 +1,4 @@
-## FUTURE
+## v1.6.2
 
 * [FIXED] - regression of `1.6.0` which didn't consider `charset` & `boundary` directives while validating a request content-type header
 
