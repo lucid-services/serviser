@@ -125,6 +125,39 @@ describe('registerCustomKeywords', function() {
         });
     });
 
+    describe('format: media-type', function() {
+        it('should register custom string format: media-type', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            this.validator.validateSchema({
+                type: "object",
+                properties: {
+                    'content-type': {
+                        type: 'string',
+                        format: 'media-type'
+                    }
+                }
+            }).should.be.equal(true);
+        });
+
+        it('should validate string for valid media-type', function() {
+            utils.registerCustomKeywords(this.validator);
+
+            let validate = this.validator.compile({
+                type: "object",
+                properties: {
+                    'content-type': {
+                        type: 'string',
+                        format: 'media-type'
+                    }
+                }
+            });
+
+            validate({'content-type': 'invalid'}).should.be.equal(false);
+            validate({'content-type': 'application/json'}).should.be.equal(true);
+        });
+    });
+
     describe('$toJSON', function() {
         it('should register custom $toJSON keyword', function() {
             utils.registerCustomKeywords(this.validator);

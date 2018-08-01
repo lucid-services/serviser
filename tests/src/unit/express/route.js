@@ -226,10 +226,8 @@ describe('Route', function() {
                         properties: {
                             'content-type': {
                                 type: 'string',
-                                enum: [
-                                    'application/json',
-                                    'application/x-www-form-urlencoded'
-                                ]
+                                format: 'media-type',
+                                pattern: '(application/json|application/x-www-form-urlencoded)'
                             }
                         }
                     });
