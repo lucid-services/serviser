@@ -1,3 +1,7 @@
+## FUTURE
+
+* [FIXED] - semantic error - order of operations - the `Service` property was being assigned to `Service` prototype object which had been overwritten immediatelly afterwards thus making the assigned `Service` property unavailable
+
 ## v1.6.2
 
 * [FIXED] - regression of `1.6.0` which didn't consider `charset` & `boundary` directives while validating a request content-type header
