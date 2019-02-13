@@ -506,7 +506,7 @@ describe('Route', function() {
                     seg: 'seg',
                     id: '1'
                 }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                    '/endpoint/seg/resource/1?key=value&another=queryvalue'
+                    '/endpoint/seg/resource/1?another=queryvalue&key=value'
                 );
             });
 
@@ -584,7 +584,7 @@ describe('Route', function() {
                     seg: 'seg',
                     id: '1'
                 }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                    '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+                    '/path/to/endpoint/seg/resource/1?another=queryvalue&key=value'
                 );
             });
         });
@@ -622,7 +622,7 @@ describe('Route', function() {
                 seg: 'seg',
                 id: '1'
             }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?another=queryvalue&key=value'
             );
         });
     });

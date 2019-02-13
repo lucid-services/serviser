@@ -397,7 +397,7 @@ describe('App', function() {
             });
         });
 
-        describe.only('getHost', function() {
+        describe('getHost', function() {
             it('should return base app location string (protocol + host)', function() {
                 let config = new Config.Config();
                 config.set(null, {baseUrl: 'http://service.bistudio.com/root'});
