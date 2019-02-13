@@ -1,0 +1,75 @@
+{
+    "name": "bi-service",
+    "version": "1.7.0",
+    "description": "Node.js web application framework",
+    "main": "index.js",
+    "testFramework": "mocha",
+    "author": "Bohemia Interactive",
+    "contributors": [
+        "fogine"
+    ],
+    "private": false,
+    "bin": {
+        "bi-service": "./bin/bi-service.js"
+    },
+    "engines": {
+        "node": ">=6.4.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BohemiaInteractive/bi-service"
+    },
+    "license": "GPL-3.0",
+    "files": [
+        "bin",
+        "lib",
+        "LICENCE",
+        "COPYRIGHT",
+        "CHANGELOG.md",
+        "index.js"
+    ],
+    "scripts": {
+        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --ui bdd -R spec -t 5000 'tests/src/**/*.js'",
+        "create:docs": "./node_modules/.bin/jsdoc --configure .jsdoc.json -u ./tutorials --verbose",
+        "tests": "mocha --ui bdd --colors --check-leaks -t 5000 --reporter spec 'tests/src/**/*.js'",
+        "test": "npm run tests"
+    },
+    "dependencies": {
+        "bi-cache-store-interface": "^1.0.1",
+        "bi-config": "^2.0.0",
+        "bi-logger": "^2.0.0",
+        "ajv": "^6.9.0",
+        "ajv-keywords": "^3.4.0",
+        "bluebird": "^3.5.1",
+        "body-parser": "~1.18.2",
+        "debug": "~3.1.0",
+        "events-bluebird": "^1.0.0",
+        "express": "~4.16.3",
+        "http-status-codes": "^1.0.6",
+        "json5": "0.5.0",
+        "lodash": "~4.17.4",
+        "qs": "^6.6.0",
+        "stack-trace": "0.0.10",
+        "type-is": "1.6.16",
+        "media-typer": "0.3.0",
+        "yargs": "^8.0.0"
+    },
+    "devDependencies": {
+        "realm-jsdoc": "0.x",
+        "jsdoc": "^3.4.0",
+        "bi-service-sdk": "^1.2.2",
+        "chai": "^3.5.0",
+        "chai-as-promised": "^5.3.0",
+        "express-session": "^1.13.x",
+        "find-port": "^2.0.1",
+        "istanbul": "^0.4.3",
+        "mocha": "^2.5.3",
+        "nconf": "^0.8.4",
+        "rewire": "^2.5.2",
+        "sinon": "^1.17.3",
+        "sinon-as-promised": "^4.0.0",
+        "sinon-chai": "^2.8.0",
+        "tmp": "0.0.29",
+        "supertest": "1.1.0"
+    }
+}

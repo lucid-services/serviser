@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>bi-service docs</title>
+    
+    
+    
+        <meta name="keywords" content="bi-service express server" />
+        <meta name="keyword" content="bi-service express server" />
+    
+    
+    
+    <meta property="og:title" content="bi-service"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+
+    <link type="text/css" rel="stylesheet" href="styles/normalize.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="styles/ui.css">
+
+    <script src="scripts/prettify/prettify.js" defer></script>
+    <script src="scripts/prettify/lang-css.js" defer></script>
+    <script src="scripts/jquery.min.js" defer></script>
+    <script src="scripts/bootstrap.min.js" defer></script>
+    <script src="scripts/linenumber.js" defer></script>
+    <script src="scripts/main.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"applicationName":"bi-service","disqus":"bi-service","googleAnalytics":"","openGraph":{"title":"bi-service","type":"website","image":"","site_name":"","url":""},"meta":{"title":"bi-service docs","description":"","keyword":"bi-service express server"},"linenums":true,"default":{"staticFiles":{"include":["./tutorials/images"]}}};
+    </script>
+    
+
+    
+</head>
+<body onload="prettyPrint()">
+<div class="container-fluid">
+    <div class="nav-side-menu">
+        
+<div class="brand"><a href="index.html">bi-service</a></div>
+<i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+<div class="search">
+    <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
+    <span class="clearer fa fa-lg fa-times pull-right"></span>
+</div>
+<div id="side-bar-menu" class="menu-list">
+    <ul id="menu-content" class="menu-content collapse out">
+        
+                
+<li id="nav-Tutorials-item" data-toggle="collapse" data-target="#nav-Tutorials" class="collapsed">
+<span style="padding-left:10px"<i class="fa fa-code fa-lg"></i> Tutorials<span class="arrow"></span></span>
+<ul class="sub-menu collapse" id="nav-Tutorials">
+    
+        
+            <li>
+                <div class="section-header">Basics</div>
+                    
+                                <a href="tutorial-1.Getting-started.html">Getting Started</a>
+                            
+                                <a href="tutorial-1a.Configuration.html">Configuration</a>
+                            
+                                <a href="tutorial-1b.Routing.html">Routing</a>
+                            
+                                <a href="tutorial-1c.ErrorManagement.html">Error management</a>
+                            
+                                <a href="tutorial-1d.Validation.html">Validation</a>
+                            
+                                <a href="tutorial-1e.Logging.html">Logging</a>
+                            
+            </li>
+        
+            <li>
+                <div class="section-header">CLI Interface</div>
+                    
+                           <a href="tutorial-2.CLI-interface.html">CLI Interface</a>
+                        
+            </li>
+        
+            <li>
+                <div class="section-header">Plugins/Extensions</div>
+                    
+                           <a href="tutorial-3.Plugins.html">Plugins/Extensions</a>
+                        
+            </li>
+        
+            <li>
+                <div class="section-header">SDKs integration</div>
+                    
+                           <a href="tutorial-4.SDK-integration.html">SDKs integration</a>
+                        
+            </li>
+        
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-App-item" data-toggle="collapse" data-target="#nav-App" class="collapsed">
+<a href="App.html"><i class="fa fa-code fa-lg"></i>App<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-App">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">7</span></div>
+        
+            <a href="App.html#appManager" class="inherit">appManager</a>
+        
+            <a href="App.html#config" class="inherit">config</a>
+        
+            <a href="App.html#name" class="inherit">name</a>
+        
+            <a href="App.html#resourceManager" class="inherit">resourceManager</a>
+        
+            <a href="App.html#Router">Router</a>
+        
+            <a href="App.html#service" class="inherit">service</a>
+        
+            <a href="App.html#status" class="inherit">status</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="App.html#getHost">getHost</a>
+        
+            <a href="App.html#listen" class="override">listen</a>
+        
+            <a href="App.html#use" class="override">use</a>
+        
+            <a href="App.html#useSession">useSession</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">5</span></div>
+        
+            <a href="App.html#buildRouter" class="inherit">buildRouter</a>
+        
+            <a href="App.html#close" class="inherit">close</a>
+        
+            <a href="App.html#getRoute" class="inherit">getRoute</a>
+        
+            <a href="App.html#getValidator" class="inherit">getValidator</a>
+        
+            <a href="App.html#on" class="inherit">on</a>
+        
+    </li>
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">10</span></div>
+        
+            <a href="App.html#event:build-router" class="inherit">build-router</a>
+        
+            <a href="App.html#event:error" class="inherit">error</a>
+        
+            <a href="App.html#event:error-response" class="inherit">error-response</a>
+        
+            <a href="App.html#event:listening" class="inherit">listening</a>
+        
+            <a href="App.html#event:post-build" class="inherit">post-build</a>
+        
+            <a href="App.html#event:post-init" class="inherit">post-init</a>
+        
+            <a href="App.html#event:pre-build" class="inherit">pre-build</a>
+        
+            <a href="App.html#event:pre-init" class="inherit">pre-init</a>
+        
+            <a href="App.html#event:status-changed" class="inherit">status-changed</a>
+        
+            <a href="App.html#event:unknown-error" class="inherit">unknown-error</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-AppInterface-item" data-toggle="collapse" data-target="#nav-AppInterface" class="collapsed">
+<a href="AppInterface.html"><i class="fa fa-code fa-lg"></i>AppInterface<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-AppInterface">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">6</span></div>
+        
+            <a href="AppInterface.html#appManager">appManager</a>
+        
+            <a href="AppInterface.html#config">config</a>
+        
+            <a href="AppInterface.html#name">name</a>
+        
+            <a href="AppInterface.html#resourceManager">resourceManager</a>
+        
+            <a href="AppInterface.html#service">service</a>
+        
+            <a href="AppInterface.html#status">status</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">7</span></div>
+        
+            <a href="AppInterface.html#buildRouter">buildRouter</a>
+        
+            <a href="AppInterface.html#close">close</a>
+        
+            <a href="AppInterface.html#getRoute">getRoute</a>
+        
+            <a href="AppInterface.html#getValidator">getValidator</a>
+        
+            <a href="AppInterface.html#listen">listen</a>
+        
+            <a href="AppInterface.html#on">on</a>
+        
+            <a href="AppInterface.html#use">use</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">10</span></div>
+        
+            <a href="AppInterface.html#event:build-router">build-router</a>
+        
+            <a href="AppInterface.html#event:error">error</a>
+        
+            <a href="AppInterface.html#event:error-response">error-response</a>
+        
+            <a href="AppInterface.html#event:listening">listening</a>
+        
+            <a href="AppInterface.html#event:post-build">post-build</a>
+        
+            <a href="AppInterface.html#event:post-init">post-init</a>
+        
+            <a href="AppInterface.html#event:pre-build">pre-build</a>
+        
+            <a href="AppInterface.html#event:pre-init">pre-init</a>
+        
+            <a href="AppInterface.html#event:status-changed">status-changed</a>
+        
+            <a href="AppInterface.html#event:unknown-error">unknown-error</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-AppManager-item" data-toggle="collapse" data-target="#nav-AppManager" class="collapsed">
+<a href="AppManager.html"><i class="fa fa-code fa-lg"></i>AppManager<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-AppManager">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">1</span></div>
+        
+            <a href="AppManager.html#service">service</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="AppManager.html#add">add</a>
+        
+            <a href="AppManager.html#buildApp">buildApp</a>
+        
+            <a href="AppManager.html#get">get</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">1</span></div>
+        
+            <a href="AppManager.html#event:build-app">build-app</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ForbiddenError-item" data-toggle="collapse" data-target="#nav-ForbiddenError" class="collapsed">
+<a href="ForbiddenError.html"><i class="fa fa-code fa-lg"></i>ForbiddenError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ForbiddenError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="ForbiddenError.html#code" class="override">code</a>
+        
+            <a href="ForbiddenError.html#message" class="override">message</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="ForbiddenError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="ForbiddenError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="ForbiddenError.html#toLogger" class="inherit">toLogger</a>
+        
+            <a href="ForbiddenError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ModuleLoader-item" data-toggle="collapse" data-target="#nav-ModuleLoader" class="collapsed">
+<a href="ModuleLoader.html"><i class="fa fa-code fa-lg"></i>ModuleLoader<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ModuleLoader">
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">2</span></div>
+        
+            <a href="ModuleLoader.html#.fileIterator">fileIterator</a>
+        
+            <a href="ModuleLoader.html#.loadModules">loadModules</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-RemoteServiceManager-item" data-toggle="collapse" data-target="#nav-RemoteServiceManager" class="collapsed">
+<a href="RemoteServiceManager.html"><i class="fa fa-code fa-lg"></i>RemoteServiceManager<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-RemoteServiceManager">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">1</span></div>
+        
+            <a href="RemoteServiceManager.html#BIServiceSDK">BIServiceSDK</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="RemoteServiceManager.html#add">add</a>
+        
+            <a href="RemoteServiceManager.html#buildRemoteService">buildRemoteService</a>
+        
+            <a href="RemoteServiceManager.html#get">get</a>
+        
+            <a href="RemoteServiceManager.html#has">has</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-RequestError-item" data-toggle="collapse" data-target="#nav-RequestError" class="collapsed">
+<a href="RequestError.html"><i class="fa fa-code fa-lg"></i>RequestError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-RequestError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="RequestError.html#code">code</a>
+        
+            <a href="RequestError.html#message">message</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="RequestError.html#setUID">setUID</a>
+        
+            <a href="RequestError.html#toJSON">toJSON</a>
+        
+            <a href="RequestError.html#toLogger">toLogger</a>
+        
+            <a href="RequestError.html#toSwagger">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ResourceManager-item" data-toggle="collapse" data-target="#nav-ResourceManager" class="collapsed">
+<a href="ResourceManager.html"><i class="fa fa-code fa-lg"></i>ResourceManager<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ResourceManager">
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">7</span></div>
+        
+            <a href="ResourceManager.html#add">add</a>
+        
+            <a href="ResourceManager.html#get">get</a>
+        
+            <a href="ResourceManager.html#has">has</a>
+        
+            <a href="ResourceManager.html#inspectIntegrity">inspectIntegrity</a>
+        
+            <a href="ResourceManager.html#register">register</a>
+        
+            <a href="ResourceManager.html#remove">remove</a>
+        
+            <a href="ResourceManager.html#tag">tag</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-Response-item" data-toggle="collapse" data-target="#nav-Response" class="collapsed">
+<a href="Response.html"><i class="fa fa-code fa-lg"></i>Response<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-Response">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">1</span></div>
+        
+            <a href="Response.html#.ValidationError">ValidationError</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-Route-item" data-toggle="collapse" data-target="#nav-Route" class="collapsed">
+<a href="Route.html"><i class="fa fa-code fa-lg"></i>Route<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-Route">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="Route.html#fileSystemLocation" class="inherit">fileSystemLocation</a>
+        
+            <a href="Route.html#uid" class="inherit">uid</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="Route.html#getAbsoluteUrl">getAbsoluteUrl</a>
+        
+            <a href="Route.html#getName" class="override">getName</a>
+        
+            <a href="Route.html#getUrl">getUrl</a>
+        
+            <a href="Route.html#validate" class="override">validate</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">10</span></div>
+        
+            <a href="Route.html#acceptedContentTypes" class="inherit">acceptedContentTypes</a>
+        
+            <a href="Route.html#acceptsContentType" class="inherit">acceptsContentType</a>
+        
+            <a href="Route.html#addStep" class="inherit">addStep</a>
+        
+            <a href="Route.html#buildResponse" class="inherit">buildResponse</a>
+        
+            <a href="Route.html#catch" class="inherit">catch</a>
+        
+            <a href="Route.html#getAllSteps" class="inherit">getAllSteps</a>
+        
+            <a href="Route.html#main" class="inherit">main</a>
+        
+            <a href="Route.html#rejectsContentType" class="inherit">rejectsContentType</a>
+        
+            <a href="Route.html#respondsWith" class="inherit">respondsWith</a>
+        
+            <a href="Route.html#step" class="inherit">step</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                <li id="nav-RouteError-item">
+                    <a href="RouteError.html"><i class="fa fa-users fa-lg"></i>RouteError</a>
+                </li>
+        
+                
+<li id="nav-RouteInterface-item" data-toggle="collapse" data-target="#nav-RouteInterface" class="collapsed">
+<a href="RouteInterface.html"><i class="fa fa-code fa-lg"></i>RouteInterface<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-RouteInterface">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="RouteInterface.html#fileSystemLocation">fileSystemLocation</a>
+        
+            <a href="RouteInterface.html#uid">uid</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">12</span></div>
+        
+            <a href="RouteInterface.html#acceptedContentTypes">acceptedContentTypes</a>
+        
+            <a href="RouteInterface.html#acceptsContentType">acceptsContentType</a>
+        
+            <a href="RouteInterface.html#addStep">addStep</a>
+        
+            <a href="RouteInterface.html#buildResponse">buildResponse</a>
+        
+            <a href="RouteInterface.html#catch">catch</a>
+        
+            <a href="RouteInterface.html#getAllSteps">getAllSteps</a>
+        
+            <a href="RouteInterface.html#getName">getName</a>
+        
+            <a href="RouteInterface.html#main">main</a>
+        
+            <a href="RouteInterface.html#rejectsContentType">rejectsContentType</a>
+        
+            <a href="RouteInterface.html#respondsWith">respondsWith</a>
+        
+            <a href="RouteInterface.html#step">step</a>
+        
+            <a href="RouteInterface.html#validate">validate</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-RouteNotFoundError-item" data-toggle="collapse" data-target="#nav-RouteNotFoundError" class="collapsed">
+<a href="RouteNotFoundError.html"><i class="fa fa-code fa-lg"></i>RouteNotFoundError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-RouteNotFoundError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="RouteNotFoundError.html#code" class="inherit">code</a>
+        
+            <a href="RouteNotFoundError.html#message" class="inherit">message</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="RouteNotFoundError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="RouteNotFoundError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="RouteNotFoundError.html#toLogger" class="inherit">toLogger</a>
+        
+            <a href="RouteNotFoundError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-Router-item" data-toggle="collapse" data-target="#nav-Router" class="collapsed">
+<a href="Router.html"><i class="fa fa-code fa-lg"></i>Router<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-Router">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">1</span></div>
+        
+            <a href="Router.html#Route">Route</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="Router.html#buildRoute" class="inherit">buildRoute</a>
+        
+            <a href="Router.html#getUrl" class="inherit">getUrl</a>
+        
+            <a href="Router.html#setRouteNameFormat" class="inherit">setRouteNameFormat</a>
+        
+    </li>
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">1</span></div>
+        
+            <a href="Router.html#event:build-route" class="override">build-route</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                <li id="nav-RouterError-item">
+                    <a href="RouterError.html"><i class="fa fa-users fa-lg"></i>RouterError</a>
+                </li>
+        
+                
+<li id="nav-RouterInterface-item" data-toggle="collapse" data-target="#nav-RouterInterface" class="collapsed">
+<a href="RouterInterface.html"><i class="fa fa-code fa-lg"></i>RouterInterface<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-RouterInterface">
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="RouterInterface.html#buildRoute">buildRoute</a>
+        
+            <a href="RouterInterface.html#getUrl">getUrl</a>
+        
+            <a href="RouterInterface.html#setRouteNameFormat">setRouteNameFormat</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">1</span></div>
+        
+            <a href="RouterInterface.html#event:build-route">build-route</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-Service-item" data-toggle="collapse" data-target="#nav-Service" class="collapsed">
+<a href="Service.html"><i class="fa fa-code fa-lg"></i>Service<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-Service">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">22</span></div>
+        
+            <a href="Service.html#.App">App</a>
+        
+            <a href="Service.html#.AppManager">AppManager</a>
+        
+            <a href="Service.html#.AppStatus">AppStatus</a>
+        
+            <a href="Service.html#.common">common</a>
+        
+            <a href="Service.html#.error">error</a>
+        
+            <a href="Service.html#.moduleLoader">moduleLoader</a>
+        
+            <a href="Service.html#.RemoteServiceManager">RemoteServiceManager</a>
+        
+            <a href="Service.html#.RequestType">RequestType</a>
+        
+            <a href="Service.html#.ResourceManager">ResourceManager</a>
+        
+            <a href="Service.html#.Response">Response</a>
+        
+            <a href="Service.html#.Route">Route</a>
+        
+            <a href="Service.html#.Router">Router</a>
+        
+            <a href="Service.html#.Service">Service</a>
+        
+            <a href="Service.html#.utils">utils</a>
+        
+            <a href="Service.html#.VERSION">VERSION</a>
+        
+            <a href="Service.html#appManager">appManager</a>
+        
+            <a href="Service.html#cbModelManager">cbModelManager</a>
+        
+            <a href="Service.html#config">config</a>
+        
+            <a href="Service.html#remoteServiceManager">remoteServiceManager</a>
+        
+            <a href="Service.html#resourceManager">resourceManager</a>
+        
+            <a href="Service.html#Service">Service</a>
+        
+            <a href="Service.html#sqlModelManager">sqlModelManager</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">6</span></div>
+        
+            <a href="Service.html#.onListening">onListening</a>
+        
+            <a href="Service.html#.onPostInit">onPostInit</a>
+        
+            <a href="Service.html#buildApp">buildApp</a>
+        
+            <a href="Service.html#close">close</a>
+        
+            <a href="Service.html#getRemoteServiceManager">getRemoteServiceManager</a>
+        
+            <a href="Service.html#listen">listen</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Events<span class="badge pull-right">8</span></div>
+        
+            <a href="Service.html#event:error">error</a>
+        
+            <a href="Service.html#event:listening">listening</a>
+        
+            <a href="Service.html#event:set-up">set-up</a>
+        
+            <a href="Service.html#event:shell-cmd">shell-cmd</a>
+        
+            <a href="Service.html#event:static:app">static:app</a>
+        
+            <a href="Service.html#event:static:service">static:service</a>
+        
+            <a href="Service.html#event:static:set-up">static:set-up</a>
+        
+            <a href="Service.html#event:static:shell-cmd">static:shell-cmd</a>
+        
+    </li>
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ServiceError-item" data-toggle="collapse" data-target="#nav-ServiceError" class="collapsed">
+<a href="ServiceError.html"><i class="fa fa-code fa-lg"></i>ServiceError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ServiceError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="ServiceError.html#code" class="override">code</a>
+        
+            <a href="ServiceError.html#message" class="override">message</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="ServiceError.html#.buildFrom">buildFrom</a>
+        
+            <a href="ServiceError.html#setOrigin">setOrigin</a>
+        
+            <a href="ServiceError.html#toLogger" class="override">toLogger</a>
+        
+    </li>
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="ServiceError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="ServiceError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="ServiceError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-UnauthorizedError-item" data-toggle="collapse" data-target="#nav-UnauthorizedError" class="collapsed">
+<a href="UnauthorizedError.html"><i class="fa fa-code fa-lg"></i>UnauthorizedError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-UnauthorizedError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">2</span></div>
+        
+            <a href="UnauthorizedError.html#code" class="override">code</a>
+        
+            <a href="UnauthorizedError.html#message" class="override">message</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="UnauthorizedError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="UnauthorizedError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="UnauthorizedError.html#toLogger" class="inherit">toLogger</a>
+        
+            <a href="UnauthorizedError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-Utils-item" data-toggle="collapse" data-target="#nav-Utils" class="collapsed">
+<a href="Utils.html"><i class="fa fa-code fa-lg"></i>Utils<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-Utils">
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Methods<span class="badge pull-right">3</span></div>
+        
+            <a href="Utils.html#.getPaginationMeta">getPaginationMeta</a>
+        
+            <a href="Utils.html#.registerCustomKeywords">registerCustomKeywords</a>
+        
+            <a href="Utils.html#.resolveSchemaRefs">resolveSchemaRefs</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ValidationCompoundError-item" data-toggle="collapse" data-target="#nav-ValidationCompoundError" class="collapsed">
+<a href="ValidationCompoundError.html"><i class="fa fa-code fa-lg"></i>ValidationCompoundError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ValidationCompoundError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">3</span></div>
+        
+            <a href="ValidationCompoundError.html#code" class="override">code</a>
+        
+            <a href="ValidationCompoundError.html#failures">failures</a>
+        
+            <a href="ValidationCompoundError.html#message" class="inherit">message</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="ValidationCompoundError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="ValidationCompoundError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="ValidationCompoundError.html#toLogger" class="inherit">toLogger</a>
+        
+            <a href="ValidationCompoundError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+                
+<li id="nav-ValidationError-item" data-toggle="collapse" data-target="#nav-ValidationError" class="collapsed">
+<a href="ValidationError.html"><i class="fa fa-code fa-lg"></i>ValidationError<span class="arrow"></span></a>
+<ul class="sub-menu collapse" id="nav-ValidationError">
+    
+
+    
+    <li>
+        <div class="section-header">Members<span class="badge pull-right">4</span></div>
+        
+            <a href="ValidationError.html#.API_CODE">API_CODE</a>
+        
+            <a href="ValidationError.html#.DATA_PATH">DATA_PATH</a>
+        
+            <a href="ValidationError.html#code" class="override">code</a>
+        
+            <a href="ValidationError.html#message" class="inherit">message</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+    <li>
+        <div class="section-header">Inherited Methods<span class="badge pull-right">4</span></div>
+        
+            <a href="ValidationError.html#setUID" class="inherit">setUID</a>
+        
+            <a href="ValidationError.html#toJSON" class="inherit">toJSON</a>
+        
+            <a href="ValidationError.html#toLogger" class="inherit">toLogger</a>
+        
+            <a href="ValidationError.html#toSwagger" class="inherit">toSwagger</a>
+        
+    </li>
+    
+
+    
+
+    
+
+    
+</ul>
+</li>
+
+            
+    </ul>
+ </div>
+
+    </div>
+    <div class="main">
+        
+
+
+
+<section>
+
+<header>
+    <h1>
+    
+        
+    
+    
+    </h1>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+        
+
+        
+            
+
+            
+
+
+
+
+
+
+
+
+
+
+            
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+
+    
+
+    
+
+    <!-- CONSTANTS -->
+    
+
+    <!-- MEMBERS -->
+    
+
+    <!-- PRIVATE MEMBERS -->
+    
+
+    <!-- CONSTRUCTOR -->
+    
+
+    <!-- METHODS -->
+    
+        <div class="page-header">
+            <h3>Methods</h3>
+        </div>
+
+        <dl>
+            
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="_defineValidationErrorConstructor">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>_defineValidationErrorConstructor</strong><span class="signature">(validator)</span><i class="return-type-icon"></i><span class="type-signature"><code>undefined</code></span>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+        
+
+
+
+
+
+
+
+
+
+
+        
+            <h5><b>Parameters</b>:</h5>
+            
+
+
+<ul class="params">
+    <li>
+        
+            <b>validator</b>
+        
+
+        
+        
+        
+
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">Validator</code>
+</li>
+        
+
+        
+
+        
+            <li><p>ajv instance</p></li>
+        
+
+        
+    </ul>
+</ul>
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+                <b>Returns</b>:
+            
+
+            
+
+
+        <span class="returns">
+            
+                <code class="text-nowrap">undefined</code>
+
+            
+
+            
+
+            
+        </span>
+    
+
+        
+
+        
+    </div>
+    
+</div>
+
+        
+            
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="_verifyCWD">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>_verifyCWD</strong><span class="signature">()</span>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+        
+
+
+
+
+
+
+
+
+
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </div>
+    
+</div>
+
+        </dl>
+    
+
+    <!-- PRIVATE METHODS -->
+    
+
+    <!-- INHERITED METHODS -->
+    
+
+    <!-- EVENTS -->
+    
+
+    <!-- PRIVATE EVENTS -->
+    
+
+    <!-- TYPE DEFS -->
+    
+        <div class="page-header">
+            <h3>Type Definitions</h3>
+        </div>
+
+        <dl>
+            
+                    
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="AppStatus">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>AppStatus</strong>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+        
+<div class="detail-content">
+    <h5><b>Type</b>:</h5>
+    <code class="text-nowrap">Object</code>
+
+</div>
+
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+
+<ul class="properties">
+    <li>
+        
+            <b>OK</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+            <li><p>application is successfully initialized and ready to receive connections</p></li>
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>INIT</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+            <li><p>application is being initialized</p></li>
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>ERROR</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+            <li><p>application failed during its initialization or after it started listening for connections</p></li>
+        
+
+        
+    </ul>
+</ul>
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+        
+    </div>
+    
+</div>
+
+                
+                    
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="CommonList">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>CommonList</strong>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+        
+<div class="detail-content">
+    <h5><b>Type</b>:</h5>
+    <code class="text-nowrap">Object</code>
+
+</div>
+
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+
+<ul class="properties">
+    <li>
+        
+            <b>App</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="AppInterface.html">AppInterface</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>Router</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="RouterInterface.html">RouterInterface</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>Route</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="RouteInterface.html">RouteInterface</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+        
+    </div>
+    
+</div>
+
+                
+                    
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="ErrorList">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>ErrorList</strong>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+        
+<div class="detail-content">
+    <h5><b>Type</b>:</h5>
+    <code class="text-nowrap">Object</code>
+
+</div>
+
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+
+<ul class="properties">
+    <li>
+        
+            <b>RouteError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="RouteError.html">RouteError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>RouteNotFoundError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="RouteNotFoundError.html">RouteNotFoundError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>RequestError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="RequestError.html">RequestError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>ServiceError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="ServiceError.html">ServiceError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>ValidationError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="ValidationError.html">ValidationError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>ForbiddenError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="ForbiddenError.html">ForbiddenError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>UnauthorizedError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="UnauthorizedError.html">UnauthorizedError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>ValidationCompoundError</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap"><a href="ValidationCompoundError.html">ValidationCompoundError</a></code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+        
+    </div>
+    
+</div>
+
+                
+                    
+
+<div class="doc-member panel panel-default">
+    <div class="panel-heading" id="RequestType">
+        <div class="row">
+            <div class="panel-title   ">
+                <strong>RequestType</strong>
+            </div>
+            
+        </div>
+        <div class="row sub-heading">
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+
+            
+                <div class="col-sm-4"></div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        
+
+
+    <p>http(s) end point types</p>
+
+        
+<div class="detail-content">
+    <h5><b>Type</b>:</h5>
+    <code class="text-nowrap">Object</code>
+
+</div>
+
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+
+<ul class="properties">
+    <li>
+        
+            <b>ALL</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>GET</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>POST</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>PUT</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>HEAD</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>CONNECT</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>OPTIONS</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="properties">
+    <li>
+        
+            <b>DELETE</b>
+        
+
+        
+        
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">string</code>
+</li>
+        
+
+        
+
+        
+
+        
+    </ul>
+</ul>
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+        
+    </div>
+    
+</div>
+
+                
+        </dl>
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a target="_blank" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a target="_blank" href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+    </div>
+</div>
+</body>
+</html>
