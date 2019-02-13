@@ -1,3 +1,13 @@
+## v1.7.0
+
+* [FIXED] - semantic error - order of operations - the `Service` property was being assigned to `Service` prototype object which had been overwritten immediatelly afterwards thus making the assigned `Service` property unavailable
+* [FIXED] - http `Route.prototype.getUrl` was returning malformed url string when the endpoint string contained more than one regular expression parameter constraints, solves [#1](https://github.com/lucid-services/bi-service/issues/1)
+* [FIXED] - update `ajv` & `ajv-keywords` & `qs` packages
+* [FIXED] - http `app.getHost()` was returning `//` string value instead of empty string when the host value was unknown
+* [FIXED] - http `route.getUrl` method should sort query parameter keys before serializing the parameters into a string
+* [FIXED] - `ResourceManager.prototype.register` should accept resource `Function` objects
+* [ADDED] - `res.setPaginationHeaders` method accepts new `offsetAlias` & `limitAlias` options
+
 ## v1.6.2
 
 * [FIXED] - regression of `1.6.0` which didn't consider `charset` & `boundary` directives while validating a request content-type header

@@ -73,8 +73,6 @@ describe('Response', function() {
                     limit: 10
                 });
 
-                //TODO it's not ensured that url query parameters will be
-                //inserted in correct order
                 let firstUrl = this.route.getAbsoluteUrl({}, {
                     limit: 10,
                 });
@@ -88,6 +86,34 @@ describe('Response', function() {
                 });
 
                 this.res.setHeader.should.have.been.calledTwice;
+                this.res.setHeader.should.have.been.calledWith('x-total-count', 100);
+                this.res.setHeader.should.have.been.calledWith(
+                    'Link',
+                    `<${firstUrl}>; rel="first", <${lastUrl}>; rel="last", <${nextUrl}>; rel="next"`
+                );
+            });
+
+            it('should use limit & offset aliases if provided', function() {
+                this.wrappedRes.setPaginationHeaders({
+                    offset: 0,
+                    count: 100,
+                    limit: 10,
+                    offsetAlias: '_offset',
+                    limitAlias: '_limit'
+                });
+
+                let firstUrl = this.route.getAbsoluteUrl({}, {
+                    _limit: 10,
+                });
+                let lastUrl = this.route.getAbsoluteUrl({}, {
+                    _limit: 10,
+                    _offset: 90,
+                });
+                let nextUrl = this.route.getAbsoluteUrl({}, {
+                    _offset: 10,
+                    _limit: 10
+                });
+
                 this.res.setHeader.should.have.been.calledWith('x-total-count', 100);
                 this.res.setHeader.should.have.been.calledWith(
                     'Link',

@@ -398,14 +398,20 @@ describe('App', function() {
         });
 
         describe('getHost', function() {
-            beforeEach(function() {
-                this.config = new Config.Config();
-                this.config.set(null, {baseUrl: 'http://service.bistudio.com/root'});
-                this.app = this.appManager.buildApp(this.config, {name: 'getHost'});
+            it('should return base app location string (protocol + host)', function() {
+                let config = new Config.Config();
+                config.set(null, {baseUrl: 'http://service.bistudio.com/root'});
+                let app = this.appManager.buildApp(config, {name: 'getHost'});
+
+                app.getHost().should.be.equal('http://service.bistudio.com');
             });
 
-            it('should return base app location string (protocol + host)', function() {
-                this.app.getHost().should.be.equal('http://service.bistudio.com');
+            it('should return empty string', function() {
+                let config = new Config.Config();
+                config.set(null, {});
+                let app = this.appManager.buildApp(this.config, {name: 'getEmptyHost'});
+
+                app.getHost().should.be.equal('');
             });
         });
 

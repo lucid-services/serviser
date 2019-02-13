@@ -122,8 +122,8 @@ describe('functional server', function() {
                 responseHeaders: {
                     Link: `<${BASE_URL}/pagination?limit=25>; rel="first", ` +
                     `<${BASE_URL}/pagination?limit=25&offset=75>; rel="last", ` +
-                    `<${BASE_URL}/pagination?offset=75&limit=25>; rel="next", ` +
-                    `<${BASE_URL}/pagination?offset=25&limit=25>; rel="prev"`
+                    `<${BASE_URL}/pagination?limit=25&offset=75>; rel="next", ` +
+                    `<${BASE_URL}/pagination?limit=25&offset=25>; rel="prev"`
                 }
             },
             {

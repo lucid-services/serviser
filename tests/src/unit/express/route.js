@@ -506,7 +506,7 @@ describe('Route', function() {
                     seg: 'seg',
                     id: '1'
                 }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                    '/endpoint/seg/resource/1?key=value&another=queryvalue'
+                    '/endpoint/seg/resource/1?another=queryvalue&key=value'
                 );
             });
 
@@ -517,6 +517,22 @@ describe('Route', function() {
                 }, {}).should.be.equal(
                     '/endpoint/seg/resource/1'
                 );
+            });
+        });
+
+        describe('with two or more regular expression parameter constrainsts', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/'
+                }, {
+                    type: 'get',
+                    url: '/endpoint/:endpoint_id(\d+)/resource/:id(\d+)'
+                });
+            });
+
+            it('should return route endpoint without host', function() {
+                this.route.getUrl().should.be.equal('/endpoint/:endpoint_id/resource/:id');
             });
         });
 
@@ -568,7 +584,7 @@ describe('Route', function() {
                     seg: 'seg',
                     id: '1'
                 }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                    '/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+                    '/path/to/endpoint/seg/resource/1?another=queryvalue&key=value'
                 );
             });
         });
@@ -606,7 +622,7 @@ describe('Route', function() {
                 seg: 'seg',
                 id: '1'
             }, {key: 'value', another: 'queryvalue'}).should.be.equal(
-                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?key=value&another=queryvalue'
+                'http://127.0.0.1:3000/path/to/endpoint/seg/resource/1?another=queryvalue&key=value'
             );
         });
     });
