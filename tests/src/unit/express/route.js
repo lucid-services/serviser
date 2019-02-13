@@ -520,6 +520,22 @@ describe('Route', function() {
             });
         });
 
+        describe('with two or more regular expression parameter constrainsts', function() {
+            before(function() {
+                this.route = this.buildRoute({
+                    version: 1,
+                    url: '/'
+                }, {
+                    type: 'get',
+                    url: '/endpoint/:endpoint_id(\d+)/resource/:id(\d+)'
+                });
+            });
+
+            it('should return route endpoint without host', function() {
+                this.route.getUrl().should.be.equal('/endpoint/:endpoint_id/resource/:id');
+            });
+        });
+
         describe('route endpoint with a regular expression', function() {
             before(function() {
                 this.route = this.buildRoute({
