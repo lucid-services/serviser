@@ -5,6 +5,7 @@
 * [FIXED] - update `ajv` & `ajv-keywords` & `qs` packages
 * [FIXED] - http `app.getHost()` was returning `//` string value instead of empty string when the host value was unknown
 * [FIXED] - http `route.getUrl` method should sort query parameter keys before serializing the parameters into a string
+* [FIXED] - `ResourceManager.prototype.register` should accept resource `Function` objects
 * [ADDED] - `res.setPaginationHeaders` method accepts new `offsetAlias` & `limitAlias` options
 
 ## v1.6.2

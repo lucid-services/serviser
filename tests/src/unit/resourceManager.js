@@ -84,6 +84,14 @@ describe('ResourceManager', function() {
             this.resourceManager.resources.should.have.property('my-resource', this._resourceMock);
         });
 
+        it('should allow to register a resource function object', function() {
+            let resource = sinon.spy();
+            resource.inspectIntegrity = sinon.stub().resolves();
+            this.resourceManager.register('my-resource', resource);
+
+            this.resourceManager.resources.should.have.property('my-resource', resource);
+        });
+
         it('should throw a TypeError when received resource object does not implement required methods', function() {
             var manager = this.resourceManager;
 
