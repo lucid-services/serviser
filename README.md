@@ -6,7 +6,7 @@ Emphasis is put among other [features](https://github.com/lucid-services/bi-serv
 
 **Why?**  
 So that basic project foundations and application architecture doesn't need to be invented again and again for each (web) service.  
-The project empowers minimalistic but mature libraries like [express]() and does its job on top of them striving for clean scalable, testable and consistent applications.
+The project empowers minimalistic but mature libraries like [express](https://github.com/expressjs/express) and does its job on top of them striving for clean scalable, testable and consistent applications.
 
 Features
 -------------------
