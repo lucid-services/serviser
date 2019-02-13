@@ -5,6 +5,7 @@
 * [FIXED] - update `ajv` & `ajv-keywords` & `qs` packages
 * [FIXED] - http `app.getHost()` was returning `//` string value instead of empty string when the host value was unknown
 * [FIXED] - http `route.getUrl` method should sort query parameter keys before serializing the parameters into a string
+* [ADDED] - `res.setPaginationHeaders` method accepts new `offsetAlias` & `limitAlias` options
 
 ## v1.6.2
 
