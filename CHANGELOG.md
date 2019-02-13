@@ -2,6 +2,8 @@
 
 * [FIXED] - semantic error - order of operations - the `Service` property was being assigned to `Service` prototype object which had been overwritten immediatelly afterwards thus making the assigned `Service` property unavailable
 * [FIXED] - http `Route.prototype.getUrl` was returning malformed url string when the endpoint string contained more than one regular expression parameter constraints, solves [#1](https://github.com/lucid-services/bi-service/issues/1)
+* [FIXED] - update `ajv` & `ajv-keywords` & `qs` packages
+* [FIXED] - http `app.getHost()` was returning `//` string value instead of empty string when the host value was unknown
 
 ## v1.6.2
 
