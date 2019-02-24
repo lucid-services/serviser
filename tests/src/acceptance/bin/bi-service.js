@@ -314,7 +314,6 @@ describe('bin/bi-service', function() {
                             bodyParser: bodyParser,
                         }
                     },
-                    bodyParser: bodyParser,
                     fileConfigPath: MOCK_APP_CONFIG_PATH,
                     type: 'literal'
                 });
