@@ -38,11 +38,11 @@
         "bi-cache-store-interface": "^1.0.1",
         "bi-config": "3.0.0-alpha",
         "bi-logger": "^2.0.0",
-        "ajv": "^6.9.0",
+        "ajv": "^6.9.2",
         "ajv-keywords": "^3.4.0",
         "bluebird": "^3.5.1",
         "body-parser": "~1.18.2",
-        "debug": "~3.1.0",
+        "debug": "~3.2.6",
         "events-bluebird": "^1.0.0",
         "express": "~4.16.3",
         "http-status-codes": "^1.0.6",
@@ -51,7 +51,7 @@
         "qs": "^6.6.0",
         "stack-trace": "0.0.10",
         "type-is": "1.6.16",
-        "media-typer": "0.3.0",
+        "media-typer": "~1.0.1",
         "yargs": "^8.0.0"
     },
     "devDependencies": {
