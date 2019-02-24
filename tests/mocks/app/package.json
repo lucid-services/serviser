@@ -4,7 +4,7 @@
   "description": "Mock of bi-service based app",
   "main": "index.js",
   "files": [
-    "config.json5",
+    "config.js",
     "index.js"
   ]
 }

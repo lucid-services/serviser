@@ -31,29 +31,10 @@ require('json5/lib/require');
 if (module.parent === null) {
 
     _yargs = _initializeYargs(yargs);
-
-    _yargs = _yargs.command('*', '', {
-        'get-conf': {//TODO remove, deprecated (has been replated by get:config cmd)
-            alias: 'g',
-            describe: 'Prints resolved config value',
-            type: 'string'
-        },
-        json5: {//TODO, remove deprecated (has been replated by get:config cmd)
-            describe: 'if any json data are about to be printed they will be converted to json5 format',
-            type: 'boolean',
-            default: false
-        },
-        offset: {//TODO, remove , deprecated (has been replated by get:config cmd)
-            describe: "A String or Number that's used to insert white space into the output JSON string for readability purposes.",
-            default: 4
-        }
-    }, defaultCmd);
-
+    _yargs = _yargs.command('*', '', {}, defaultCmd);
 
     const nativeCommands = [
-        'init', 'run', 'get:config', 'test:config', '--version', 'init:seed',
-        'init:schema', 'init:migration', 'init:mig', 'mig:status',
-        'migration:status', 'migrate', 'seed', 'seed:all'
+        'init', 'run', 'get:config', 'test:config', '--version' 
     ];
 
     //work around the yargs issue that makes it impossible to generate
@@ -126,7 +107,6 @@ function _initializeYargs(ya) {
     .version('version', 'Prints bi-service version', VERSION);
 
     _loadExtension('bi-service-template', ya);
-    _loadExtension('bi-db-migrations', ya);
     return ya;
 }
 
@@ -150,60 +130,55 @@ function _loadExtension(name, yargs) {
  */
 function defaultCmd(argv) {
 
-    if (argv['get-conf'] !== undefined) {
-        getConfigCmd(argv);
-    //if no supported commands or options were matched so far,
-    //we try to look for user defined shell commands:
-    } else {
-        config.initialize({fileConfigPath: argv.config});
-        let ya = require('yargs/yargs')();
+    //we look for user defined shell commands:
+    config.initialize({fileConfigPath: argv.config});
+    let ya = require('yargs/yargs')();
 
-        ya.wrap(HELP_WIDTH);
-        _initializeYargs(ya).help();
+    ya.wrap(HELP_WIDTH);
+    _initializeYargs(ya).help();
 
-        if (fs.existsSync(PROJECT_INDEX)) {
-            let service;
+    if (fs.existsSync(PROJECT_INDEX)) {
+        let service;
 
-            let p = Promise.try(function() {
-                service = require(PROJECT_INDEX);
-                service.appManager.on('build-app', _onBuildApp);
-                //give service enough time to register event listeners
-                return _waitTillNextTick();
-            }).then(function() {
-                return service.$setup({
-                    //inspect only resources with exclusive 'shell' tag
-                    integrity: ['shell']
-                });
-            }).catch(function(err) {
-                utils._stderr(
-                    'Warning: Failure encountered (in user-space) while loading' +
-                    ' additional shell commands.\n This is a problem' +
-                    ' with service implementation, not with bi-service itself.\n'
-                );
-                p.cancel();
+        let p = Promise.try(function() {
+            service = require(PROJECT_INDEX);
+            service.appManager.on('build-app', _onBuildApp);
+            //give service enough time to register event listeners
+            return _waitTillNextTick();
+        }).then(function() {
+            return service.$setup({
+                //inspect only resources with exclusive 'shell' tag
+                integrity: ['shell']
+            });
+        }).catch(function(err) {
+            utils._stderr(
+                'Warning: Failure encountered (in user-space) while loading' +
+                ' additional shell commands.\n This is a problem' +
+                ' with service implementation, not with bi-service itself.\n'
+            );
+            p.cancel();
 
-                //make sure exitCode is not changed by yargs
-                Object.defineProperty(process, 'exitCode', {
-                    get: function() {return 1;},
-                    set: function() {}
-                });
-
-                return Promise.fromCallback(function(cb) {
-                    logger.error(err, cb);
-                }).then(function() {
-                    return _setImmediate(_registerShellCommands, argv, ya, Service);
-                });
-            }).then(function() {
-                return _setImmediate(_registerShellCommands, argv, ya, Service, service);
-            }).catch(function(err) {
-                utils._stderr(err);
-                process.exit(1);
+            //make sure exitCode is not changed by yargs
+            Object.defineProperty(process, 'exitCode', {
+                get: function() {return 1;},
+                set: function() {}
             });
 
-            return p;
-        } else {
-            return _setImmediate(_registerShellCommands, argv, ya, Service);
-        }
+            return Promise.fromCallback(function(cb) {
+                logger.error(err, cb);
+            }).then(function() {
+                return _setImmediate(_registerShellCommands, argv, ya, Service);
+            });
+        }).then(function() {
+            return _setImmediate(_registerShellCommands, argv, ya, Service, service);
+        }).catch(function(err) {
+            utils._stderr(err);
+            process.exit(1);
+        });
+
+        return p;
+    } else {
+        return _setImmediate(_registerShellCommands, argv, ya, Service);
     }
 }
 
