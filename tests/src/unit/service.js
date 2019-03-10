@@ -5,10 +5,10 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var logger         = require('bi-logger');
+var logger         = require('serviser-logger');
 var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
-var Config         = require('bi-config');
+var Config         = require('serviser-config');
 
 var Service              = require('../../../lib/service.js');
 var AppManager           = require('../../../lib/appManager.js');
@@ -67,7 +67,7 @@ describe('Service', function() {
 
         it('should set valid "npmName" property of config store', function() {
             (new Service(this.config)).config.get('npmName')
-                .should.be.equal('bi-service');
+                .should.be.equal('serviser');
         });
 
         it('should call self.$initLogger() method', function() {
@@ -116,7 +116,7 @@ describe('Service', function() {
                 this.loggerReinitializeSpy.restore();
             });
 
-            it('should reinitialize static `bi-logger` module with options received from the bi-config', function() {
+            it('should reinitialize static `serviser-logger` module with options received from the serviser-config', function() {
                 var logOpt = {
                     transports: [
                         {
@@ -303,7 +303,7 @@ describe('Service', function() {
                 this.reinitializeSpy.restore();
             });
 
-            it('should call the `reinitialize` method on bi-logger module', function() {
+            it('should call the `reinitialize` method on serviser-logger module', function() {
                 var logsConf = {
                     exitOnErr: false,
                     transports: [
@@ -323,7 +323,7 @@ describe('Service', function() {
                 this.reinitializeSpy.should.have.been.calledWith(logsConf);
             });
 
-            it('should should NOT call the `reinitialize` method on bi-logger module', function() {
+            it('should should NOT call the `reinitialize` method on serviser-logger module', function() {
                 this.config.set('logs', undefined);
                 this.service.$initLogger();
                 this.reinitializeSpy.should.have.callCount(0);

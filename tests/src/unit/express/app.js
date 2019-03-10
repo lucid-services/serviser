@@ -1,22 +1,21 @@
-var sinon               = require('sinon');
-var chai                = require('chai');
-var chaiAsPromised      = require('chai-as-promised');
-var sinonChai           = require("sinon-chai");
-var http                = require('http');
-var https               = require('https');
-var Express             = require('express');
-var logger              = require('bi-logger');
-var Config              = require('bi-config');
-var Validator           = require('ajv');
+var sinon          = require('sinon');
+var chai           = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var sinonChai      = require("sinon-chai");
+var http           = require('http');
+var https          = require('https');
+var Express        = require('express');
+var logger         = require('serviser-logger');
+var Config         = require('serviser-config');
+var Validator      = require('ajv');
 
-var ResourceManager  = require('../../../../lib/resourceManager.js');
-var Service          = require('../../../../lib/service.js');
-var AppManager       = require('../../../../lib/appManager.js');
-var Router           = require('../../../../lib/express/router.js');
-var Route            = require('../../../../lib/express/route.js');
-var AppStatus        = require('../../../../lib/common/appStatus.js');
-var Server           = require('../../../mocks/server.js');
-var MemcachedStoreMock   = require('../../../mocks/memcachedStore.js');
+var ResourceManager = require('../../../../lib/resourceManager.js');
+var Service         = require('../../../../lib/service.js');
+var AppManager      = require('../../../../lib/appManager.js');
+var Router          = require('../../../../lib/express/router.js');
+var Route           = require('../../../../lib/express/route.js');
+var AppStatus       = require('../../../../lib/common/appStatus.js');
+var Server          = require('../../../mocks/server.js');
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised');
@@ -233,20 +232,6 @@ describe('App', function() {
 
             it('should emit `pre-init` event', function() {
                 this.postInitSpy.should.have.been.calledOnce;
-            });
-        });
-
-        describe('useSession', function() {
-            it('should connect Session middlewares to express app', function() {
-                this.config.set('session', {});
-                var appUseSpy = sinon.spy(this.app, 'use');
-                var memcachedMock = new MemcachedStoreMock();
-
-                this.app.useSession(memcachedMock);
-
-                //TODO verify that actuall session middleware was provided to the function
-                sinon.assert.alwaysCalledWith(appUseSpy, sinon.match.func);
-                appUseSpy.calledTwice;
             });
         });
 

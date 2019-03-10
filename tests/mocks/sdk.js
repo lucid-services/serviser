@@ -1,5 +1,5 @@
 var sinon = require('sinon');
-var BIServiceSDK = require('bi-service-sdk').BIServiceSDK;
+var BIServiceSDK = require('serviser-sdk').BIServiceSDK;
 
 module.exports = SDK;
 

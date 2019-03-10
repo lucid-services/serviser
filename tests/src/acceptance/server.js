@@ -1,21 +1,17 @@
 const _              = require('lodash');
 const qs             = require('qs');
 const findPorts      = require('find-port');
-const json5          = require('json5');
 const path           = require('path');
 const chai           = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const Promise        = require('bluebird');
-const config         = require('bi-config');
+const config         = require('serviser-config');
 const request        = require('supertest');
 
 const MOCK_APP_ROOT        = path.resolve(__dirname + '/../../mocks/app');
-const MOCK_APP_CONFIG_PATH = path.resolve(MOCK_APP_ROOT + '/config.json5');
+const MOCK_APP_CONFIG_PATH = path.resolve(MOCK_APP_ROOT + '/config.js');
 const service              = require(path.resolve(MOCK_APP_ROOT + '/index.js'));
 const BASE_URL             = 'http://127.0.0.1';
-
-// adds .json5 loader require.extension
-require('json5/lib/require');
 
 const expect = chai.expect;
 

@@ -12,16 +12,13 @@ const Promise        = require('bluebird');
 const CPU_COUNT      = require('os').cpus().length;
 const spawn          = require('child_process').spawn;
 
-const biServicePath = path.resolve(__dirname + '/../../../../bin/bi-service.js');
+const biServicePath = path.resolve(__dirname + '/../../../../bin/serviser.js');
 const MOCK_APP_ROOT = path.resolve(__dirname + '/../../../mocks/app');
-const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../../mocks/app/config.json5');
+const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../../mocks/app/config.js');
 const BI_SERVICE_VERSION = require('../../../../package.json').version;
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised', Promise);
-
-// adds .json5 loader require.extension
-require('json5/lib/require');
 
 const expect = chai.expect;
 
@@ -29,7 +26,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('bin/bi-service', function() {
+describe('bin/serviser', function() {
     before(function() {
         var self = this;
         this.spawn = _spawn;
@@ -123,7 +120,7 @@ describe('bin/bi-service', function() {
                 conf.apps.app1.listen = self.port;
 
                 fs.writeFile(
-                    `${self.tmpDir.name}/config.json5`,
+                    `${self.tmpDir.name}/config.json`,
                     JSON.stringify(conf),
                     function(err) {
                         if (err) {
@@ -152,7 +149,7 @@ describe('bin/bi-service', function() {
             ], {
                 cwd: __dirname
             }).should.be.rejected.then(function(err) {
-                err.stderr.should.match(/Could not confirm that cwd is a bi-service project/);
+                err.stderr.should.match(/Could not confirm that cwd is a serviser project/);
             });
         });
 
@@ -240,7 +237,7 @@ describe('bin/bi-service', function() {
                     return this.spawn([
                         'run',
                         '--config',
-                        `${this.tmpDir.name}/config.json5`,
+                        `${this.tmpDir.name}/config.json`,
                         '--parse-pos-args',
                         false,
                         'apps.app1.listen',
@@ -267,7 +264,7 @@ describe('bin/bi-service', function() {
     });
 
     describe('--version', function() {
-        it('should dump bi-service version tag to stdout', function() {
+        it('should dump serviser version tag to stdout', function() {
             return this.spawn([
                 '--version',
             ]).should.be.fulfilled.then(function(result) {
@@ -317,7 +314,6 @@ describe('bin/bi-service', function() {
                             bodyParser: bodyParser,
                         }
                     },
-                    bodyParser: bodyParser,
                     fileConfigPath: MOCK_APP_CONFIG_PATH,
                     type: 'literal'
                 });
@@ -404,17 +400,17 @@ describe('bin/bi-service', function() {
     describe('--help', function() {
         it('should print available commands and exit with status code 0', function() {
             let expectedStdout =
-                '../../../bin/bi-service.js <command> [options]\n' +
+                '../../../bin/serviser.js <command> [options]\n' +
                 '\n' +
                 'Commands:\n' +
-                '  run [options..]   Starts bi-service app - expects it to be located under cwd  [aliases: start, serve]\n' +
+                '  run [options..]   Starts serviser app - expects it to be located under cwd  [aliases: start, serve]\n' +
                 '  get:config [key]  Dumbs resolved service configuration\n' +
                 '  test:config       Tries to load the configuration file. Validates configuration.\n' +
                 '\n' +
                 'Options:\n' +
                 '  --help, -h  Show help  [boolean]\n' +
                 '  --config    Custom config file destination  [string]\n' +
-                '  --version   Prints bi-service version  [boolean]';
+                '  --version   Prints serviser version  [boolean]';
 
             return this.spawn([
                 '--config',
@@ -427,85 +423,25 @@ describe('bin/bi-service', function() {
         });
     });
 
-    describe('--get-conf', function() {
-        it('should print option value', function() {
-            return this.spawn([
-                '--config',
-                MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-                'apps.app1.bodyParser.json.type'
-            ]).should.be.fulfilled.then(function(result) {
-                result.code.should.be.equal(0);
-                result.stdout.should.be.eql('application/json');
-            });
-        });
-
-        it('should print option value', function() {
-            return this.spawn([
-                '--config',
-                MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-            ]).should.be.fulfilled.then(function(result) {
-                result.code.should.be.equal(0);
-                let bodyParser = {
-                    json: {
-                        extended: true,
-                        type: 'application/json',
-                        limit: "2mb"
-                    }
-                };
-                json5.parse(result.stdout).should.be.eql({
-                    apps: {
-                        app1: {
-                            baseUrl: 'http://127.0.0.1',
-                            listen: 5903,
-                            bodyParser: bodyParser,
-                        },
-                        app2: {
-                            baseUrl: 'http://127.0.0.1',
-                            listen: 5904,
-                            bodyParser: bodyParser,
-                        }
-                    },
-                    bodyParser: bodyParser,
-                    fileConfigPath: MOCK_APP_CONFIG_PATH,
-                    type: 'literal'
-                });
-            });
-        });
-
-        it('should exit with 1 and print "undefined" when there is not such option', function() {
-            return this.spawn([
-                '--config',
-                MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-                'some.options.which.does.not.exist'
-            ]).should.be.rejected.then(function(result) {
-                result.code.should.be.equal(1);
-                result.stderr.should.be.equal('undefined');
-            });
-        });
-    });
-
     describe('--json5 option', function() {
         it('should print json data in json5 format', function() {
             return this.spawn([
+                'get:config',
+                'apps.app1.bodyParser',
                 '--config',
                 MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-                'apps.app1.bodyParser',
                 '--json5'
             ]).should.be.fulfilled.then(function(result) {
                 var stdout = result.stdout;
                 result.code.should.be.equal(0);
 
                 stdout.should.be.equal('{\n'          +
-                '    json: {\n'                       +
-                '        extended: true,\n'           +
-                '        type: "application/json",\n' +
-                '        limit: "2mb"\n'              +
-                '    }\n'                             +
-                '}');
+                    '    json: {\n'                       +
+                    '        extended: true,\n'           +
+                    '        type: "application/json",\n' +
+                    '        limit: "2mb"\n'              +
+                    '    }\n'                             +
+                    '}');
             });
         });
     });
@@ -513,10 +449,10 @@ describe('bin/bi-service', function() {
     describe('--offset option', function() {
         it('should print json data with correct space offset set', function() {
             return this.spawn([
+                'get:config',
+                'apps.app1.bodyParser',
                 '--config',
                 MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-                'apps.app1.bodyParser',
                 '--json5',
                 '--offset',
                 '2'
@@ -525,21 +461,21 @@ describe('bin/bi-service', function() {
                 result.code.should.be.equal(0);
 
                 stdout.should.be.equal('{\n'      +
-                '  json: {\n'                     +
-                '    extended: true,\n'           +
-                '    type: "application/json",\n' +
-                '    limit: "2mb"\n'              +
-                '  }\n'                           +
-                '}');
+                    '  json: {\n'                     +
+                    '    extended: true,\n'           +
+                    '    type: "application/json",\n' +
+                    '    limit: "2mb"\n'              +
+                    '  }\n'                           +
+                    '}');
             });
         });
 
         it('should replace space character with given string value in JSON output', function() {
             return this.spawn([
+                'get:config',
+                'apps.app1.bodyParser',
                 '--config',
                 MOCK_APP_CONFIG_PATH,
-                '--get-conf',
-                'apps.app1.bodyParser',
                 '--json5',
                 '--offset',
                 '__'
@@ -548,12 +484,12 @@ describe('bin/bi-service', function() {
                 result.code.should.be.equal(0);
 
                 stdout.should.be.equal('{\n'      +
-                '__json: {\n'                     +
-                '____extended: true,\n'           +
-                '____type: "application/json",\n' +
-                '____limit: "2mb"\n'              +
-                '__}\n'                           +
-                '}');
+                    '__json: {\n'                     +
+                    '____extended: true,\n'           +
+                    '____type: "application/json",\n' +
+                    '____limit: "2mb"\n'              +
+                    '__}\n'                           +
+                    '}');
             });
         });
     });

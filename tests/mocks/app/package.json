@@ -1,10 +1,10 @@
 {
-  "name": "bi-service-mock-app",
+  "name": "serviser-mock-app",
   "version": "0.1.0",
-  "description": "Mock of bi-service based app",
+  "description": "Mock of serviser based app",
   "main": "index.js",
   "files": [
-    "config.json5",
+    "config.js",
     "index.js"
   ]
 }

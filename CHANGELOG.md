@@ -1,3 +1,11 @@
+## v2.0.0
+
+* [REMOVED] - `--get-conf` deprecated command which has been replaced with `get:config` cmd
+* [REMOVED] - `App.prototype.useSession` deprecated method
+* [REMOVED] - `bi-db-migrations` support as the development of the library has been terminated
+* [CHANGED] - `ForiddenError` constructor does not accept `message` option as deprecated second argument
+* [CHANGED] - update to `bi-config@3.x` (provides service configuration) - dropped `json5` format in favor of `config.js` (default) and plain `config.json`
+
 ## v1.7.0
 
 * [FIXED] - semantic error - order of operations - the `Service` property was being assigned to `Service` prototype object which had been overwritten immediatelly afterwards thus making the assigned `Service` property unavailable

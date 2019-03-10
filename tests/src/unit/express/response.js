@@ -2,7 +2,7 @@ const sinon     = require('sinon');
 const chai      = require('chai');
 const sinonChai = require("sinon-chai");
 const Promise   = require('bluebird');
-const Config    = require('bi-config');
+const Config    = require('serviser-config');
 
 const Service         = require('../../../../lib/service.js');
 const Response        = require('../../../../lib/response.js');

@@ -4,10 +4,10 @@ var sinon          = require('sinon');
 var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
-var logger         = require('bi-logger');
+var logger         = require('serviser-logger');
 var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
-var BIServiceSDK   = require('bi-service-sdk');
+var BIServiceSDK   = require('serviser-sdk');
 
 var RemoteServiceManager = require('../../../lib/remoteServiceManager.js');
 var SDKMock              = require('../..//mocks/sdk.js');
@@ -126,7 +126,7 @@ describe('RemoteServiceManager', function() {
             this.managerModule = m._cache[this.managerPath];
 
             this.requireStub = sinon.stub(this.managerModule, 'require');
-            this.requireStub.withArgs('bi-service-sdk').returns(BIServiceSDK);
+            this.requireStub.withArgs('serviser-sdk').returns(BIServiceSDK);
         });
 
         after(function() {

@@ -3,7 +3,7 @@ var chai           = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var sinonChai      = require("sinon-chai");
 var Express        = require('express');
-var Config         = require('bi-config');
+var Config         = require('serviser-config');
 
 var Service    = require('../../../../lib/service.js');
 var AppManager = require('../../../../lib/appManager.js');
