@@ -1,4 +1,4 @@
-## FUTURE
+## v2.0.0
 
 * [REMOVED] - `--get-conf` deprecated command which has been replaced with `get:config` cmd
 * [REMOVED] - `App.prototype.useSession` deprecated method

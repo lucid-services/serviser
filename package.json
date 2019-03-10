@@ -1,6 +1,6 @@
 {
     "name": "serviser",
-    "version": "1.7.0",
+    "version": "2.0.0",
     "description": "Node.js web application framework",
     "main": "index.js",
     "testFramework": "mocha",
