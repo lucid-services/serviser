@@ -1,11 +1,11 @@
 /**
- * this file represents bi-service based app
- * and its purpose is to help test the bin/bi-service
+ * this file represents serviser based app
+ * and its purpose is to help test the bin/serviser
  * shell executable
  */
 
 const Service = require('../../../index.js');
-const config = require('bi-config');
+const config = require('serviser-config');
 
 const service = module.exports = new Service(config);
 

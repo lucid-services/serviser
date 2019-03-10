@@ -5,8 +5,8 @@ var sinonChai      = require("sinon-chai");
 var http           = require('http');
 var https          = require('https');
 var Express        = require('express');
-var logger         = require('bi-logger');
-var Config         = require('bi-config');
+var logger         = require('serviser-logger');
+var Config         = require('serviser-config');
 var Validator      = require('ajv');
 
 var ResourceManager = require('../../../../lib/resourceManager.js');

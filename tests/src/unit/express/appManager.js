@@ -1,7 +1,7 @@
 var sinon     = require('sinon');
 var chai      = require('chai');
 var sinonChai = require("sinon-chai");
-var Config    = require('bi-config');
+var Config    = require('serviser-config');
 
 var Service    = require('../../../../lib/service.js');
 var AppManager = require('../../../../lib/appManager.js');

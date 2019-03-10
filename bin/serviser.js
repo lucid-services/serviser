@@ -6,10 +6,10 @@ const argv    = process.argv.slice(2);
 const yargs   = require('yargs')(argv);
 const path    = require('path');
 const fs      = require('fs');
-const logger  = require('bi-logger');//hooks up global uncaughtException listener
+const logger  = require('serviser-logger');//hooks up global uncaughtException listener
 const _       = require('lodash');
 const json5   = require('json5');
-const config  = require('bi-config');
+const config  = require('serviser-config');
 const Promise = require('bluebird');
 
 const Service       = require('../index.js');
@@ -61,7 +61,7 @@ module.exports.defaultCmd  = defaultCmd;
 function _initializeYargs(ya) {
     ya = ya
     .usage('$0 <command> [options]')
-    .command(['run [options..]', 'start', 'serve'], 'Starts bi-service app - expects it to be located under cwd', {
+    .command(['run [options..]', 'start', 'serve'], 'Starts serviser app - expects it to be located under cwd', {
         cluster: {
             alias: 'c',
             describe: '`<number>` is either a percentage amount (from number of available cpu threads) ' +
@@ -104,9 +104,9 @@ function _initializeYargs(ya) {
         global: true,
         type: 'string'
     })
-    .version('version', 'Prints bi-service version', VERSION);
+    .version('version', 'Prints serviser version', VERSION);
 
-    _loadExtension('bi-service-template', ya);
+    _loadExtension('serviser-template', ya);
     return ya;
 }
 
@@ -154,7 +154,7 @@ function defaultCmd(argv) {
             utils._stderr(
                 'Warning: Failure encountered (in user-space) while loading' +
                 ' additional shell commands.\n This is a problem' +
-                ' with service implementation, not with bi-service itself.\n'
+                ' with service implementation, not with serviser itself.\n'
             );
             p.cancel();
 

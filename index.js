@@ -8,7 +8,7 @@ exports = module.exports = require('./lib/service.js');
 exports.Express              = require('express');
 exports.EXPRESS_VERSION      = parseInt(require('express/package.json').version[0]);
 /**
- * `bi-service` npm package version
+ * `serviser` npm package version
  * @name Service.VERSION
  * @type {String}
  * @readonly

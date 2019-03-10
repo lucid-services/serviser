@@ -5,7 +5,7 @@ const path           = require('path');
 const chai           = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const Promise        = require('bluebird');
-const config         = require('bi-config');
+const config         = require('serviser-config');
 const request        = require('supertest');
 
 const MOCK_APP_ROOT        = path.resolve(__dirname + '/../../mocks/app');

@@ -12,7 +12,7 @@ const Promise        = require('bluebird');
 const CPU_COUNT      = require('os').cpus().length;
 const spawn          = require('child_process').spawn;
 
-const biServicePath = path.resolve(__dirname + '/../../../../bin/bi-service.js');
+const biServicePath = path.resolve(__dirname + '/../../../../bin/serviser.js');
 const MOCK_APP_ROOT = path.resolve(__dirname + '/../../../mocks/app');
 const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../../mocks/app/config.js');
 const BI_SERVICE_VERSION = require('../../../../package.json').version;
@@ -26,7 +26,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('bin/bi-service', function() {
+describe('bin/serviser', function() {
     before(function() {
         var self = this;
         this.spawn = _spawn;
@@ -149,7 +149,7 @@ describe('bin/bi-service', function() {
             ], {
                 cwd: __dirname
             }).should.be.rejected.then(function(err) {
-                err.stderr.should.match(/Could not confirm that cwd is a bi-service project/);
+                err.stderr.should.match(/Could not confirm that cwd is a serviser project/);
             });
         });
 
@@ -264,7 +264,7 @@ describe('bin/bi-service', function() {
     });
 
     describe('--version', function() {
-        it('should dump bi-service version tag to stdout', function() {
+        it('should dump serviser version tag to stdout', function() {
             return this.spawn([
                 '--version',
             ]).should.be.fulfilled.then(function(result) {
@@ -400,17 +400,17 @@ describe('bin/bi-service', function() {
     describe('--help', function() {
         it('should print available commands and exit with status code 0', function() {
             let expectedStdout =
-                '../../../bin/bi-service.js <command> [options]\n' +
+                '../../../bin/serviser.js <command> [options]\n' +
                 '\n' +
                 'Commands:\n' +
-                '  run [options..]   Starts bi-service app - expects it to be located under cwd  [aliases: start, serve]\n' +
+                '  run [options..]   Starts serviser app - expects it to be located under cwd  [aliases: start, serve]\n' +
                 '  get:config [key]  Dumbs resolved service configuration\n' +
                 '  test:config       Tries to load the configuration file. Validates configuration.\n' +
                 '\n' +
                 'Options:\n' +
                 '  --help, -h  Show help  [boolean]\n' +
                 '  --config    Custom config file destination  [string]\n' +
-                '  --version   Prints bi-service version  [boolean]';
+                '  --version   Prints serviser version  [boolean]';
 
             return this.spawn([
                 '--config',
