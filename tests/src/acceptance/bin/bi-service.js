@@ -15,7 +15,7 @@ const spawn          = require('child_process').spawn;
 const biServicePath = path.resolve(__dirname + '/../../../../bin/serviser.js');
 const MOCK_APP_ROOT = path.resolve(__dirname + '/../../../mocks/app');
 const MOCK_APP_CONFIG_PATH = path.resolve(__dirname + '/../../../mocks/app/config.js');
-const BI_SERVICE_VERSION = require('../../../../package.json').version;
+const SERVISER_VERSION = require('../../../../package.json').version;
 
 //this makes sinon-as-promised available in sinon:
 require('sinon-as-promised', Promise);
@@ -268,7 +268,7 @@ describe('bin/serviser', function() {
             return this.spawn([
                 '--version',
             ]).should.be.fulfilled.then(function(result) {
-                result.stdout.should.be.equal(BI_SERVICE_VERSION);
+                result.stdout.should.be.equal(SERVISER_VERSION);
                 result.code.should.be.equal(0);
             });
         });
