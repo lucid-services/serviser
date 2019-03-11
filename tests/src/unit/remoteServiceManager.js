@@ -7,7 +7,7 @@ var sinonChai      = require("sinon-chai");
 var logger         = require('serviser-logger');
 var EventEmitter   = require('events-bluebird');
 var Promise        = require('bluebird');
-var BIServiceSDK   = require('serviser-sdk');
+var ServiceSDK     = require('serviser-sdk');
 
 var RemoteServiceManager = require('../../../lib/remoteServiceManager.js');
 var SDKMock              = require('../..//mocks/sdk.js');
@@ -40,7 +40,7 @@ describe('RemoteServiceManager', function() {
             this.manager.add('depot:public', sdk).should.be.equal(this.manager);
         });
 
-        it('should throw an Error when received SDK object is not instanceof BIServiceSDK', function() {
+        it('should throw an Error when received SDK object is not instanceof ServiceSDK', function() {
             var manager = this.manager;
 
             expect(function() {
@@ -78,7 +78,7 @@ describe('RemoteServiceManager', function() {
             }).to.throw(Error);
         });
 
-        it('should throw an Error when object is not instanceof BIServiceSDK', function() {
+        it('should throw an Error when object is not instanceof ServiceSDK', function() {
             var manager = this.manager;
             var sdk = new SDKMock({baseURL: '127.0.0.1'});
 
@@ -126,7 +126,7 @@ describe('RemoteServiceManager', function() {
             this.managerModule = m._cache[this.managerPath];
 
             this.requireStub = sinon.stub(this.managerModule, 'require');
-            this.requireStub.withArgs('serviser-sdk').returns(BIServiceSDK);
+            this.requireStub.withArgs('serviser-sdk').returns(ServiceSDK);
         });
 
         after(function() {
@@ -189,7 +189,7 @@ describe('RemoteServiceManager', function() {
                 'v1.0': SDKMock
             });
 
-            this.manager.buildRemoteService('depot:public:v1.0').should.be.instanceof(BIServiceSDK);
+            this.manager.buildRemoteService('depot:public:v1.0').should.be.instanceof(ServiceSDK);
         });
 
         it('should provide the sdk constructor with additional options when as configured in the `services` config section', function() {
@@ -207,7 +207,7 @@ describe('RemoteServiceManager', function() {
             this.requireStub.withArgs('bi-cli-sdk').returns({
                 'v1.0': SDKMock
             });
-            this.manager.buildRemoteService('depot:cli:v1.0').should.be.instanceof(BIServiceSDK);
+            this.manager.buildRemoteService('depot:cli:v1.0').should.be.instanceof(ServiceSDK);
 
             this.manager.services.should.have.deep.property('depot.cli');
             this.manager.services.depot.cli.should.have.property('v1.0');

@@ -1,3 +1,7 @@
+## v2.0.1
+
+* [FIXED] - `ServiceSDK` bugs related to recent project name change & fixed tests
+
 ## v2.0.0
 
 * [REMOVED] - `--get-conf` deprecated command which has been replaced with `get:config` cmd

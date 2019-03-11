@@ -1,13 +1,13 @@
 var sinon = require('sinon');
-var BIServiceSDK = require('serviser-sdk').BIServiceSDK;
+var ServiceSDK = require('serviser-sdk').ServiceSDK;
 
 module.exports = SDK;
 
 function SDK(options) {
-    BIServiceSDK.call(this, options);
+    ServiceSDK.call(this, options);
 
     this.version = 'v1.0';
 }
 
-SDK.prototype = Object.create(BIServiceSDK.prototype);
+SDK.prototype = Object.create(ServiceSDK.prototype);
 SDK.prototype.constructor = SDK;
