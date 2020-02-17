@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/lucid-services/serviser.svg?branch=master)](https://travis-ci.org/lucid-services/serviser)  [![Test Coverage](https://codeclimate.com/github/lucid-services/serviser/badges/coverage.svg)](https://codeclimate.com/github/lucid-services/serviser/coverage) [![npm version](https://badge.fury.io/js/serviser.svg)](https://www.npmjs.com/package/serviser)  
 
+[![Serviser Logo](https://github.com/lucid-services/serviser/raw/master/logo.png)](https://lucid-services.github.io/serviser)
 
 `serviser` is an abstraction layer with common interface for creating not-only web applications but also any apps that match the `request & response` pattern whether an underlying communication protocol is `HTTP`, `AMQP` (message queues), `IPC` or other..  
 Emphasis is put among other [features](https://github.com/lucid-services/serviser#features) on product API documentation, validation, error handling and automation of perpetually repeated tasks.
