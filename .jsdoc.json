@@ -12,20 +12,20 @@
         "plugins/markdown"
     ],
     "templates": {
-        "applicationName": "bi-service",
-        "disqus": "bi-service",
+        "applicationName": "serviser",
+        "disqus": "serviser",
         "googleAnalytics": "",
         "openGraph": {
-            "title": "bi-service",
+            "title": "serviser",
             "type": "website",
             "image": "",
             "site_name": "",
             "url": ""
         },
         "meta": {
-            "title": "bi-service docs",
+            "title": "serviser docs",
             "description": "",
-            "keyword": "bi-service express server"
+            "keyword": "serviser express server framework json-schema"
         },
         "linenums": true,
         "cleverLinks": true,
