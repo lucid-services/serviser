@@ -2,34 +2,53 @@
 
 [![Serviser Logo](https://github.com/lucid-services/serviser/raw/master/logo.png)](https://lucid-services.github.io/serviser)
 
-`serviser` is an abstraction layer with common interface for creating not-only web applications but also any apps that match the `request & response` pattern whether an underlying communication protocol is `HTTP`, `AMQP` (message queues), `IPC` or other..  
-Emphasis is put among other [features](https://github.com/lucid-services/serviser#features) on product API documentation, validation, error handling and automation of perpetually repeated tasks.
 
-**Why?**  
-So that basic project foundations and application architecture doesn't need to be invented again and again for each (web) service.  
-The project empowers minimalistic but mature libraries like [express](https://github.com/expressjs/express) and does its job on top of them striving for clean scalable, testable and consistent applications.
+`serviser` is abstraction layer built on top of [express](https://github.com/expressjs/express) for creating transparent, scalable and stable `REST API`s.  
 
-Features
--------------------
-* **Promises!**
-* [JSON Schema](http://json-schema.org/) integration
-* Environment-aware
-* App lifecycle events
-* Resource & Service integrity inspection capabilities (health monitoring)
-* **Documentation autogeneration**
-* **A SDK client package autogeneration**
-* response data filters
-* request data validation
-* shell integration
-* caching solutions
-* Semantic Service versioning
-* and more (see Public API Reference)!
+The emphasis is put, among other  [features](https://github.com/lucid-services/serviser#features), on REST API documentation, validation (security), error handling and automation of perpetually repeasted tasks.
+
+Quick start
+------------------
+
+```bash
+> mkdir my-api
+> cd my-api 
+> npx serviser-template init # shorthand for npm i serviser-template
+                             # && ./node_modules/.bin/serviser-template init
+> npm start
+```
 
 Resources
 -------------------
 * [Getting started](https://lucid-services.github.io/serviser/tutorial-1.Getting-started.html)
 * [Public API Reference](https://lucid-services.github.io/serviser/)
 * [Changelog](./CHANGELOG.md)
+
+
+Features
+-------------------
+* **Promises!**
+* **Documentation autogeneration**
+* **A SDK client package autogeneration**
+* [JSON Schema](http://json-schema.org/) integration (no duplicate definitions anymore!)
+* request data validation
+* response data filters
+* App lifecycle events (event driven)
+* shell integration
+* Resource & Service integrity inspection capabilities (health monitoring)
+* caching solutions
+* Semantic Service versioning
+* and more (see Public API Reference)!
+
+
+What this project is NOT:
+---------------------------
+- All in one MVC & ORM robust and opinionated solution.  
+
+Main ideas:  
+Interfaces are created and procedures standardized only where it's necessary.  
+Non-integral parts of the framework are built as plugins.  
+Loosely coupled design is often prefered.
 
 Tests
 -------------------

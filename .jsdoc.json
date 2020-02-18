@@ -13,7 +13,7 @@
     ],
     "templates": {
         "applicationName": "serviser",
-        "disqus": "serviser",
+        "disqus": "bi-service",
         "googleAnalytics": "",
         "openGraph": {
             "title": "serviser",
