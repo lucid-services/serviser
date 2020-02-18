@@ -56,7 +56,7 @@
     },
     "devDependencies": {
         "realm-jsdoc": "0.x",
-        "jsdoc": "^3.4.0",
+        "jsdoc": "^3.6.3",
         "serviser-sdk": "^1.2.2",
         "chai": "^3.5.0",
         "chai-as-promised": "^5.3.0",
