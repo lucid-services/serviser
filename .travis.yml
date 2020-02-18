@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- "6.4.0"
+- "12.16.0"
 
 before_script:
     - sudo ln -s $(which node) /bin
