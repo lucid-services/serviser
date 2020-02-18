@@ -1,6 +1,7 @@
-## FUTURE
+## v2.0.2
 
 * [FIXED] - update ajv@6.11, body-parser@1.19, express@4.17, qs@6.9 dependencies
+* [FIXED] - documentation updated & revisited
 
 
 ## v2.0.1
