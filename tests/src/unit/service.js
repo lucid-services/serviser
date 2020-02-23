@@ -56,8 +56,6 @@ describe('Service', function() {
             s.resourceManager.should.be.instanceof(ResourceManager);
             s.appManager.should.be.instanceof(AppManager);
             s.should.have.property('remoteServiceManager');
-            s.should.have.property('sqlModelManager');
-            s.should.have.property('cbModelManager');
         });
 
         it('should set valid "root" property value (project root path) of config store', function() {
