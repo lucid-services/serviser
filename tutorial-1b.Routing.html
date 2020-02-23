@@ -875,7 +875,7 @@
 
     
     <li>
-        <div class="section-header">Members<span class="badge pull-right">22</span></div>
+        <div class="section-header">Members<span class="badge pull-right">20</span></div>
         
             <a href="Service.html#.App">App</a>
         
@@ -909,8 +909,6 @@
         
             <a href="Service.html#appManager">appManager</a>
         
-            <a href="Service.html#cbModelManager">cbModelManager</a>
-        
             <a href="Service.html#config">config</a>
         
             <a href="Service.html#remoteServiceManager">remoteServiceManager</a>
@@ -918,8 +916,6 @@
             <a href="Service.html#resourceManager">resourceManager</a>
         
             <a href="Service.html#Service">Service</a>
-        
-            <a href="Service.html#sqlModelManager">sqlModelManager</a>
         
     </li>
     
@@ -1266,8 +1262,8 @@
 <p><a href="Route.html"><code>Route</code></a> objects maintain a callback queue interanlly like <code>express</code> does.<br>
 By calling route methods like <code>validate</code>, <code>step</code>  or <code>main</code>, middlewares are pushed into the queue.<br>
 Middlewares work with promises meaning middleware queue is assembled into promise chain internally.</p>
-<p>For more information on route definition, please see <a href="Router.html"><code>Router</code></a> and <a href="Route.html"><code>Route</code></a> and <a href="App.html"><code>Application</code></a> APIs.
-Next <a href="tutorial-1c.ErrorManagement.html">Error management</a> tutorial.</p>
+<p>For more information on route definition, please see <a href="Router.html"><code>Router</code></a> and <a href="Route.html"><code>Route</code></a> and <a href="App.html"><code>Application</code></a> APIs.</p>
+<p>Next <a href="tutorial-1c.ErrorManagement.html">Error management</a> tutorial.</p>
 <p><em>Internal guts notes:</em></p>
 <p>The Application is an abstraction object which implements <a href="AppInterface.html"><code>Application Interface</code></a>.<br>
 <code>serviser</code> comes with <a href="App.html"><code>http(s) implementation</code></a> of the <code>ApplicationInterface</code> using <code>expressjs</code> library under the hood,<br>

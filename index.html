@@ -875,7 +875,7 @@
 
     
     <li>
-        <div class="section-header">Members<span class="badge pull-right">22</span></div>
+        <div class="section-header">Members<span class="badge pull-right">20</span></div>
         
             <a href="Service.html#.App">App</a>
         
@@ -909,8 +909,6 @@
         
             <a href="Service.html#appManager">appManager</a>
         
-            <a href="Service.html#cbModelManager">cbModelManager</a>
-        
             <a href="Service.html#config">config</a>
         
             <a href="Service.html#remoteServiceManager">remoteServiceManager</a>
@@ -918,8 +916,6 @@
             <a href="Service.html#resourceManager">resourceManager</a>
         
             <a href="Service.html#Service">Service</a>
-        
-            <a href="Service.html#sqlModelManager">sqlModelManager</a>
         
     </li>
     
@@ -1244,11 +1240,13 @@
 
 
     <section>
-        <article class="readme"><p><a target="_blank" href="https://travis-ci.org/lucid-services/serviser"><img src="https://travis-ci.org/lucid-services/serviser.svg?branch=master" alt="Build Status"></a>  <a target="_blank" href="https://codeclimate.com/github/lucid-services/serviser/coverage"><img src="https://codeclimate.com/github/lucid-services/serviser/badges/coverage.svg" alt="Test Coverage"></a> <a target="_blank" href="https://www.npmjs.com/package/serviser"><img src="https://badge.fury.io/js/serviser.svg" alt="npm version"></a></p>
+        <article class="readme"><p><a target="_blank" href="https://travis-ci.org/lucid-services/serviser"><img src="https://travis-ci.org/lucid-services/serviser.svg?branch=master" alt="Build Status"></a>  <a target="_blank" href="https://codeclimate.com/github/lucid-services/serviser/coverage"><img src="https://codeclimate.com/github/lucid-services/serviser/badges/coverage.svg" alt="Test Coverage"></a> <a target="_blank" href="https://www.npmjs.com/package/serviser"><img src="https://badge.fury.io/js/serviser.svg" alt="npm version"></a>  <a target="_blank" href="https://gitter.im/lucid-services/community"><img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg" alt="Gitter"></a></p>
 <p><a target="_blank" href="https://lucid-services.github.io/serviser"><img src="https://github.com/lucid-services/serviser/raw/master/logo.png" alt="Serviser Logo"></a></p>
 <p><code>serviser</code> is abstraction layer built on top of <a target="_blank" href="https://github.com/expressjs/express">express</a> for creating transparent, scalable and stable <code>REST API</code>s.</p>
-<p>The emphasis is put, among other  <a target="_blank" href="https://github.com/lucid-services/serviser#features">features</a>, on REST API documentation, validation (security), error handling and automation of perpetually repeasted tasks.</p>
+<p>The emphasis is put, among other  <a target="_blank" href="https://github.com/lucid-services/serviser#features">features</a>, on REST API documentation, validation (security), error handling and automation of perpetually repeated tasks.</p>
+<p>The goal is to provide out of the box solution to common problems that arise when using nodejs frameworks at scale but at the same time keeping the core functionality lightweight with modular, swappable plugin based architecture.</p>
 <h2>Quick start</h2>
+<p>Generate working new project skeleton:</p>
 <pre class="prettyprint source lang-bash"><code>> mkdir my-api
 > cd my-api 
 > npx serviser-template init # shorthand for npm i serviser-template
@@ -1260,6 +1258,7 @@
 <li><a target="_blank" href="https://lucid-services.github.io/serviser/tutorial-1.Getting-started.html">Getting started</a></li>
 <li><a target="_blank" href="https://lucid-services.github.io/serviser/">Public API Reference</a></li>
 <li><a href="./CHANGELOG.md">Changelog</a></li>
+<li><a target="_blank" href="https://gitter.im/lucid-services/community">Gitter chat room</a> (discuss ideas and ask questions)</li>
 </ul>
 <h2>Features</h2>
 <ul>
@@ -1278,7 +1277,7 @@
 </ul>
 <h2>What this project is NOT:</h2>
 <ul>
-<li>All in one MVC &amp; ORM robust and opinionated solution.</li>
+<li>All in one MVC &amp; ORM robust and monolithic solution.</li>
 </ul>
 <p>Main ideas:<br>
 Interfaces are created and procedures standardized only where it's necessary.<br>

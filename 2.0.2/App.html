@@ -875,7 +875,7 @@
 
     
     <li>
-        <div class="section-header">Members<span class="badge pull-right">22</span></div>
+        <div class="section-header">Members<span class="badge pull-right">20</span></div>
         
             <a href="Service.html#.App">App</a>
         
@@ -909,8 +909,6 @@
         
             <a href="Service.html#appManager">appManager</a>
         
-            <a href="Service.html#cbModelManager">cbModelManager</a>
-        
             <a href="Service.html#config">config</a>
         
             <a href="Service.html#remoteServiceManager">remoteServiceManager</a>
@@ -918,8 +916,6 @@
             <a href="Service.html#resourceManager">resourceManager</a>
         
             <a href="Service.html#Service">Service</a>
-        
-            <a href="Service.html#sqlModelManager">sqlModelManager</a>
         
     </li>
     
@@ -3595,8 +3591,10 @@ binded to internal http[s] server.</p>
         
 
 
-    <p>emitted after internal initialization of the App instance. At this point the
-App instance should be fully initiallized.</p>
+    <p>emitted after internal initialization of the App instance and before
+<a href="AppInterface.html#event:pre-build"><code>AppInterface#event:pre-build</code></a> and <a href="AppInterface.html#event:post-build"><code>AppInterface#event:post-build</code></a> events.<br>
+This is the time to register application wide middlewares which get executed before
+the main route implementation.</p>
 
         
 
@@ -3782,7 +3780,9 @@ App instance should be fully initiallized.</p>
         
 
 
-    <p>emitted before internal initialization of the App instance</p>
+    <p>emitted before internal initialization of the App instance which will
+validate configuration, setup default application wide response headers and
+error handling middlewares</p>
 
         
 
