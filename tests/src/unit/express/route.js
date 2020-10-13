@@ -1101,7 +1101,10 @@ describe('Route', function() {
             });
 
             this.req = {};
-            this.res = {};
+            this.res = {
+                status: sinon.spy(),
+                json: sinon.spy()
+            };
             this.next = sinon.spy();
         });
 
@@ -1275,7 +1278,7 @@ describe('Route', function() {
             var self = this;
             var err = new RouteError('testinng error');
             var catchHandlerSpy = sinon.spy(function(err, res, res) {
-                throw err;
+                //throw err;
             });
             var middlewareSpy = sinon.spy();
 
