@@ -1,3 +1,9 @@
+## v2.0.3
+
+* [FIXED] - updated npm dependencies
+* [FIXED] - issue that caused polluting of event loop after Service setup failed (eg. tests hanged and had to be forced to exit)
+* [FIXED] - acceptance tests for `serviser` executable failed sometimes because of timeout
+
 ## v2.0.2
 
 * [FIXED] - update ajv@6.11, body-parser@1.19, express@4.17, qs@6.9 dependencies
