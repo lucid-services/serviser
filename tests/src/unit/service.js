@@ -380,6 +380,7 @@ describe('Service', function() {
 
             afterEach(function() {
                 this.appListenStub.restore();
+                return this.service.close();
             });
 
             it('should return resolved Promise once all apps are initialized to receive connections', function() {

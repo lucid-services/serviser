@@ -132,7 +132,7 @@ describe('requestContentType middleware', function() {
             'multipart/form-data': {}
         });
 
-        return request(server)
+        request(server)
             .post('/')
             .set('Content-Type', 'multipart/form-data')
             .expect('req-body', '{}')

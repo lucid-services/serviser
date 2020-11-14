@@ -65,7 +65,9 @@ describe('bin/serviser', function() {
                 }
 
                 if (typeof port === 'number') {
-                    intervalID = setInterval(killOnTCPUnavailable, 200);
+                    //check in 1s interval whether the service is listening,
+                    //and if so, kill it
+                    intervalID = setInterval(killOnTCPUnavailable, 1000);
                 }
 
                 var proc = spawn('node', args, {
