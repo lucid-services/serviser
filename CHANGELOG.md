@@ -1,3 +1,8 @@
+## v2.1.0
+
+* [FIXED] - `ResourceManager.inspectIntegrity` should not expect resources to return Bluebird promise object from `inspectIntegrity` method
+* [ADDED] - `RemoteServiceManager.buildRemoteService` supports `dir` config option along side `npm` option, for specifying target sdk destination
+
 ## v2.0.3
 
 * [FIXED] - updated npm dependencies
@@ -20,7 +25,8 @@
 * [REMOVED] - `App.prototype.useSession` deprecated method
 * [REMOVED] - `bi-db-migrations` support as the development of the library has been terminated
 * [CHANGED] - `ForiddenError` constructor does not accept `message` option as deprecated second argument
-* [CHANGED] - update to `bi-config@3.x` (provides service configuration) - dropped `json5` format in favor of `config.js` (default) and plain `config.json`
+* [CHANGED] - update to `serviser-config@3.x` (provides service configuration) - dropped `json5` format in favor of `config.js` (default) and plain `config.json`
+* [CHANGED] - project renamed from `bi-service` to `serviser`
 
 ## v1.7.0
 

@@ -148,6 +148,16 @@ describe('RemoteServiceManager', function() {
                         npm: 'bi-cli-sdk',
                         host: '127.0.0.1:3001',
                         ssl: false
+                    },
+                    s2s: {
+                        dir: '/absolute/path/to/sdk/dir',
+                        host: '127.0.0.1:3002',
+                        ssl: false
+                    },
+                    socket: {
+                        dir: './relative/path/to/sdk/dir',//invalid
+                        host: '127.0.0.1:3002',
+                        ssl: false
                     }
                 }
             };
@@ -184,12 +194,30 @@ describe('RemoteServiceManager', function() {
             }).to.throw(Error);
         });
 
-        it('should return constructed SDK object', function() {
+        it('should return constructed SDK object ("npm" option)', function() {
             this.requireStub.withArgs('bi-depot-public-sdk').returns({
                 'v1.0': SDKMock
             });
 
             this.manager.buildRemoteService('depot:public:v1.0').should.be.instanceof(ServiceSDK);
+        });
+
+        it('should return constructed SDK object ("dir" option with absolute path)', function() {
+            this.requireStub.withArgs('/absolute/path/to/sdk/dir').returns({
+                'v1.0': SDKMock
+            });
+
+            this.manager.buildRemoteService('depot:s2s:v1.0').should.be.instanceof(ServiceSDK);
+        });
+
+        it('should fail when relative directory path is provided in the `dir` option', function() {
+            var manager = this.manager;
+            this.requireStub.withArgs('./relative/path/to/sdk/dir').returns({
+                'v1.0': SDKMock
+            });
+            expect(function() {
+                manager.buildRemoteService('depot:socket:v1.0');
+            }).to.throw(Error, /paths not supported/);
         });
 
         it('should provide the sdk constructor with additional options when as configured in the `services` config section', function() {
