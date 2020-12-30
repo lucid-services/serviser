@@ -1,4 +1,4 @@
-## FUTURE
+## v2.1.0
 
 * [FIXED] - `ResourceManager.inspectIntegrity` should not expect resources to return Bluebird promise object from `inspectIntegrity` method
 * [ADDED] - `RemoteServiceManager.buildRemoteService` supports `dir` config option along side `npm` option, for specifying target sdk destination
