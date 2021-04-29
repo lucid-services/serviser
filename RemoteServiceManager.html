@@ -1489,7 +1489,34 @@ and <a href="tutorial-4.SDK-integration.html">SDKs integration</a></p>
         
 
         
-            <li><p>npm package name which exports object that inherits ServiceSDK</p></li>
+            <li><p>npm sdk package name which exports a literal object of versioned ServiceSDKs. (use either <code>dir</code> or `npm option)</p></li>
+        
+
+        
+    </ul>
+</ul>
+
+<ul class="params">
+    <li>
+        
+            <b>dir</b>
+        
+
+        
+        
+        
+
+    </li>
+    <ul class="list-unstyled">
+        
+            <li>Type: <code class="text-nowrap">String</code>
+</li>
+        
+
+        
+
+        
+            <li><p>sdk package directory path which exports object that inherits ServiceSDK. (use either <code>dir</code> or `npm option)</p></li>
         
 
         
@@ -1899,6 +1926,20 @@ module.exports = {
           protocol: 'https',
           host: "127.0.0.1:4001",
           npm: "service-name-app-name-sdk"
+        }
+      }
+   }
+}
+
+or
+
+module.exports = {
+   services: {
+      user: {
+        public: {
+          protocol: 'https',
+          host: "127.0.0.1:4001",
+          dir: "/absolute/path/to/my/sdk/directory"
         }
       }
    }
