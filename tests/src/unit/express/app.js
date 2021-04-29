@@ -383,12 +383,20 @@ describe('App', function() {
         });
 
         describe('getHost', function() {
-            it('should return base app location string (protocol + host)', function() {
+            it('should return base url(protocol + host)', function() {
                 let config = new Config.Config();
                 config.set(null, {baseUrl: 'http://service.bistudio.com/root'});
                 let app = this.appManager.buildApp(config, {name: 'getHost'});
 
                 app.getHost().should.be.equal('http://service.bistudio.com');
+            });
+
+            it('should return base url(protocol + host + port)', function() {
+                let config = new Config.Config();
+                config.set(null, {baseUrl: 'http://service.bistudio.com:3000/root'});
+                let app = this.appManager.buildApp(config, {name: 'getHost'});
+
+                app.getHost().should.be.equal('http://service.bistudio.com:3000');
             });
 
             it('should return empty string', function() {
