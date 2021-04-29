@@ -1,3 +1,7 @@
+## v2.1.1
+
+* [FIXED] - `utils.getPaginationMeta` should return correct `offset` value for last set of records
+
 ## v2.1.0
 
 * [FIXED] - `ResourceManager.inspectIntegrity` should not expect resources to return Bluebird promise object from `inspectIntegrity` method
