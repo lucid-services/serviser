@@ -229,3 +229,15 @@ describe('registerCustomKeywords', function() {
         });
     });
 });
+
+describe('getPaginationMeta', function() {
+    it('should return correct offset value for the last record', function() {
+        const data = utils.getPaginationMeta({
+            limit: 10,
+            offset: 0,
+            count: 97
+        });
+
+        data.last.should.have.property('offset', 9);
+    });
+});
